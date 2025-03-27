@@ -1,0 +1,11 @@
+// models/Payment.prisma
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  amount        Float
+  paymentMethod PaymentMethod
+  status        PaymentStatus
+  paymentDate   DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+}

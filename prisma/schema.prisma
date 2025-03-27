@@ -1,0 +1,121 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+// Enum para o estado das peças de hardware
+enum ProductCondition {
+  new
+  used
+  damaged
+}
+
+// Enum para os métodos de pagamento
+enum PaymentMethod {
+  credit_card
+  invoice
+  paypal
+}
+
+// Enum para o status do pagamento
+enum PaymentStatus {
+  pending
+  approved
+  failed
+}
+
+// Enum para o tipo de usuário
+enum UserRole {
+  customer
+  admin
+}
+
+// Tabela de categorias de produtos
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  products    Product[]
+}
+
+// Tabela de produtos
+model Product {
+  id             Int             @id @default(autoincrement())
+  name           String
+  description    String?
+  price          Float
+  categoryId     Int?
+  condition      ProductCondition
+  quantity       Int
+  imageUrl       String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now()) @updatedAt
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  reviews        Review[]
+  cartProducts   CartProduct[]
+}
+
+// Tabela de usuários
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      UserRole  @default(customer)
+  createdAt DateTime  @default(now())
+  carts     Cart[]
+  reviews   Review[]
+  payments  Payment[]
+}
+
+// Tabela de carrinhos de compra
+model Cart {
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  user        User         @relation(fields: [userId], references: [id])
+  cartProducts CartProduct[]
+}
+
+// Tabela de produtos no carrinho
+model CartProduct {
+  id          Int       @id @default(autoincrement())
+  cartId      Int
+  productId   Int
+  quantity    Int
+  createdAt   DateTime  @default(now())
+  cart        Cart      @relation(fields: [cartId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id])
+}
+
+// Tabela de pagamentos
+model Payment {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  amount       Float
+  paymentMethod PaymentMethod
+  status       PaymentStatus
+  paymentDate  DateTime       @default(now())
+  user         User           @relation(fields: [userId], references: [id])
+}
+
+// Tabela de comentários dos produtos
+model Review {
+  id          Int       @id @default(autoincrement())
+  productId   Int
+  userId      Int
+  reviewText  String
+  rating      Int       
+  createdAt   DateTime  @default(now())
+  product     Product   @relation(fields: [productId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+

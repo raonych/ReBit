@@ -1,0 +1,8 @@
+// models/Category.prisma
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  products    Product[]
+}
