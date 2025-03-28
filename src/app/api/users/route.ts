@@ -1,6 +1,6 @@
 import { prisma } from '@/../lib/prisma';
 import { NextResponse } from "next/server";
-import { Cors } from '@/../public/utils/cors';
+import { Cors } from '@/utils/cors';
 
 export async function GET() {
   const users = await prisma.user.findMany();
