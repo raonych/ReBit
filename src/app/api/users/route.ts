@@ -12,14 +12,12 @@ export async function GET() {
 
 
 export async function POST(req: Request) {
-  Cors;
   try {
     const { name, email, password } = await req.json();
 
     const duplicatedEmail = await prisma.user.findUnique({
       where: { email: email}
     });
-    console.log(duplicatedEmail);
     if(!duplicatedEmail){
       const user = await prisma.user.create({ data: { name, email, password } });
       const res = NextResponse.json(user, { status: 201 });

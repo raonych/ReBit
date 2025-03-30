@@ -20,8 +20,8 @@ enum ProductCondition {
 // Enum para os métodos de pagamento
 enum PaymentMethod {
   credit_card
-  invoice
-  paypal
+  debit_card
+  pix
 }
 
 // Enum para o status do pagamento
@@ -50,7 +50,7 @@ model Product {
   id             Int             @id @default(autoincrement())
   name           String
   description    String?
-  price          Float
+  price          Decimal        @db.Decimal()
   categoryId     Int?
   condition      ProductCondition
   quantity       Int
@@ -69,11 +69,28 @@ model User {
   email     String    @unique
   password  String
   role      UserRole  @default(customer)
+  cellphone  String   @db.VarChar(14)
   createdAt DateTime  @default(now())
   carts     Cart[]
   reviews   Review[]
   payments  Payment[]
+  addresses   addresses[]
 }
+
+model addresses {
+  id         Int      @id @default(autoincrement()) 
+  userId     Int      
+  street     String   
+  number     String   
+  city       String   
+  UF         String   @db.Char(2)
+  zipCode    String   // CEP  
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime @updatedAt     
+
+  user       User     @relation(fields: [userId], references: [id]) 
+}
+
 
 // Tabela de carrinhos de compra
 model Cart {
@@ -112,7 +129,7 @@ model Review {
   id          Int       @id @default(autoincrement())
   productId   Int
   userId      Int
-  reviewText  String
+  reviewText  String  @db.Text
   rating      Int       
   createdAt   DateTime  @default(now())
   product     Product   @relation(fields: [productId], references: [id])
