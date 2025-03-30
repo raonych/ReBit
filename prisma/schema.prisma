@@ -69,7 +69,7 @@ model User {
   email     String    @unique
   password  String
   role      UserRole  @default(customer)
-  cellphone  String   @db.VarChar(14)
+  cellphone  String?   @db.VarChar(14)
   createdAt DateTime  @default(now())
   carts     Cart[]
   reviews   Review[]
