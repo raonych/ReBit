@@ -1,5 +1,3 @@
-// schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,130 +7,115 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // Enum para o estado das peças de hardware
-enum ProductCondition {
-  new
-  used
-  damaged
+enum CondicaoProduto {
+  novo
+  usado
+  danificado
 }
 
 // Enum para os métodos de pagamento
-enum PaymentMethod {
-  credit_card
-  debit_card
+enum MetodoPagamento {
+  cartao_credito
+  cartao_debito
   pix
 }
 
 // Enum para o status do pagamento
-enum PaymentStatus {
-  pending
-  approved
-  failed
+enum StatusPagamento {
+  pendente
+  aprovado
+  falhou
 }
 
-// Enum para o tipo de usuário
-enum UserRole {
-  customer
-  admin
+
+// Tabela de usuários
+model Usuario {
+  id            Int       @id @default(autoincrement())
+  nome          String
+  email         String    @unique
+  senha         String
+  telefone      String?   @db.VarChar(14)
+  criadoEm      DateTime  @default(now())
+  enderecos     Endereco[]
+  produtos      Produto[] @relation("Vendedor")
+  compras       Compra[]
+  favoritos     Favorito[]
+  avaliacoesRecebidas Avaliacao[] @relation("AvaliacaoRecebida")
+  avaliacoesFeitas    Avaliacao[] @relation("AvaliacaoFeita")
+}
+
+// Tabela de endereços
+model Endereco {
+  id         Int      @id @default(autoincrement()) 
+  usuarioId  Int      
+  rua        String   
+  numero     String   
+  cidade     String   
+  UF         String   @db.Char(2)
+  cep        String   
+  criadoEm   DateTime @default(now()) 
+  atualizadoEm DateTime @updatedAt     
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id]) 
 }
 
 // Tabela de categorias de produtos
-model Category {
+model Categoria {
   id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  products    Product[]
+  nome        String
+  descricao   String?
+  produtos    Produto[]
 }
 
 // Tabela de produtos
-model Product {
+model Produto {
   id             Int             @id @default(autoincrement())
-  name           String
-  description    String?
-  price          Decimal        @db.Decimal()
-  categoryId     Int?
-  condition      ProductCondition
-  quantity       Int
-  imageUrl       String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @default(now()) @updatedAt
-  category       Category?       @relation(fields: [categoryId], references: [id])
-  reviews        Review[]
-  cartProducts   CartProduct[]
+  nome           String
+  descricao      String?
+  preco          Decimal        @db.Decimal()
+  condicao       CondicaoProduto
+  imagemUrl      String?
+  criadoEm       DateTime        @default(now())
+  categoriaId    Int?
+  categoria      Categoria?       @relation(fields: [categoriaId], references: [id])
+  vendedorId     Int
+  vendedor       Usuario          @relation("Vendedor", fields: [vendedorId], references: [id])
+  compraId       Int?             @unique
+  compra         Compra?          @relation(fields: [compraId], references: [id])
+  favoritos  Favorito[]
+  
 }
 
-// Tabela de usuários
-model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String
-  role      UserRole  @default(customer)
-  cellphone  String?   @db.VarChar(14)
-  createdAt DateTime  @default(now())
-  carts     Cart[]
-  reviews   Review[]
-  payments  Payment[]
-  addresses   addresses[]
+// Tabela de compras (transação entre usuários)
+model Compra {
+  id           Int       @id @default(autoincrement())
+  compradorId  Int
+  valor        Decimal
+  metodoPagamento MetodoPagamento
+  status       StatusPagamento
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+  comprador    Usuario  @relation(fields: [compradorId], references: [id])
+  produto      Produto? // Relacionamento 1-para-1
 }
 
-model addresses {
-  id         Int      @id @default(autoincrement()) 
-  userId     Int      
-  street     String   
-  number     String   
-  city       String   
-  UF         String   @db.Char(2)
-  zipCode    String   // CEP  
-  createdAt  DateTime @default(now()) 
-  updatedAt  DateTime @updatedAt     
-
-  user       User     @relation(fields: [userId], references: [id]) 
+// Tabela de avaliações
+model Avaliacao {
+  id           Int       @id @default(autoincrement())
+  avaliadorId  Int
+  avaliadoId   Int
+  nota         Int
+  comentario   String?
+  criadoEm     DateTime  @default(now())
+  avaliador    Usuario   @relation("AvaliacaoFeita", fields: [avaliadorId], references: [id])
+  avaliado     Usuario   @relation("AvaliacaoRecebida", fields: [avaliadoId], references: [id])
 }
 
 
-// Tabela de carrinhos de compra
-model Cart {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now()) @updatedAt
-  user        User         @relation(fields: [userId], references: [id])
-  cartProducts CartProduct[]
+model Favorito {
+  id         Int       @id @default(autoincrement())
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  produto    Produto   @relation(fields: [produtoId], references: [id])
+  produtoId  Int
 }
-
-// Tabela de produtos no carrinho
-model CartProduct {
-  id          Int       @id @default(autoincrement())
-  cartId      Int
-  productId   Int
-  quantity    Int
-  createdAt   DateTime  @default(now())
-  cart        Cart      @relation(fields: [cartId], references: [id])
-  product     Product   @relation(fields: [productId], references: [id])
-}
-
-// Tabela de pagamentos
-model Payment {
-  id           Int            @id @default(autoincrement())
-  userId       Int
-  amount       Float
-  paymentMethod PaymentMethod
-  status       PaymentStatus
-  paymentDate  DateTime       @default(now())
-  user         User           @relation(fields: [userId], references: [id])
-}
-
-// Tabela de comentários dos produtos
-model Review {
-  id          Int       @id @default(autoincrement())
-  productId   Int
-  userId      Int
-  reviewText  String  @db.Text
-  rating      Int       
-  createdAt   DateTime  @default(now())
-  product     Product   @relation(fields: [productId], references: [id])
-  user        User      @relation(fields: [userId], references: [id])
-}
-
