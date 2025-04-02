@@ -1,8 +1,39 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { usuarioCreateSchema } from '@/lib/validators/usuario';
+import * as jwt from "jsonwebtoken";
 import * as bcrypt from 'bcrypt';
 import { z } from 'zod';  // Importação crucial para o tratamento de erros
+
+const SECRET_KEY = process.env.JWT_SECRET || "chave_super_secreta";
+
+
+//Rota para verificar autenticação
+export async function GET(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY) as jwt.JwtPayload;
+    
+    const usuario = await prisma.usuario.findUnique({ where: { id: decoded.id} }); 
+
+    if (!usuario) {
+      return NextResponse.json({ error: "Usuário não encontrado" }, { status: 404 });
+    }
+
+    return NextResponse.json({ id: usuario.id, email: usuario.email, nome: usuario.nome });
+
+  } catch (error) {
+    return NextResponse.json({ error: "Token inválido ou expirado" }, { status: 401 });
+  }
+}
+
 
 export async function POST(request: Request) {
   try {
