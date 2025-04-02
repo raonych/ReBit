@@ -1,39 +1,106 @@
-export default function Login(){
+'use client'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function Login() {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: ''
+  });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    // Simulação de login (a API ainda não está implementada)
+    setTimeout(() => {
+      setIsLoading(false);
+      router.push('/dashboard'); // Redireciona após login fictício
+    }, 2000);
+  };
+
   return (
-    <form>
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py mt-25">
-        <div className="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <p className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Faça seu login
-            </p><div>
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900">
-                E-mail
-              </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5" placeholder="••••••••" id="password" type="password" />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900">
-                Senha
-              </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5" placeholder="••••••••" id="confirmPassword" type="password" />
-            </div>
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
-                <label className="font-light text-gray-500 text-gray-300">
-                  <a href="#" className="font-medium text-primary-600 hover:underline text-primary-500">
-                     Esqueci minha Senha
-                  </a>
-                </label>
-              </div>
-            </div>
-            <button className="w-full bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center focus:ring-blue-800 text-white" type="submit">
-              Login
-            </button>
+    <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] p-8 transition-all hover:shadow-[0_6px_24px_-2px_rgba(0,0,0,0.15)]">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Acesse sua conta</h1>
+        
+        {error && (
+          <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-100">
+            {error}
           </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
+              placeholder="seu@email.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="senha" className="block text-sm font-medium text-gray-700 mb-1">
+              Senha
+            </label>
+            <input
+              id="senha"
+              name="senha"
+              type="password"
+              value={formData.senha}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-3 px-4 rounded-lg font-medium text-white bg-zinc-900 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-800 transition-colors ${
+              isLoading ? 'opacity-80 cursor-not-allowed' : ''
+            }`}
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Entrando...
+              </span>
+            ) : 'Entrar'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-zinc-600">
+          Ainda não tem uma conta?{' '}
+          <a href="/cadastro" className="font-medium text-zinc-900 hover:underline">
+            Cadastre-se
+          </a>
         </div>
-      </div></form>
+      </div>
+    </div>
   );
 }

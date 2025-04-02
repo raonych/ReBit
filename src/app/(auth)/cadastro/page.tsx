@@ -50,20 +50,20 @@ export default function Cadastro() {
       setIsLoading(false);
     }
   };
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <form onSubmit={handleSubmit} className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Crie sua conta</h1>
+ return (
+    <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] p-8 transition-all hover:shadow-[0_6px_24px_-2px_rgba(0,0,0,0.15)]">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Crie sua conta</h1>
         
         {error && (
-          <div className="p-4 text-sm text-red-700 bg-red-100 rounded-lg">
+          <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 rounded-lg border border-red-100">
             {error}
           </div>
         )}
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="nome" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-1">
               Nome completo
             </label>
             <input
@@ -73,13 +73,13 @@ export default function Cadastro() {
               value={formData.nome}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
               placeholder="Seu nome"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Email
             </label>
             <input
@@ -89,13 +89,13 @@ export default function Cadastro() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
               placeholder="seu@email.com"
             />
           </div>
 
           <div>
-            <label htmlFor="senha" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="senha" className="block text-sm font-medium text-gray-700 mb-1">
               Senha
             </label>
             <input
@@ -106,56 +106,58 @@ export default function Cadastro() {
               onChange={handleChange}
               required
               minLength={6}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
               placeholder="••••••••"
             />
-            <p className="mt-1 text-xs text-gray-500">Mínimo 6 caracteres</p>
+            <p className="mt-1 text-xs text-zinc-500">Mínimo 6 caracteres</p>
           </div>
 
-          <div className="flex items-center">
-            <input
-              id="termos"
-              name="termos"
-              type="checkbox"
-              checked={formData.termos}
-              onChange={handleChange}
-              required
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <label htmlFor="termos" className="block ml-2 text-sm text-gray-700">
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="termos"
+                name="termos"
+                type="checkbox"
+                checked={formData.termos}
+                onChange={handleChange}
+                required
+                className="w-4 h-4 text-zinc-800 bg-zinc-100 border-zinc-300 rounded focus:ring-zinc-800 focus:ring-2"
+              />
+            </div>
+            <label htmlFor="termos" className="ml-2 text-sm text-zinc-700">
               Eu concordo com os {' '}
-              <a href="#" className="text-blue-600 hover:underline">
+              <a href="#" className="font-medium text-zinc-900 hover:underline">
                 Termos e Condições
               </a>
             </label>
           </div>
-        </div>
 
-        <div>
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full py-3 px-4 rounded-lg font-medium text-white bg-zinc-900 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-800 transition-colors ${
+              isLoading ? 'opacity-80 cursor-not-allowed' : ''
+            }`}
           >
             {isLoading ? (
-              <>
-                <svg className="w-5 h-5 mr-3 -ml-1 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 Cadastrando...
-              </>
+              </span>
             ) : 'Cadastrar'}
           </button>
-        </div>
+        </form>
 
-        <div className="text-sm text-center text-gray-600">
-          Já tem uma conta? {' '}
-          <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+        <div className="mt-6 text-center text-sm text-zinc-600">
+          Já tem uma conta?{' '}
+          <a href="/login" className="font-medium text-zinc-900 hover:underline">
             Faça login
           </a>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
