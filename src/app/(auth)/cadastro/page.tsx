@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { usuarioService } from '@/lib/api/usuarios';
+import { usuarioService } from '@/lib/request/usuarios';
 
 export default function Cadastro() {
   const [formData, setFormData] = useState({
