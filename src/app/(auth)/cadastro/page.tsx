@@ -121,7 +121,7 @@ export default function Cadastro() {
                 checked={formData.termos}
                 onChange={handleChange}
                 required
-                className="w-4 h-4 text-zinc-800 bg-zinc-100 border-zinc-300 rounded focus:ring-zinc-800 focus:ring-2"
+                className="w-4 h-4 text-zinc-800 bg-zinc-100 border-zinc-300 rounded"
               />
             </div>
             <label htmlFor="termos" className="ml-2 text-sm text-zinc-700">
