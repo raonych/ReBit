@@ -1,46 +1,49 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { CondicaoProduto } from '@prisma/client'
-
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { produtoCreateSchema } from '@/lib/validators/produto';
+import {z} from 'zod';
 export async function POST(request: Request) {
   try {
     // 1. Obter os dados do corpo da requisição
     const body = await request.json()
-    
-    // 2. Validar os dados (validação básica)
-    if (!body.nome || !body.descricao || !body.preco || !body.quantidade || !body.categoria || !body.condicao || !body.vendedorId) {
-      return NextResponse.json(
-        { error: "Todos os campos obrigatórios devem ser fornecidos" },
-        { status: 400 }
-      )
-    }
 
-    // 3. Verificar se a condição é válida
-    if (!Object.values(CondicaoProduto).includes(body.condicao)) {
-      return NextResponse.json(
-        { error: "Condição do produto inválida" },
-        { status: 400 }
-      )
-    }
+    // 1. valida os dados
+    const validatedData = produtoCreateSchema.parse(body)
 
-    // 4. Criar o produto no banco de dados
+    // 3. Criar o produto no banco de dados
     const newProduct = await prisma.produto.create({
       data: {
-        nome: body.nome,
-        descricao: body.descricao,
-        preco: parseFloat(body.preco),
-        categoria: body.categoria,
-        condicao: body.condicao,
-        vendedorId: body.vendedorId,
-        imagemUrl: body.imagem || null
+        nome: validatedData.nome,
+        descricao: validatedData.descricao,
+        preco: validatedData.preco,
+        categoria: { connect: { id: validatedData.categoriaId } }, //id da categoria 
+        condicao: validatedData.condicao,
+        vendedor: { connect: { id: validatedData.vendedorId } },//id do usuario que anunciou o produto
+        imagemUrl: validatedData.imagemUrl ?? null
       }
     })
 
-    // 5. Retornar o produto criado
+    // 4. Retornar o produto criado
     return NextResponse.json(newProduct, { status: 201 })
 
   } catch (error) {
+
     console.error("Erro ao criar produto:", error)
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          error: "Dados inválidos",
+          details: error.errors.map(e => ({
+            field: e.path.join('.'),
+            message: e.message
+          }))
+        },
+        { status: 400 }
+      );
+    }
+
+    
     return NextResponse.json(
       { error: "Ocorreu um erro ao processar sua solicitação" },
       { status: 500 }
