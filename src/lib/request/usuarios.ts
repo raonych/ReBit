@@ -15,4 +15,20 @@ export const usuarioService = {
 
     return response.json();
   },
+  logar: async (dados: { email: string; senha: string, manterLogado: boolean }) => {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dados),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Erro no login");
+    }
+
+    return response.json();
+  },
 };

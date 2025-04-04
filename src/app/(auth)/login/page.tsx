@@ -1,21 +1,23 @@
 'use client'
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { usuarioService } from '@/lib/request/usuarios';
 
 export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
-    senha: ''
+    senha: '',
+    manterLogado: false
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type,checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -24,11 +26,22 @@ export default function Login() {
     setIsLoading(true);
     setError('');
 
-    // Simulação de login (a API ainda não está implementada)
-    setTimeout(() => {
+    try {
+      await usuarioService.logar({
+        email: formData.email,
+        senha: formData.senha,
+        manterLogado: formData.manterLogado
+      });
+      router.push('/');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocorreu um erro desconhecido no login');
+      }
+    } finally {
       setIsLoading(false);
-      router.push('/dashboard'); // Redireciona após login fictício
-    }, 2000);
+    }
   };
 
   return (
@@ -74,7 +87,22 @@ export default function Login() {
               placeholder="••••••••"
             />
           </div>
-
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="manterLogado"
+                name="manterLogado"
+                type="checkbox"
+                checked={formData.manterLogado}
+                onChange={handleChange}
+                required
+                className="w-4 h-4 text-zinc-800 bg-zinc-100 border-zinc-300 rounded"
+              />
+            </div>
+            <label htmlFor="manterLogado" className="ml-2 text-sm text-zinc-700">
+                Manter-se conectado
+            </label>
+          </div>
           <button
             type="submit"
             disabled={isLoading}
