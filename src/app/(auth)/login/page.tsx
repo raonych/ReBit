@@ -27,11 +27,14 @@ export default function Login() {
     setError("");
 
     try {
-      await usuarioService.logar({
+      const response = await usuarioService.logar({
         email: formData.email,
         senha: formData.senha,
         manterLogado: formData.manterLogado,
       });
+
+      localStorage.setItem("token", response.token);
+
       router.push("/");
     } catch (err) {
       if (err instanceof Error) {
