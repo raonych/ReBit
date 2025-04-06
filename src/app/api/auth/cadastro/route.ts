@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { usuarioCreateSchema } from '@/lib/validators/usuario';
-import { criarUsuario } from '@/lib/services/usuarioService';
+import { NextResponse } from "next/server";
+import { usuarioCreateSchema } from "@/lib/validators/usuario";
+import { criarUsuario } from "@/lib/services/cadastroService";
 
 export async function POST(request: Request) {
   try {
@@ -8,9 +8,8 @@ export async function POST(request: Request) {
     const validatedData = usuarioCreateSchema.parse(body);
 
     const novoUsuario = await criarUsuario(validatedData);
-    
-    return NextResponse.json(novoUsuario, { status: 201 });
 
+    return NextResponse.json(novoUsuario, { status: 201 });
   } catch (error: unknown) {
     let errorMessage = "Erro desconhecido";
 
