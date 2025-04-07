@@ -34,7 +34,7 @@ export default function Home() {
               href="/categorias"
               className="text-sm text-gray-700 hover:text-gray-900"
             >
-              Categories
+              Categorias
             </Link>
           </nav>
         </div>
@@ -180,7 +180,7 @@ export default function Home() {
             <span className="font-semibold">ReBit</span>
           </div>
           <div className="text-sm text-gray-500">
-            © 2023 ReBit. Todos os direitos reservados.
+            © 2025 ReBit. Todos os direitos reservados.
           </div>
         </div>
       </footer>
