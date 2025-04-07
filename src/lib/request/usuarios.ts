@@ -1,5 +1,3 @@
-import { cadastrarEndereco } from "../services/enderecoService";
-
 export const usuarioService = {
   cadastrar: async (dados: { nome: string; email: string; senha: string }) => {
     const response = await fetch("/api/auth/cadastro", {
@@ -47,7 +45,7 @@ export const usuarioService = {
     numero: string;
     complemento?: string;
   }) => {
-    const token = localStorage.getItem("token"); // ou outro local que você armazena
+    const token = localStorage.getItem("token");
 
     const response = await fetch("/api/auth/enderecos/criar", {
       method: "POST",

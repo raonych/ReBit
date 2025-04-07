@@ -1,5 +1,3 @@
-// src/services/enderecoService.ts
-
 import { prisma } from "@/lib/prisma";
 import { enderecoSchema } from "@/lib/validators/endereco";
 import { ZodError } from "zod";
