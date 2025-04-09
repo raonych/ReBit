@@ -8,30 +8,19 @@ export async function CadastrarProduto(body: any){
         const validatedData = produtoCreateSchema.parse(body)
 
         const novoProduto = await prisma.produto.create({
-            data: {
-            nome: validatedData.nome,
-            descricao: validatedData.descricao,
-            preco: validatedData.preco,
-            categoria: { connect: { id: validatedData.categoriaId } }, //id da categoria 
-            condicao: validatedData.condicao,
-            vendedor: { connect: { id: validatedData.vendedorId } },//id do usuario que anunciou o produto
-            imagemUrl: validatedData.imagemUrl ?? null
-            }
+            data: {...validatedData}
         })
 
-        return(novoProduto)
+        return { status: 201, data: novoProduto };
 
     }catch (error) {
 
         console.error("Erro ao criar produto:", error)
     
         if (error instanceof ZodError) {
-          return(
-                    error.errors.map(e => ({
-                    field: e.path.join('.'),
-                    message: e.message
-              }))
-          )
+            return { status: 400, data: { error: error.errors } };
         }
+        console.error("Erro ao cadastrar produto:", error);
+        return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }

@@ -7,6 +7,16 @@ export async function POST(request: Request) {
 
     const novoProduto = await CadastrarProduto(body);
 
-    return NextResponse.json(novoProduto, { status: 201 })
+    return NextResponse.json(novoProduto.data, { status: novoProduto.status })
 
 };
+
+/*
+export async function GET() {
+
+    const produtosRecentes = await ExibirProdutosRecentes();
+
+    return NextResponse.json(produtosRecentes, { status: 201 })
+
+};
+*/
