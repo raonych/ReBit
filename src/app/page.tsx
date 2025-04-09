@@ -9,16 +9,19 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  return ( 
+  return (
     <div className="min-h-screen flex flex-col text-gray-900">
       <main className="flex-1">
         {/* Produtos em destaque */}
-        <section className="py-12 px-4" style={{
-      backgroundImage: 'url("/Background.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
+        <section
+          className="py-12 px-4"
+          style={{
+            backgroundImage: 'url("/Background.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <div className="w-full max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Produtos em destaque</h2>
             <div className="relative">
@@ -86,12 +89,15 @@ export default function Home() {
         </section>
 
         {/* Serviço simples e Transparente */}
-        <section className="py-16 px-4"style={{
-      backgroundImage: 'url("/Background.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
+        <section
+          className="py-16 px-4"
+          style={{
+            backgroundImage: 'url("/Background.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <div className="w-full max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-16">
               Serviço simples e Transparente
@@ -148,9 +154,7 @@ export default function Home() {
               eletrônico e aproveite todas as vantagens do nosso site.
             </p>
             <button className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
-            <Link href="/cadastro">
-              Cadastre-se agora
-            </Link>
+              <Link href="/cadastro">Cadastre-se agora</Link>
             </button>
           </div>
         </section>

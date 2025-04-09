@@ -2,7 +2,9 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
+
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,58 +30,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ` }
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         <header className="border-b border-zinc-200 py-6" style={{
-      backgroundImage: 'url("/Background.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
-        <div className="w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-gray-500 text-xl">✺</span>
-            <span className="font-semibold text-xl">ReBit</span>
-          </Link>
-          <nav className="flex items-center gap-8">
-            <Link
-              href="/funcionamento"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              Funcionamento
-            </Link>
-            <Link
-              href="/login"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              Login
-            </Link>
-            <Link
-              href="/categorias"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              Categorias
-            </Link>
-          </nav>
-        </div>
-      </header>
+        <Header />
         {children}
-        <footer className="py-6 border-t border-zinc-200" style={{
-      backgroundImage: 'url("/Background.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
-        <div className="w-full max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <span className="text-gray-500">✺</span>
-            <span className="font-semibold">ReBit</span>
-          </div>
-          <div className="text-sm text-gray-500">
-            © 2025 ReBit. Todos os direitos reservados.
-          </div>
-        </div>
-      </footer>
+        <Footer />
       </body>
     </html>
   );

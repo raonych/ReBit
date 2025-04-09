@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usuarioService } from "@/lib/request/usuarios";
+import Link from "next/link";
 
 export default function Cadastro() {
   const [formData, setFormData] = useState({
@@ -51,7 +52,23 @@ export default function Cadastro() {
     }
   };
   return (
-    <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-4"
+      style={{
+        backgroundImage: 'url("/Background.png")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <Link
+        href="/"
+        className="flex items-center gap-2 mb-8 cursor-pointer select-none"
+      >
+        <span className="text-gray-500 text-xl">✺</span>
+        <span className="font-semibold text-2xl text-gray-800">ReBit</span>
+      </Link>
+
       <div className="w-full max-w-md bg-white rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] p-8 transition-all hover:shadow-[0_6px_24px_-2px_rgba(0,0,0,0.15)]">
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Crie sua conta

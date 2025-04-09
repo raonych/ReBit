@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usuarioService } from "@/lib/request/usuarios";
+import Link from "next/link";
 
 export default function CadastroEndereco() {
   const router = useRouter();
@@ -20,7 +21,6 @@ export default function CadastroEndereco() {
   const [erro, setErro] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Protege a página: se não tiver token, manda para login
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -71,7 +71,6 @@ export default function CadastroEndereco() {
       await usuarioService.cadastrarEndereco(formData);
       setMensagem("Endereço cadastrado com sucesso!");
 
-      // Aguarda 1 segundo e redireciona para página de endereços
       setTimeout(() => {
         router.push("/enderecos");
       }, 1000);
@@ -87,7 +86,23 @@ export default function CadastroEndereco() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-4"
+      style={{
+        backgroundImage: 'url("/Background.png")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <Link
+        href="/"
+        className="flex items-center gap-2 mb-8 cursor-pointer select-none"
+      >
+        <span className="text-gray-500 text-xl">✺</span>
+        <span className="font-semibold text-2xl text-gray-800">ReBit</span>
+      </Link>
+
       <div className="w-full max-w-xl bg-white rounded-xl shadow p-8">
         <h1 className="text-2xl font-bold mb-6 text-center text-zinc-800">
           Cadastro de Endereço

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { usuarioService } from "@/lib/request/usuarios";
+import Link from "next/link";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -48,8 +49,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] p-8 transition-all hover:shadow-[0_6px_24px_-2px_rgba(0,0,0,0.15)]">
+    <div
+      className="min-h-screen bg-zinc-100 flex flex-col items-center justify-center p-4"
+      style={{
+        backgroundImage: 'url("/Background.png")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <Link
+        href="/"
+        className="flex items-center gap-2 mb-12 cursor-pointer select-none"
+      >
+        <span className="text-gray-500 text-xl">✺</span>
+        <span className="font-semibold text-2xl text-gray-800">ReBit</span>
+      </Link>
+
+      <div className="mb-5 w-full max-w-md bg-white rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] p-8 transition-all hover:shadow-[0_6px_24px_-2px_rgba(0,0,0,0.15)]">
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Acesse sua conta
         </h1>
@@ -98,6 +115,7 @@ export default function Login() {
               placeholder="••••••••"
             />
           </div>
+
           <div className="flex items-start">
             <div className="flex items-center h-5">
               <input
@@ -116,6 +134,7 @@ export default function Login() {
               Manter-se conectado
             </label>
           </div>
+
           <button
             type="submit"
             disabled={isLoading}
