@@ -9,40 +9,16 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  return (
-    <div className="min-h-screen flex flex-col bg-white text-gray-900">
-      <header className="border-b border-zinc-200 py-6 bg-white">
-        <div className="w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-gray-500 text-xl">✺</span>
-            <span className="font-semibold text-xl">ReBit</span>
-          </Link>
-          <nav className="flex items-center gap-8">
-            <Link
-              href="/funcionamento"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              Funcionamento
-            </Link>
-            <Link
-              href="/login"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              Login
-            </Link>
-            <Link
-              href="/categorias"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              Categorias
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+  return ( 
+    <div className="min-h-screen flex flex-col text-gray-900">
       <main className="flex-1">
         {/* Produtos em destaque */}
-        <section className="py-12 px-4 bg-white">
+        <section className="py-12 px-4" style={{
+      backgroundImage: 'url("/Background.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
           <div className="w-full max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">Produtos em destaque</h2>
             <div className="relative">
@@ -72,7 +48,7 @@ export default function Home() {
         </section>
 
         {/* Como funciona? */}
-        <section className="py-12 px-4 bg-zinc-50">
+        <section className="py-12 px-4 bg-white">
           <div className="w-full max-w-7xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-16">Como funciona?</h2>
             <div className="flex flex-col md:flex-row items-center justify-center gap-12">
@@ -110,7 +86,12 @@ export default function Home() {
         </section>
 
         {/* Serviço simples e Transparente */}
-        <section className="py-16 px-4 bg-white">
+        <section className="py-16 px-4"style={{
+      backgroundImage: 'url("/Background.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
           <div className="w-full max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-16">
               Serviço simples e Transparente
@@ -159,7 +140,7 @@ export default function Home() {
         </section>
 
         {/* Seção adicional para manter o padrão de alternância */}
-        <section className="py-16 px-4 bg-zinc-50">
+        <section className="py-16 px-4 bg-white">
           <div className="w-full max-w-7xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8">Crie uma Conta</h2>
             <p className="text-gray-600 max-w-2xl mx-auto mb-8">
@@ -167,23 +148,13 @@ export default function Home() {
               eletrônico e aproveite todas as vantagens do nosso site.
             </p>
             <button className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
+            <Link href="/cadastro">
               Cadastre-se agora
+            </Link>
             </button>
           </div>
         </section>
       </main>
-
-      <footer className="bg-white py-6 border-t border-zinc-200">
-        <div className="w-full max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <span className="text-gray-500">✺</span>
-            <span className="font-semibold">ReBit</span>
-          </div>
-          <div className="text-sm text-gray-500">
-            © 2025 ReBit. Todos os direitos reservados.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
