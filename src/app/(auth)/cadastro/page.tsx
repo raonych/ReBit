@@ -35,11 +35,14 @@ export default function Cadastro() {
     setError("");
 
     try {
-      await usuarioService.cadastrar({
+      const { token } = await usuarioService.cadastrar({
         nome: formData.nome,
         email: formData.email,
         senha: formData.senha,
       });
+
+      localStorage.setItem("token", token);
+
       router.push("/enderecos");
     } catch (err) {
       if (err instanceof Error) {

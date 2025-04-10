@@ -47,7 +47,7 @@ export const usuarioService = {
   }) => {
     const token = localStorage.getItem("token");
 
-    const response = await fetch("/api/auth/enderecos/criar", {
+    const response = await fetch("/api/auth/enderecos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
