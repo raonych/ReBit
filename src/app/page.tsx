@@ -7,48 +7,14 @@ import {
   DollarSign,
   Leaf,
 } from "lucide-react";
+import ProdutosRecentes from '@/lib/components/produtosRecentes';
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col text-gray-900">
       <main className="flex-1">
-        {/* Produtos em destaque */}
-        <section
-          className="py-12 px-4"
-          style={{
-            backgroundImage: 'url("/Background.png")',
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <div className="w-full max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8">Produtos em destaque</h2>
-            <div className="relative">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((item) => (
-                  <div
-                    key={item}
-                    className="bg-white rounded-lg overflow-hidden shadow-sm border border-zinc-200"
-                  >
-                    <div className="bg-gray-500 h-48"></div>
-                    <div className="p-4">
-                      <div className="font-bold text-xl mb-2">R$29</div>
-                      <div className="flex items-center gap-1 text-gray-600 mb-1">
-                        <MapPin size={16} />
-                        <span className="text-sm">Guarulhos</span>
-                      </div>
-                      <div className="text-gray-600 text-sm">03/04/2025</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full shadow-lg p-2">
-                <ChevronRight className="h-6 w-6 text-gray-600" />
-              </button>
-            </div>
-          </div>
-        </section>
+        {/* Produtos recentes */}
+        <ProdutosRecentes/>
 
         {/* Como funciona? */}
         <section className="py-12 px-4 bg-white">
