@@ -74,7 +74,7 @@ model Produto {
   id             Int             @id @default(autoincrement())
   nome           String
   descricao      String?
-  preco          Decimal        @db.Decimal()
+  preco          Decimal        @db.Decimal(10,2)
   condicao       CondicaoProduto
   imagemUrl      String?
   criadoEm       DateTime        @default(now())
