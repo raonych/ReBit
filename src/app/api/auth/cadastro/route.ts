@@ -7,9 +7,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validatedData = usuarioCreateSchema.parse(body);
 
-    const novoUsuario = await criarUsuario(validatedData);
+    const { usuario, token } = await criarUsuario(validatedData);
 
-    return NextResponse.json(novoUsuario, { status: 201 });
+    return NextResponse.json({ usuario, token }, { status: 201 });
   } catch (error: unknown) {
     let errorMessage = "Erro desconhecido";
 

@@ -47,13 +47,23 @@ export const usuarioService = {
   }) => {
     const token = localStorage.getItem("token");
 
-    const response = await fetch("/api/auth/enderecos/criar", {
+    const body = {
+      cep: dados.cep,
+      UF: dados.estado,
+      cidade: dados.cidade,
+      bairro: dados.bairro,
+      rua: dados.rua,
+      numero: dados.numero,
+      complemento: dados.complemento,
+    };
+
+    const response = await fetch("/api/auth/enderecos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(dados),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {

@@ -174,7 +174,6 @@ export default function CadastroEndereco() {
                 name="estado"
                 value={formData.estado}
                 onChange={handleChange}
-                readOnly
                 className="w-full px-4 py-2 rounded border bg-zinc-100 border-zinc-300"
               />
             </div>
@@ -187,7 +186,6 @@ export default function CadastroEndereco() {
                 name="cidade"
                 value={formData.cidade}
                 onChange={handleChange}
-                readOnly
                 className="w-full px-4 py-2 rounded border bg-zinc-100 border-zinc-300"
               />
             </div>

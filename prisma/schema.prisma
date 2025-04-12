@@ -50,7 +50,9 @@ model Endereco {
   id         Int      @id @default(autoincrement()) 
   usuarioId  Int      
   rua        String   
-  numero     String   
+  numero     String
+  bairro     String
+  complemento String?    
   cidade     String   
   UF         String   @db.Char(2)
   cep        String   

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { enderecoSchema } from "@/lib/validators/endereco";
+import { enderecoSchema } from "@/lib/validators/usuario";
 import { ZodError } from "zod";
 
 export async function cadastrarEndereco(userId: number, dados: any) {

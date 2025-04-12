@@ -7,6 +7,7 @@ import {
   DollarSign,
   Leaf,
 } from "lucide-react";
+import Image from "next/image";
 import ProdutosRecentes from '@/lib/components/produtosRecentes';
 
 export default function Home() {
@@ -22,7 +23,13 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-16">Como funciona?</h2>
             <div className="flex flex-col md:flex-row items-center justify-center gap-12">
               <div className="w-full md:w-1/3">
-                <div className="w-[300px] h-[300px] bg-zinc-200 mx-auto"></div>
+                <Image
+                  src="/mulherHome.png"
+                  alt="Ilustração mulher com monitor"
+                  width={560}
+                  height={560}
+                  priority
+                />
               </div>
               <div className="w-full md:w-1/2 space-y-6 text-left">
                 <div className="flex items-center gap-4">
