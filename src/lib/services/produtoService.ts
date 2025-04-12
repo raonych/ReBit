@@ -46,3 +46,23 @@ export async function ExibirProdutosRecentes(){
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }
+
+export async function ExibirUnicoProduto(id: number){
+    try{
+        const produtoId = Number(id);
+        const produto = await prisma.produto.findUnique({where: {id: produtoId}});
+
+        //const vendedor = prisma.usuario.findUnique({where:{id: produto.vendedorId}});
+
+        return(
+            produto?
+            { status: 200, data: produto}
+            :
+            { status: 200, data: { message: "Nenhum produto encontrado"} }
+        );
+
+    }catch(error){
+        console.error("Erro ao retornar produto:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    }
+}
