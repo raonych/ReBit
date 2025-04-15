@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { ZodError } from "zod";
-import { produtoCreateSchema } from '@/lib/validators/produto';
+import { produtoCreateSchema, produtoUpdateSchema } from '@/lib/validators/produto';
 
 export async function CadastrarProduto(body: any){
     try{
@@ -63,6 +63,43 @@ export async function ExibirUnicoProduto(id: number){
 
     }catch(error){
         console.error("Erro ao retornar produto:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    }
+}
+
+export async function AtualizarProduto( id: number, userId: number, body: any){
+    try{
+        const produtoId = Number(id);
+        const validatedData = produtoUpdateSchema.parse(body);
+        
+        const produto = await prisma.produto.findFirst({
+            where: {
+            id: produtoId,
+            vendedorId: userId,
+            },
+        });
+
+        if (!produto) {
+            return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
+          }
+
+          const attProduto = await prisma.produto.update({
+            where: {
+              id: produtoId,
+            },
+            data: validatedData,
+          });
+
+        const produtoAtualizado = await prisma.produto.findUnique({
+            where: { id: produtoId },
+          });
+
+        return { status: 200, data: produtoAtualizado };
+
+
+    }
+    catch(error){
+        console.error("Erro ao atualizar produtos:", error)
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }
