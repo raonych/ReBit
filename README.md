@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ReBit - Plataforma Sustentável de E-commerce de Eletrônicos ♻️
 
-## Getting Started
+ReBit é uma plataforma de e-commerce voltada para a compra e venda de dispositivos eletrônicos novos, seminovos e danificados, como placas, consoles e hardwares em geral. Seu objetivo é incentivar o consumo responsável, a reutilização e a reciclagem de tecnologia, contribuindo com os Objetivos de Desenvolvimento Sustentável (ODS 12 e ODS 13).
 
-First, run the development server:
+A plataforma funciona no modelo C2C (Consumer to Consumer), onde os próprios usuários podem anunciar e adquirir produtos, sem controle de estoque centralizado.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📚 Endpoints da API
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 📁 USUÁRIO
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [✅] POST `/api/login`
+- [✅] POST `/api/usuarios/cadastro`
+- [🔒] GET `/api/usuarios/me`
+- [🔒] PUT `/api/usuarios/atualizar`
+- [🔒] DELETE `/api/usuarios/excluir`
 
-## Learn More
+### 🏠 ENDEREÇO
 
-To learn more about Next.js, take a look at the following resources:
+- [🔒] GET `/api/enderecos`
+- [🔒 ✅] POST `/api/enderecos`
+- [🔒] PUT `/api/enderecos/:id`
+- [🔒] DELETE `/api/enderecos/:id`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🛍️ PRODUTO
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [🔒 ✅] POST `/api/produtos/criar`
+- [ ] GET `/api/produtos`
+- [ ] GET `/api/produtos/:id`
+- [ ] GET `/api/produtos/usuario/:id`
+- [🔒] PUT `/api/produtos/:id`
+- [🔒] DELETE `/api/produtos/:id`
 
-## Deploy on Vercel
+### 🧾 COMPRA
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [🔒] POST `/api/compras`
+- [🔒] GET `/api/compras`
+- [🔒] GET `/api/compras/:id`
+- [🔒] PUT `/api/compras/:id/status`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 📂 CATEGORIA
+
+- [ ] GET `/api/categorias`
+- [🔒] POST `/api/categorias` (admin?)
+- [🔒] PUT `/api/categorias/:id` (admin?)
+- [🔒] DELETE `/api/categorias/:id` (admin?)
+
+### ⭐ AVALIAÇÃO
+
+- [🔒] POST `/api/avaliacoes`
+- [ ] GET `/api/avaliacoes/:usuarioId`
+
+### ❤️ FAVORITOS
+
+- [🔒] POST `/api/favoritos`
+- [🔒] GET `/api/favoritos`
+- [🔒] DELETE `/api/favoritos/:id`
