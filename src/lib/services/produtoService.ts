@@ -50,9 +50,30 @@ export async function ExibirProdutosRecentes(){
 export async function ExibirUnicoProduto(id: number){
     try{
         const produtoId = Number(id);
-        const produto = await prisma.produto.findUnique({where: {id: produtoId}});
-
-        //const vendedor = prisma.usuario.findUnique({where:{id: produto.vendedorId}});
+        const produto = await prisma.produto.findUnique({
+            where: { id: produtoId },
+            include: {
+              vendedor: {
+                select: {
+                  nome: true,
+                  telefone: true,
+                  enderecos: {
+                    select: {
+                      rua: true,
+                      numero: true,
+                      bairro: true,
+                      cidade: true,
+                      UF: true,
+                      cep: true,
+                    },
+                  },
+                },
+              },
+              categoria: {
+                select:{ nome: true }
+              }
+            },
+          });
 
         return(
             produto?
@@ -101,5 +122,34 @@ export async function AtualizarProduto( id: number, userId: number, body: any){
     catch(error){
         console.error("Erro ao atualizar produtos:", error)
         return { status: 500, data: { error: "Erro interno do servidor" } };
-    }
+    } 
 }
+
+export async function deleteProduto(id: number,userId: number){
+    try{ 
+        const produto = await prisma.produto.findFirst({
+            where: {
+            id: +id,
+            vendedorId: userId,
+            },
+        });
+
+        if (!produto) {
+            return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
+          }
+
+          const deleteProduto = await prisma.produto.delete({
+            where: {
+              id: +id
+            }
+          });
+
+        return { status: 200, data: {message:"Produto deletado com sucesso!"} };
+
+
+    }
+    catch(error){
+        console.error("Erro ao atualizar produtos:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    } 
+}  
