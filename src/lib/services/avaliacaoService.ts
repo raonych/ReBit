@@ -35,7 +35,7 @@ export async function AvaliaProduto(body: any, userId: number){
     }
 }
 
-export async function exibeAvaliacoes(vendedorId: number){
+export async function ExibeAvaliacoes(vendedorId: number){
     try{
         const avaliacoes = await prisma.avaliacao.findMany({
             where:{avaliadoId: vendedorId}

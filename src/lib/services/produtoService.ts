@@ -27,11 +27,24 @@ export async function CadastrarProduto(body: any){
 
 export async function ExibirProdutosRecentes(){
     try{
+
         const produtosRecentes = await prisma.produto.findMany({
             orderBy: {
               criadoEm: 'desc'
             },
-            take: 6
+            take: 6,
+            include:{
+              vendedor:{
+                select:{
+                  enderecos:{
+                    select:{
+                      cidade:true,
+                      UF:true
+                    }
+                  }
+                }
+              }
+            }
           })
 
 
@@ -125,7 +138,7 @@ export async function AtualizarProduto( id: number, userId: number, body: any){
     } 
 }
 
-export async function deleteProduto(id: number,userId: number){
+export async function DeleteProduto(id: number,userId: number){
     try{ 
         const produto = await prisma.produto.findFirst({
             where: {
