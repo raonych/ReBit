@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { usuarioUpdateSchema } from '../validators/usuario';
+
 export async function exibePerfil(userId: number){
     try{
         const perfil = await prisma.usuario.findUnique({
