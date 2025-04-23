@@ -42,6 +42,9 @@ model Usuario {
   favoritos           Favorito[]
   avaliacoesRecebidas Avaliacao[] @relation("AvaliacaoRecebida")
   avaliacoesFeitas    Avaliacao[] @relation("AvaliacaoFeita")
+  conversasVenda      Conversa[] @relation("ConversasVenda")
+  conversasCompra     Conversa[] @relation("ConversasCompra")
+  mensagensEnviadas   Mensagem[] @relation("MensagensDoUsuario")
 }
 
 // Tabela de endereços
@@ -82,6 +85,7 @@ model Produto {
   vendedorId  Int
   vendedor    Usuario         @relation("Vendedor", fields: [vendedorId], references: [id])
   compra      Compra?
+  conversa    Conversa?
   favoritos   Favorito[]
 }
 
@@ -117,4 +121,29 @@ model Favorito {
   usuarioId Int
   produto   Produto @relation(fields: [produtoId], references: [id])
   produtoId Int
+}
+
+model Conversa {
+  id             Int        @id @default(autoincrement())
+  vendedorId     Int
+  compradorId    Int
+  produtoId      Int        @unique
+  ultimaMensagem String?
+  criadoEm       DateTime   @default(now())
+  mensagens      Mensagem[]
+  vendedor       Usuario    @relation("ConversasVenda", fields: [vendedorId], references: [id])
+  comprador      Usuario    @relation("ConversasCompra", fields: [compradorId], references: [id])
+  produto        Produto    @relation(fields: [produtoId], references: [id])
+}
+
+model Mensagem {
+  id          Int       @id @default(autoincrement())
+  conversaId  Int
+  remetenteId Int       
+  texto       String
+  enviadaEm   DateTime  @default(now())
+
+  conversa    Conversa  @relation(fields: [conversaId], references: [id])
+  remetente   Usuario   @relation("MensagensDoUsuario", fields: [remetenteId], references: [id])
+
 }

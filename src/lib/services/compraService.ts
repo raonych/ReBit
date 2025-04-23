@@ -39,34 +39,51 @@ export async function iniciaCompra(body: any, userId:  number){
 }
 
 export async function aprovaCompra(body: any, userId: number){
+    try{
+        const validatedData = compraUpdateSchema.parse(body);
 
-    const validatedData = compraUpdateSchema.parse(body);
-
-    const compra = await prisma.compra.findFirst({
-        where:{
-            id: validatedData.compraId
-        },
-        include:{
-            produto:{
-                select:{
-                    vendedorId: true
-                }
+        const compra = await prisma.compra.findFirst({
+            where:{
+                id: validatedData.compraId,
+                produto:{vendedorId: userId}
             }
-        }
-    })
+        })
 
-    if(!compra){
-        return{status: 404, data:{message:"Nenhuma compra a ser aprovada"}}
+        if(!compra){
+            return{status: 404, data:{message:"Nenhuma compra a ser aprovada"}}
+        }
+
+        const  atualizaCompra = await prisma.compra.update({
+            where:{
+                id: validatedData.compraId
+            },
+            data:{
+                status: validatedData.status
+            }
+        })
+
+        return{status: 200, data:{success:true, atualizaCompra}}
+
+    }catch(error){
+        console.error("Erro ao aprovar compra:", error);
+        return { status: 500, data: { error: "Erro interno do servidor", success:false } };
     }
 
-    const  atualizaCompra = await prisma.compra.update({
-        where:{
-            id: validatedData.compraId
-        },
-         data:{
-            status: validatedData.status
-         }
-    })
+}
 
+export async function exibeComprasUsuario(userId: number){
+    try{
+        const compras = await prisma.compra.findMany({
+            where:{compradorId:userId}
+        })
+        if(compras.length === 0){
+            return{status:200, data:{message:"usuário ainda não realizou nenhuma compra"}}
+        }
 
+        return{status:200, data:compras}
+
+    }catch(error){
+        console.error("Erro ao exibir compras:", error);
+        return { status: 500, data: { error: "Erro interno do servidor", success:false } };
+    }
 }

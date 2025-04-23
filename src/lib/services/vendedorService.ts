@@ -86,3 +86,24 @@ export async function ExibeProdutosVendedor(vendedorId: number){
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }
+
+export async function exibeVendasUsuario(userId: number){
+    try{
+        const compras = await prisma.compra.findMany({
+            where:{
+                produto:{
+                    vendedorId: userId
+                }
+            }
+        })
+        if(compras.length === 0){
+            return{status:200, data:{message:"usuário ainda não realizou nenhuma venda"}}
+        }
+
+        return{status:200, data:compras}
+
+    }catch(error){
+        console.error("Erro ao exibir vendas:", error);
+        return { status: 500, data: { error: "Erro interno do servidor", success:false } };
+    }
+}
