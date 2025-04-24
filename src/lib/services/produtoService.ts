@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { ZodError } from "zod";
-import { produtoCreateSchema } from '@/lib/validators/produto';
+import { produtoCreateSchema, produtoUpdateSchema } from '@/lib/validators/produto';
 
 export async function CadastrarProduto(body: any){
     try{
@@ -27,11 +27,24 @@ export async function CadastrarProduto(body: any){
 
 export async function ExibirProdutosRecentes(){
     try{
+
         const produtosRecentes = await prisma.produto.findMany({
             orderBy: {
               criadoEm: 'desc'
             },
-            take: 6
+            take: 6,
+            include:{
+              vendedor:{
+                select:{
+                  enderecos:{
+                    select:{
+                      cidade:true,
+                      UF:true
+                    }
+                  }
+                }
+              }
+            }
           })
 
 
@@ -46,3 +59,110 @@ export async function ExibirProdutosRecentes(){
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }
+
+export async function ExibirUnicoProduto(id: number){
+    try{
+        const produtoId = Number(id);
+        const produto = await prisma.produto.findUnique({
+            where: { id: produtoId },
+            include: {
+              vendedor: {
+                select: {
+                  nome: true,
+                  telefone: true,
+                  enderecos: {
+                    select: {
+                      rua: true,
+                      numero: true,
+                      bairro: true,
+                      cidade: true,
+                      UF: true,
+                      cep: true,
+                    },
+                  },
+                },
+              },
+              categoria: {
+                select:{ nome: true }
+              }
+            },
+          });
+
+        return(
+            produto?
+            { status: 200, data: produto}
+            :
+            { status: 200, data: { message: "Nenhum produto encontrado"} }
+        );
+
+    }catch(error){
+        console.error("Erro ao retornar produto:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    }
+}
+
+export async function AtualizarProduto( id: number, userId: number, body: any){
+    try{
+        const produtoId = Number(id);
+        const validatedData = produtoUpdateSchema.parse(body);
+        
+        const produto = await prisma.produto.findFirst({
+            where: {
+            id: produtoId,
+            vendedorId: userId,
+            },
+        });
+
+        if (!produto) {
+            return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
+          }
+
+          const attProduto = await prisma.produto.update({
+            where: {
+              id: produtoId,
+            },
+            data: validatedData,
+          });
+
+        const produtoAtualizado = await prisma.produto.findUnique({
+            where: { id: produtoId },
+          });
+
+        return { status: 200, data: produtoAtualizado };
+
+
+    }
+    catch(error){
+        console.error("Erro ao atualizar produtos:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    } 
+}
+
+export async function DeleteProduto(id: number,userId: number){
+    try{ 
+        const produto = await prisma.produto.findFirst({
+            where: {
+            id: +id,
+            vendedorId: userId,
+            },
+        });
+
+        if (!produto) {
+            return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
+          }
+
+          const deleteProduto = await prisma.produto.delete({
+            where: {
+              id: +id
+            }
+          });
+
+        return { status: 200, data: {message:"Produto deletado com sucesso!"} };
+
+
+    }
+    catch(error){
+        console.error("Erro ao atualizar produtos:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    } 
+}  

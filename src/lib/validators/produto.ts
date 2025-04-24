@@ -10,3 +10,12 @@ export const produtoCreateSchema = z.object({
   imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string().optional())
 });
 
+export const produtoUpdateSchema = z.object({
+  nome: z.string().min(3).optional(),
+  descricao: z.string().optional(),
+  categoriaId: z.preprocess((val) => Number(val), z.number().int()).optional(),
+  preco: z.preprocess((val) => Number(val), z.number().positive()).optional(),
+  condicao: z.enum(["novo", "usado", "danificado"]).optional(),
+  imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string().optional())
+});
+

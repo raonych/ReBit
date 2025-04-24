@@ -28,96 +28,122 @@ enum StatusPagamento {
   falhou
 }
 
-
 // Tabela de usuários
 model Usuario {
-  id            Int       @id @default(autoincrement())
-  nome          String
-  email         String    @unique
-  senha         String
-  telefone      String?   @db.VarChar(14)
-  criadoEm      DateTime  @default(now())
-  enderecos     Endereco[]
-  produtos      Produto[] @relation("Vendedor")
-  compras       Compra[]
-  favoritos     Favorito[]
+  id                  Int         @id @default(autoincrement())
+  nome                String
+  email               String      @unique
+  senha               String
+  telefone            String?     @db.VarChar(14)
+  criadoEm            DateTime    @default(now())
+  enderecos           Endereco[]
+  produtos            Produto[]   @relation("Vendedor")
+  compras             Compra[]
+  favoritos           Favorito[]
   avaliacoesRecebidas Avaliacao[] @relation("AvaliacaoRecebida")
   avaliacoesFeitas    Avaliacao[] @relation("AvaliacaoFeita")
+  conversasVenda      Conversa[] @relation("ConversasVenda")
+  conversasCompra     Conversa[] @relation("ConversasCompra")
+  mensagensEnviadas   Mensagem[] @relation("MensagensDoUsuario")
 }
 
 // Tabela de endereços
 model Endereco {
-  id         Int      @id @default(autoincrement()) 
-  usuarioId  Int      
-  rua        String   
-  numero     String
-  bairro     String
-  complemento String?    
-  cidade     String   
-  UF         String   @db.Char(2)
-  cep        String   
-  criadoEm   DateTime @default(now()) 
-  atualizadoEm DateTime @updatedAt     
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id]) 
+  id           Int      @id @default(autoincrement())
+  usuarioId    Int
+  rua          String
+  numero       String
+  bairro       String
+  complemento  String?
+  cidade       String
+  UF           String   @db.Char(2)
+  cep          String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
 }
 
 // Tabela de categorias de produtos
 model Categoria {
-  id          Int       @id @default(autoincrement())
-  nome        String
-  descricao   String?
-  produtos    Produto[]
+  id        Int       @id @default(autoincrement())
+  nome      String
+  descricao String?
+  produtos  Produto[]
 }
 
 // Tabela de produtos
 model Produto {
-  id             Int             @id @default(autoincrement())
-  nome           String
-  descricao      String?
-  preco          Decimal        @db.Decimal(10,2)
-  condicao       CondicaoProduto
-  imagemUrl      String?
-  criadoEm       DateTime        @default(now())
-  categoriaId    Int?
-  categoria      Categoria?       @relation(fields: [categoriaId], references: [id])
-  vendedorId     Int
-  vendedor       Usuario          @relation("Vendedor", fields: [vendedorId], references: [id])
-  compraId       Int?             @unique
-  compra         Compra?          @relation(fields: [compraId], references: [id])
-  favoritos  Favorito[]
-  
+  id          Int             @id @default(autoincrement())
+  nome        String
+  descricao   String?
+  preco       Decimal         @db.Decimal(10, 2)
+  condicao    CondicaoProduto
+  imagemUrl   String?
+  criadoEm    DateTime        @default(now())
+  categoriaId Int?
+  categoria   Categoria?      @relation(fields: [categoriaId], references: [id])
+  vendedorId  Int
+  vendedor    Usuario         @relation("Vendedor", fields: [vendedorId], references: [id])
+  compra      Compra?
+  conversa    Conversa?
+  favoritos   Favorito[]
 }
 
 // Tabela de compras (transação entre usuários)
 model Compra {
-  id           Int       @id @default(autoincrement())
-  compradorId  Int
-  valor        Decimal
+  id              Int             @id @default(autoincrement())
+  compradorId     Int
+  valor           Decimal
   metodoPagamento MetodoPagamento
-  status       StatusPagamento
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
-  comprador    Usuario  @relation(fields: [compradorId], references: [id])
-  produto      Produto? // Relacionamento 1-para-1
+  status          StatusPagamento
+  criadoEm        DateTime        @default(now())
+  atualizadoEm    DateTime        @updatedAt
+  comprador       Usuario         @relation(fields: [compradorId], references: [id])
+  produtoId       Int             @unique // Relacionamento 1-para-1
+  produto         Produto         @relation(fields: [produtoId], references: [id])
 }
 
 // Tabela de avaliações
 model Avaliacao {
-  id           Int       @id @default(autoincrement())
-  avaliadorId  Int
-  avaliadoId   Int
-  nota         Int
-  comentario   String?
-  criadoEm     DateTime  @default(now())
-  avaliador    Usuario   @relation("AvaliacaoFeita", fields: [avaliadorId], references: [id])
-  avaliado     Usuario   @relation("AvaliacaoRecebida", fields: [avaliadoId], references: [id])
+  id          Int      @id @default(autoincrement())
+  avaliadorId Int
+  avaliadoId  Int
+  nota        Int
+  comentario  String?
+  criadoEm    DateTime @default(now())
+  avaliador   Usuario  @relation("AvaliacaoFeita", fields: [avaliadorId], references: [id])
+  avaliado    Usuario  @relation("AvaliacaoRecebida", fields: [avaliadoId], references: [id])
 }
 
-
 model Favorito {
-  id         Int       @id @default(autoincrement())
-  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
-  usuarioId  Int
-  produto    Produto   @relation(fields: [produtoId], references: [id])
-  produtoId  Int
+  id        Int     @id @default(autoincrement())
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  produto   Produto @relation(fields: [produtoId], references: [id])
+  produtoId Int
+}
+
+model Conversa {
+  id             Int        @id @default(autoincrement())
+  vendedorId     Int
+  compradorId    Int
+  produtoId      Int        @unique
+  ultimaMensagem String?
+  criadoEm       DateTime   @default(now())
+  mensagens      Mensagem[]
+  vendedor       Usuario    @relation("ConversasVenda", fields: [vendedorId], references: [id])
+  comprador      Usuario    @relation("ConversasCompra", fields: [compradorId], references: [id])
+  produto        Produto    @relation(fields: [produtoId], references: [id])
+}
+
+model Mensagem {
+  id          Int       @id @default(autoincrement())
+  conversaId  Int
+  remetenteId Int       
+  texto       String
+  enviadaEm   DateTime  @default(now())
+
+  conversa    Conversa  @relation(fields: [conversaId], references: [id])
+  remetente   Usuario   @relation("MensagensDoUsuario", fields: [remetenteId], references: [id])
+
 }
