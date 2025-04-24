@@ -6,53 +6,89 @@ A plataforma funciona no modelo C2C (Consumer to Consumer), onde os próprios us
 
 ---
 
-## 📚 Endpoints da API
+## 🚀 Tecnologias Utilizadas
 
-### 📁 USUÁRIO
+- **Next.js 14+** (App Router)
+- **React 18+**
+- **TypeScript**
+- **Prisma ORM**
+- **MySQL** (via XAMPP)
+- **Zod** (validação)
+- **Bcrypt** (hash de senhas)
+- **JWT** (autenticação)
+- **Tailwind CSS** (estilização)
 
-- [✅] POST `/api/login`
-- [✅] POST `/api/usuarios/cadastro`
-- [🔒] GET `/api/usuarios/me`
-- [🔒] PUT `/api/usuarios/atualizar`
-- [🔒] DELETE `/api/usuarios/excluir`
+---
 
-### 🏠 ENDEREÇO
+## 🧑‍💻 Como rodar o projeto localmente
 
-- [🔒] GET `/api/enderecos`
-- [🔒 ✅] POST `/api/enderecos`
-- [🔒] PUT `/api/enderecos/:id`
-- [🔒] DELETE `/api/enderecos/:id`
+### 1. 🧬 Clone o repositório
 
-### 🛍️ PRODUTO
+```bash
+git clone https://github.com/seu-usuario/rebit.git
+cd rebit
+```
 
-- [🔒 ✅] POST `/api/produtos/criar`
-- [ ] GET `/api/produtos`
-- [ ] GET `/api/produtos/:id`
-- [ ] GET `/api/produtos/usuario/:id`
-- [🔒] PUT `/api/produtos/:id`
-- [🔒] DELETE `/api/produtos/:id`
+---
 
-### 🧾 COMPRA
+### 2. 🔑 Crie o arquivo `.env`
 
-- [🔒] POST `/api/compras`
-- [🔒] GET `/api/compras`
-- [🔒] GET `/api/compras/:id`
-- [🔒] PUT `/api/compras/:id/status`
+Na raiz do projeto, crie um arquivo `.env` com o seguinte conteúdo:
 
-### 📂 CATEGORIA
+```env
+DATABASE_URL="mysql://root:@localhost:3306/rebit"
+JWT_SECRET="uma_chave_secreta_segura"
+```
 
-- [ ] GET `/api/categorias`
-- [🔒] POST `/api/categorias` (admin?)
-- [🔒] PUT `/api/categorias/:id` (admin?)
-- [🔒] DELETE `/api/categorias/:id` (admin?)
+> ✅ Certifique-se de que o **XAMPP** está rodando com o MySQL na porta 3306.  
+> ✅ Crie o banco `rebit` no phpMyAdmin ou MysqlWorkbench antes de rodar o projeto.
 
-### ⭐ AVALIAÇÃO
+---
 
-- [🔒] POST `/api/avaliacoes`
-- [ ] GET `/api/avaliacoes/:usuarioId`
+### 3. 📦 Instale as dependências
 
-### ❤️ FAVORITOS
+```bash
+npm install
+```
 
-- [🔒] POST `/api/favoritos`
-- [🔒] GET `/api/favoritos`
-- [🔒] DELETE `/api/favoritos/:id`
+---
+
+### 4. 🔧 Gere os arquivos do Prisma
+
+```bash
+npx prisma generate
+```
+
+---
+
+### 5. 📂 Crie a estrutura do banco de dados
+
+```bash
+npx prisma db push
+```
+
+---
+
+### 6. 🌱 Popule o banco com dados iniciais
+
+```bash
+npx prisma db seed
+```
+
+> O seed cria:
+> - 1 vendedor (usuário com ID 1)
+> - 3 compradores
+> - 10 categorias
+> - 10 produtos
+> - 3 compras (com diferentes status)
+> - avaliações, conversas, mensagens, favoritos
+
+---
+
+### 7. 🚀 Inicie o servidor de desenvolvimento
+
+```bash
+npm run dev
+```
+
+> A aplicação estará disponível em `http://localhost:3000`
