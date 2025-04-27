@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { ZodError } from "zod";
-import { produtoCreateSchema, produtoUpdateSchema } from '@/lib/validators/produto';
+import { produtoCreateSchema, produtoUpdateSchema, querySchema } from '@/lib/validators/produto';
+import { Search } from 'lucide-react';
+import { CondicaoProduto } from '@prisma/client';
 
 export async function CadastrarProduto(body: any){
     try{
@@ -43,9 +45,10 @@ export async function ExibirProdutosRecentes(){
                     }
                   }
                 }
-              }
+              },
+              categoria:true
             }
-          })
+          })  
 
 
           if (produtosRecentes.length === 0) {
@@ -166,3 +169,73 @@ export async function DeleteProduto(id: number,userId: number){
         return { status: 500, data: { error: "Erro interno do servidor" } };
     } 
 }  
+
+export async function pesquisaProduto(searchParams: any){
+  try {
+
+    const validatedData = querySchema.safeParse(Object.fromEntries(searchParams));
+
+    if (!validatedData.success) {
+    return { status: 400, data: { error: 'Parâmetros inválidos' } };
+  }
+
+    const { categoria, busca, condicao} = validatedData.data;
+
+    const produtos = await prisma.produto.findMany({
+      where: {
+        AND: [
+          categoria
+            ? {
+                categoria: {
+                  nome: {
+                    equals: categoria
+                  },
+                },
+              }
+            : {},
+          busca
+            ? {
+                OR: [
+                  {
+                    nome: {
+                      contains: busca
+                    },
+                  },
+                  {
+                    descricao: {
+                      contains: busca
+                    },
+                  },
+                ],
+              }
+            : {},
+            condicao
+            ? {
+              condicao: {
+                equals: condicao 
+              }
+            } : {}
+        ],
+      },
+      include: {
+        vendedor: {
+          select: {
+            nome: true,
+            enderecos: true,
+          },
+        },
+        categoria: true,
+      }
+    });
+
+    if(produtos.length === 0){
+      return { status: 404, data: { message: "Nenhum produto encontrado" } };
+    }
+
+    return { status: 200, data: {success:true, produtos} };
+
+  }catch(error){
+    console.error("Erro ao retornar produtos:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+  }
+}
