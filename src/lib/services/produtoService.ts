@@ -239,3 +239,15 @@ export async function pesquisaProduto(searchParams: any){
         return { status: 500, data: { error: "Erro interno do servidor" } };
   }
 }
+
+export async function listarCategorias(){
+  try{
+    const categorias = await prisma.categoria.findMany();
+
+    return { status: 200, data: {success:true, categorias} };
+  
+  }catch(error){
+    console.error("Erro ao retornar categorias:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+  }
+}

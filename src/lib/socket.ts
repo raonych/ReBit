@@ -2,7 +2,7 @@
 import { Server as NetServer } from 'http'
 import { Server as IOServer } from 'socket.io'
 import { NextApiResponse } from 'next'
-import { prisma } from '@/lib/prisma'
+import { enviarMensgem } from './services/conversaService'
 
 export type NextApiResponseWithSocket = NextApiResponse & {
   socket: {
@@ -36,13 +36,7 @@ const ioHandler = (_req: any, res: NextApiResponseWithSocket) => {
 
       socket.on('sendMessage', async ({ conversaId, texto, remetenteId }) => {
         try {
-          const mensagem = await prisma.mensagem.create({
-            data: {
-              texto,
-              remetenteId,
-              conversaId,
-            },
-          })
+          const mensagem = await enviarMensgem(conversaId, texto, remetenteId)
 
           io.to(String(conversaId)).emit('newMessage', mensagem)
         } catch (err) {
