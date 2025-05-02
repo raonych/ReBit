@@ -17,29 +17,24 @@ export async function iniciarConversa(body: any, userId: number){
             return{status:404, data:{message:"Só é possivel iniciar conversas referentes a produtos"}}
         }
 
-        const conversa = await prisma.conversa.create({
+        const conversaExistente = await prisma.conversa.findFirst({
+            where: {
+                vendedorId: produto.vendedorId,
+                compradorId: userId,
+                produtoId: validatedData.produtoId
+            }
+          })
+        
+          const conversa = conversaExistente || await prisma.conversa.create({
             data:{
                 vendedorId: produto.vendedorId,
                 compradorId: userId,
                 produtoId: validatedData.produtoId
-
+    
             }
-        })
+          })
 
-        const mensagem = await prisma.mensagem.create({
-            data:{
-                texto: validatedData.mensagem,
-                remetenteId: userId,
-                conversaId: conversa.id
-            }
-        })
-
-        await prisma.conversa.update({
-            where: { id: conversa.id },
-            data: { ultimaMensagem: mensagem.texto }
-          });
-
-        return{status:200, data:{conversaId: conversa.id, mensagem}}
+        return{status:200, data:{conversa}}
 
     }catch(error){
         console.error("Erro ao iniciar conversa:", error)
@@ -56,11 +51,35 @@ export async function listarConversas(userId: number){
         })
 
         if(conversas.length === 0){
-            return{status:200, data:{message:"Nenhuma conversa a ser exibida"}}
+            return{status:404, data:{message:"Nenhuma conversa a ser exibida"}}
         }
+        return{status:200, data:{conversas}}
+
     }catch(error){
         console.error("Erro ao buscar conversas:", error)
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }
 
+export async function exibirConversa(conversaId: number){
+    try{
+        const conversa = await prisma.conversa.findUnique({
+            where:{
+                id: conversaId
+            },
+            include:{
+                mensagens:true
+            }
+        })
+
+        if(!conversa){
+            return{status:404, data:{message:"Nenhuma conversa a ser exibida"}}
+        }
+
+        return{status:200, data:conversa}
+
+    }catch(error){
+        console.error("Erro ao buscar conversas:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    }
+}
