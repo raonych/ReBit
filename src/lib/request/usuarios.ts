@@ -94,4 +94,25 @@ export const usuarioService = {
 
     return response.json();
   },
+
+  exibirMeusProdutos: async() =>{
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("/api/usuario/produtos",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao retornar produtos do usuario");
+      }
+  
+      return response.json();
+
+    },
 };

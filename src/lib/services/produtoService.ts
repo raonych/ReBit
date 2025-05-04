@@ -39,6 +39,7 @@ export async function ExibirProdutosRecentes(){
               vendedor:{
                 select:{
                   enderecos:{
+                    take:1,
                     select:{
                       cidade:true,
                       UF:true

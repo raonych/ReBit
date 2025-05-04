@@ -89,7 +89,17 @@ export async function exibirConversa(conversaId: number){
                 id: conversaId
             },
             include:{
-                mensagens:true
+                mensagens:true,
+                comprador:{
+                    select:{
+                        nome:true
+                    }
+                },
+                produto:{
+                    select:{
+                        nome:true
+                    }
+                }
             }
         })
 

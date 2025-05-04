@@ -25,7 +25,6 @@ const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
   };
   
   return (
-    <div className="w-full h-96 overflow-y-auto lg:w-1/4 min-h-screen">
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-4 py-5 sm:px-6 border-b border-gray-100">
           <h3 className="text-lg font-medium leading-6 text-gray-900">conversas</h3>
@@ -46,7 +45,6 @@ const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
           ))}
         </div>
       </div>
-    </div>
   );
 };
 

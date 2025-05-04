@@ -45,3 +45,24 @@ export async function atualizaPerfil(body: any, userId: number){
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
 }
+
+export async function exibirMeusProdutos(userId: number){
+    try{
+        
+        const meusProdutos = await prisma.produto.findMany({
+            where:{
+                vendedorId: userId
+            }
+        })
+
+        if(meusProdutos.length === 0){
+            return{status:404,data:{message:"Você ainda não anunciou nenhum produto"}}
+        }
+
+        return{status:200,data:meusProdutos};
+
+    }catch(error){
+        console.error("Erro ao carregar seus produtos:", error)
+        return { status: 500, data: { error: "Erro interno do servidor" } };
+    }
+}
