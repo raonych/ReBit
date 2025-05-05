@@ -19,3 +19,8 @@ export const produtoUpdateSchema = z.object({
   imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string().optional())
 });
 
+export const querySchema = z.object({
+  categoria: z.string().optional(),
+  condicao: z.enum(["novo","usado","danificado"]).optional(),
+  busca: z.string().optional(),
+});

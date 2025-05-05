@@ -35,6 +35,27 @@ export const usuarioService = {
 
     return response.json();
   },
+  
+  exibirPerfil: async() =>{
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("/api/usuario",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao retornar dados do usuario");
+      }
+  
+      return response.json();
+
+    },
 
   cadastrarEndereco: async (dados: {
     cep: string;
@@ -73,4 +94,25 @@ export const usuarioService = {
 
     return response.json();
   },
+
+  exibirMeusProdutos: async() =>{
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("/api/usuario/produtos",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao retornar produtos do usuario");
+      }
+  
+      return response.json();
+
+    },
 };

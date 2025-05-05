@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import DropDownCategorias from "./categorias";
 
 export function Header() {
   const pathname = usePathname();
 
   const hiddenRoutes = ["/login", "/cadastro", "/enderecos"];
-  const isHidden = hiddenRoutes.includes(pathname);
+  const isHidden = !!pathname && hiddenRoutes.includes(pathname);
+
 
   if (isHidden) return null;
 
@@ -26,7 +28,7 @@ export function Header() {
           <span className="text-gray-500 text-xl">✺</span>
           <span className="font-semibold text-xl">ReBit</span>
         </Link>
-        <nav className="flex items-center gap-8">
+        <nav className="flex items-center gap-8 relative z-50">
           <Link
             href="/funcionamento"
             className="text-sm text-gray-700 hover:text-gray-900"
@@ -39,12 +41,7 @@ export function Header() {
           >
             Login
           </Link>
-          <Link
-            href="/categorias"
-            className="text-sm text-gray-700 hover:text-gray-900"
-          >
-            Categorias
-          </Link>
+          <DropDownCategorias/>
         </nav>
       </div>
     </header>
