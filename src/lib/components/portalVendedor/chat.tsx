@@ -74,7 +74,7 @@ export default function ChatPage({ conversaId,  onVoltar }: ChatProps) {
            isLoading?
            <div className="h-60 flex items-center justify-center p-8">
                <div className="text-center">
-                 <Loader className="h-10 w-10 text-blue-500 animate-spin mx-auto" />
+                 <Loader className="h-10 w-10 animate-spin mx-auto" />
                  <p className="mt-4 text-gray-500">Carregando mensagens...</p>
                </div> 
              </div>

@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DropDownCategorias from "./categorias";
 import { useEffect, useState } from "react";
+import { MessageCircleMore } from "lucide-react";
 
 export function Header() {
 
   const [isLogged, setIsLogged] = useState<boolean>(false); 
+  const [isLoading, setIsloading] = useState<boolean>(true); 
 
   useEffect(() => {
       const token = localStorage.getItem("token");
@@ -15,7 +17,7 @@ export function Header() {
       if(token){
         setIsLogged(true);
       }
-
+      setIsloading(false);
     }, []);
 
     
@@ -41,21 +43,43 @@ export function Header() {
           <span className="text-gray-500 text-xl">✺</span>
           <span className="font-semibold text-xl">ReBit</span>
         </Link>
-        <nav className="flex items-center gap-8 relative z-50">
-          <Link
-            href="/funcionamento"
-            className="text-sm text-gray-700 hover:text-gray-900"
-          >
-            Funcionamento
-          </Link>
-          <Link
-            href="/login"
-            className="text-sm text-gray-700 hover:text-gray-900"
-          >
-            Login
-          </Link>
-          <DropDownCategorias/>
-        </nav>
+
+        {!isLoading && (
+        isLogged ? (
+          <nav className="flex items-center gap-8 relative z-50">
+            <Link
+              href="/perfil"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              Perfil
+            </Link>
+            <Link
+              href="/conversas"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              <MessageCircleMore />
+            </Link>
+            <DropDownCategorias />
+          </nav>
+        ) : (
+          <nav className="flex items-center gap-8 relative z-50">
+            <Link
+              href="/funcionamento"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              Funcionamento
+            </Link>
+            <Link
+              href="/login"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              Login
+            </Link>
+            <DropDownCategorias />
+          </nav>
+        )
+      )}
+        
       </div>
     </header>
   );

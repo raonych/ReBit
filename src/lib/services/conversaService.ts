@@ -45,10 +45,21 @@ export async function iniciarConversa(body: any, userId: number){
 export async function listarConversas(userId: number){
     try{
         const conversas = await prisma.conversa.findMany({
-            where:{
-                compradorId: userId
-            }
-        })
+            where: {
+              OR: [
+                { compradorId: userId },
+                { produto: { vendedorId: userId } },
+              ],
+            },
+            include: {
+              produto: true, 
+              vendedor:{
+                select:{
+                    nome:true
+                }
+              }
+            },
+          });
 
         if(conversas.length === 0){
             return{status:404, data:{message:"Nenhuma conversa a ser exibida"}}

@@ -12,7 +12,7 @@ const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
 
   useEffect(() => {
     const exibeConversas = async () => {
-      const conversas = await conversaService.listarConversasVendedor();
+      const conversas = await conversaService.listarConversas();
       setConversas(conversas.conversas);
     }
     exibeConversas();
@@ -27,7 +27,7 @@ const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
   return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-4 py-5 sm:px-6 border-b border-gray-100">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">conversas com clientes</h3>
+          <h3 className="text-lg font-medium leading-6 text-gray-900">conversas</h3>
         </div>
         <div className="divide-y divide-gray-100">
           {conversas.map((conversa) => (
