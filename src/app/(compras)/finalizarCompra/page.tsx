@@ -3,9 +3,25 @@
 import type React from "react";
 
 import { useState, useEffect } from "react";
-import { CreditCard, CheckCircle2, QrCode, Loader2 } from "lucide-react";
+import {
+  CreditCard,
+  CheckCircle2,
+  QrCode,
+  Loader2,
+  ShoppingBag,
+} from "lucide-react";
 import Image from "next/image";
-import OrderSummaryModal from "@/lib/components/detalhesCompra";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Interface para os pedaços de confete
+interface ConfettiPiece {
+  id: number;
+  x: number;
+  size: number;
+  color: string;
+  delay: number;
+}
 
 export default function FinalizarCompra() {
   const [paymentMethod, setPaymentMethod] = useState<
@@ -19,6 +35,8 @@ export default function FinalizarCompra() {
   const [cardBrand, setCardBrand] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
 
   // Função para formatar o número do cartão
   const formatCardNumber = (value: string) => {
@@ -72,6 +90,42 @@ export default function FinalizarCompra() {
     }
   }, [cardNumber]);
 
+  // Gerar confetes quando o modal é aberto
+  useEffect(() => {
+    if (showOrderSummary) {
+      const colors = [
+        "#22c55e",
+        "#3b82f6",
+        "#f97316",
+        "#ec4899",
+        "#a855f7",
+        "#facc15",
+      ];
+      const pieces: ConfettiPiece[] = [];
+
+      // Gerar 100 pedaços de confete
+      for (let i = 0; i < 100; i++) {
+        pieces.push({
+          id: i,
+          x: Math.random() * 100, // posição horizontal (%)
+          size: Math.random() * 0.8 + 0.4, // tamanho entre 0.4 e 1.2rem
+          color: colors[Math.floor(Math.random() * colors.length)],
+          delay: Math.random() * 0.5, // atraso na animação
+        });
+      }
+
+      setConfetti(pieces);
+      setShowSuccessAnimation(true);
+
+      // Esconder a animação de sucesso após 2 segundos
+      const timer = setTimeout(() => {
+        setShowSuccessAnimation(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showOrderSummary]);
+
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedValue = formatCardNumber(e.target.value);
     setCardNumber(formattedValue);
@@ -90,6 +144,30 @@ export default function FinalizarCompra() {
       setIsLoading(false);
       setShowOrderSummary(true);
     }, 2000);
+  };
+
+  // Variantes para animação dos elementos do modal
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.3 },
+    },
   };
 
   return (
@@ -312,14 +390,191 @@ export default function FinalizarCompra() {
             Processando pagamento...
           </>
         ) : (
-          `Finalizar pagamento (R$299,90)`
+          `Finalizar pagamento`
         )}
       </button>
 
+      {/* Animação de confete */}
+      <AnimatePresence>
+        {showOrderSummary && (
+          <div className="fixed inset-0 pointer-events-none z-50">
+            {confetti.map((piece) => (
+              <motion.div
+                key={piece.id}
+                className="absolute top-0 rounded-md"
+                style={{
+                  left: `${piece.x}%`,
+                  width: `${piece.size}rem`,
+                  height: `${piece.size * 0.4}rem`,
+                  backgroundColor: piece.color,
+                  originY: 0,
+                }}
+                initial={{ y: -20, opacity: 0, rotate: 0 }}
+                animate={{
+                  y: ["0vh", "100vh"],
+                  opacity: [0, 1, 1, 0],
+                  rotate: [0, Math.random() * 360],
+                  scale: [1, Math.random() * 0.5 + 0.5],
+                }}
+                transition={{
+                  duration: Math.random() * 2 + 3,
+                  delay: piece.delay,
+                  ease: "easeOut",
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Modal de Resumo do Pedido */}
-      {showOrderSummary && (
-        <OrderSummaryModal onClose={() => setShowOrderSummary(false)} />
-      )}
+      <AnimatePresence>
+        {showOrderSummary && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
+              onClick={() => setShowOrderSummary(false)}
+            />
+
+            <motion.div
+              className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto relative z-10"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={containerVariants}
+            >
+              {/* Animação de sucesso */}
+              {showSuccessAnimation && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 10,
+                      duration: 0.5,
+                    }}
+                    className="bg-green-100 rounded-full p-4"
+                  >
+                    <motion.div
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.2, duration: 0.3 }}
+                    >
+                      <CheckCircle2 className="h-16 w-16 text-green-600" />
+                    </motion.div>
+                  </motion.div>
+                </div>
+              )}
+
+              <div
+                className={`space-y-6 ${
+                  showSuccessAnimation
+                    ? "opacity-0"
+                    : "opacity-100 transition-opacity duration-500"
+                }`}
+              >
+                <motion.div variants={itemVariants}>
+                  <h2 className="text-2xl font-bold">Resumo do Pedido</h2>
+                  <p className="text-gray-500">Detalhes da sua compra</p>
+                </motion.div>
+
+                {/* Produto */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex items-center gap-4 pb-4 border-b border-gray-200"
+                >
+                  <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
+                    <ShoppingBag className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between">
+                      <h3 className="font-bold">Produto Seminovo</h3>
+                      <span className="font-bold">R$279,90</span>
+                    </div>
+                    <p className="text-gray-500 text-sm">Quantidade: 1</p>
+                  </div>
+                </motion.div>
+
+                {/* Resumo de valores */}
+                <motion.div
+                  variants={itemVariants}
+                  className="space-y-2 pb-4 border-b border-gray-200"
+                >
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Subtotal</span>
+                    <span>R$ 279,90</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Frete</span>
+                    <span>R$ 9,90</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Desconto</span>
+                    <span className="text-green-600">R$ -9,90</span>
+                  </div>
+                </motion.div>
+
+                {/* Total */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex justify-between items-center"
+                >
+                  <span className="text-xl font-bold">Total</span>
+                  <span className="text-xl font-bold">R$279,90</span>
+                </motion.div>
+
+                {/* Informações adicionais */}
+                <motion.div
+                  variants={itemVariants}
+                  className="space-y-1 text-sm text-gray-500"
+                >
+                  <p>* Frete calculado para CEP: 01000-000</p>
+                  <p>* Entrega estimada: 3-5 dias úteis</p>
+                </motion.div>
+
+                {/* Métodos de pagamento */}
+                <motion.div variants={itemVariants}>
+                  <p className="font-medium mb-2">
+                    Métodos de pagamentos aceitos:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-gray-100 rounded text-sm">
+                      Visa
+                    </span>
+                    <span className="px-2 py-1 bg-gray-100 rounded text-sm">
+                      Mastercard
+                    </span>
+                    <span className="px-2 py-1 bg-gray-100 rounded text-sm">
+                      Elo
+                    </span>
+                    <span className="px-2 py-1 bg-gray-100 rounded text-sm">
+                      Pix
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* Botão para voltar à home */}
+                <motion.div variants={itemVariants} className="pt-4">
+                  <Link href="/">
+                    <motion.button
+                      className="w-full bg-black text-white py-3 px-4 rounded-md font-medium"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Voltar para a Home
+                    </motion.button>
+                  </Link>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
