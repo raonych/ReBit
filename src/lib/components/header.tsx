@@ -3,13 +3,26 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DropDownCategorias from "./categorias";
+import { useEffect, useState } from "react";
 
 export function Header() {
+
+  const [isLogged, setIsLogged] = useState<boolean>(false); 
+
+  useEffect(() => {
+      const token = localStorage.getItem("token");
+      
+      if(token){
+        setIsLogged(true);
+      }
+
+    }, []);
+
+    
   const pathname = usePathname();
 
   const hiddenRoutes = ["/login", "/cadastro", "/enderecos"];
   const isHidden = !!pathname && hiddenRoutes.includes(pathname);
-
 
   if (isHidden) return null;
 

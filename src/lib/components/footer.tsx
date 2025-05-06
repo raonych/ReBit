@@ -6,7 +6,7 @@ export function Footer() {
   const pathname = usePathname();
 
   const hiddenRoutes = ["/login", "/cadastro", "/enderecos"];
-  const isHidden = hiddenRoutes.includes(pathname);
+  const isHidden = !!pathname && hiddenRoutes.includes(pathname);
 
   if (isHidden) return null;
 
