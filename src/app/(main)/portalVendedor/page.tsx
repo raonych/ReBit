@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import ButtonColumn from '@/lib/components/portalVendedor/conversas';
-import DataDisplay from '@/lib/components/portalVendedor/produtos';
-import SecondaryDataDisplay from '@/lib/components/portalVendedor/avaliacoes';
+import Conversas from '@/lib/components/portalVendedor/conversas';
+import Produtos from '@/lib/components/portalVendedor/produtos';
 import ChatPage from '@/lib/components/portalVendedor/chat';
 import { useRouter } from "next/navigation";
 
@@ -31,11 +30,10 @@ function Seller() {
             {conversaId ? (
               <ChatPage conversaId={conversaId} onVoltar={() => setconversaId(undefined)} />
             ) : (
-              <ButtonColumn onButtonClick={handleSetConversa} />
+              <Conversas onButtonClick={handleSetConversa} />
             )}
             </div>
-            <DataDisplay />
-            <SecondaryDataDisplay />
+            <Produtos />
           </div>
         </div>
       </main>

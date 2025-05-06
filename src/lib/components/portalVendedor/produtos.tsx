@@ -4,7 +4,7 @@ import { usuarioService } from '@/lib/request/usuarios';
 import Skeleton from "react-loading-skeleton";
 
 
-const DataDisplay: React.FC = () => {
+const Produtos: React.FC = () => {
   const [produtos, setProdutos] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +57,7 @@ const DataDisplay: React.FC = () => {
   return (
     <div className="w-full lg:w-1/2 flex-grow">
       <div className="relative">
-        <div className="grid grid-flow-col auto-cols-max overflow-hidden gap-7">
+        <div className="grid grid-cols-3 auto-rows gap-11">
       {(produtos).map((item, index) => (
                     <div
                       key={item?.id || index}
@@ -87,4 +87,4 @@ const DataDisplay: React.FC = () => {
   );
 };
 
-export default DataDisplay;
+export default Produtos;

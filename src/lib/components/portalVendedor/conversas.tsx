@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { conversaService } from '@/lib/request/conversas';
 
-interface colunaConversasProps {
+interface ConversasProps {
   onButtonClick: (id: string) => void;
 }
 
-const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
+const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
   const [activeButton, setActiveButton] = useState<string>('btn-1');
   const [conversas, setConversas] = useState<any[]>([]);
 
@@ -27,7 +27,7 @@ const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
   return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-4 py-5 sm:px-6 border-b border-gray-100">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">conversas</h3>
+          <h3 className="text-lg font-medium leading-6 text-gray-900">conversas com clientes</h3>
         </div>
         <div className="divide-y divide-gray-100">
           {conversas.map((conversa) => (
@@ -48,5 +48,5 @@ const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
   );
 };
 
-export default colunaConversas;
+export default Conversas;
 

@@ -26,7 +26,7 @@ export default function ChatPage({ conversaId,  onVoltar }: ChatProps) {
         const usuario = await usuarioService.exibirPerfil();
       setRemetenteId(usuario.id);
 
-      // 2. Buscar mensagens antigas da conversa
+      //Buscar mensagens antigas da conversa
       const conversa = await conversaService.exibirConversa(+conversaId);
       setMensagens(conversa.mensagens || [])
       setconversa(conversa)
@@ -110,7 +110,7 @@ export default function ChatPage({ conversaId,  onVoltar }: ChatProps) {
         />
         <button
           onClick={handleEnviar}
-          className="bg-green-900 text-white px-4 rounded"
+          className="bg-green-900 text-white px-2 rounded"
         >
           Enviar
         </button>
