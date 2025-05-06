@@ -9,11 +9,11 @@ function Seller() {
   const router = useRouter();
 
   useEffect(() => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login");
-      }
-    }, [router]);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
 
   const [conversaId, setconversaId] = useState<string>();
 

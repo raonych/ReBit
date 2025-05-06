@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ReBit - Plataforma Sustentável de E-commerce de Eletrônicos ♻️
 
-## Getting Started
+ReBit é uma plataforma de e-commerce voltada para a compra e venda de dispositivos eletrônicos novos, seminovos e danificados, como placas, consoles e hardwares em geral. Seu objetivo é incentivar o consumo responsável, a reutilização e a reciclagem de tecnologia, contribuindo com os Objetivos de Desenvolvimento Sustentável (ODS 12 e ODS 13).
 
-First, run the development server:
+A plataforma funciona no modelo C2C (Consumer to Consumer), onde os próprios usuários podem anunciar e adquirir produtos, sem controle de estoque centralizado.
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+- **Next.js 14+** (App Router)
+- **React 18+**
+- **TypeScript**
+- **Prisma ORM**
+- **MySQL** (via XAMPP)
+- **Zod** (validação)
+- **Bcrypt** (hash de senhas)
+- **JWT** (autenticação)
+- **Tailwind CSS** (estilização)
+
+---
+
+## 🧑‍💻 Como rodar o projeto localmente
+
+### 1. 🧬 Clone o repositório
+
+```bash
+git clone https://github.com/seu-usuario/rebit.git
+cd rebit
+```
+
+---
+
+### 2. 🔑 Crie o arquivo `.env`
+
+Na raiz do projeto, crie um arquivo `.env` com o seguinte conteúdo:
+
+```env
+DATABASE_URL="mysql://root:@localhost:3306/rebit"
+JWT_SECRET="uma_chave_secreta_segura"
+```
+
+> ✅ Certifique-se de que o **XAMPP** está rodando com o MySQL na porta 3306.  
+> ✅ Crie o banco `rebit` no phpMyAdmin ou MysqlWorkbench antes de rodar o projeto.
+
+---
+
+### 3. 📦 Instale as dependências
+
+```bash
+npm install
+```
+
+---
+
+### 4. 🔧 Gere os arquivos do Prisma
+
+```bash
+npx prisma generate
+```
+
+---
+
+### 5. 📂 Crie a estrutura do banco de dados
+
+```bash
+npx prisma db push
+```
+
+---
+
+### 6. 🌱 Popule o banco com dados iniciais
+
+```bash
+npx prisma db seed
+```
+
+> O seed cria:
+> - 1 vendedor (usuário com ID 1)
+> - 3 compradores
+> - 10 categorias
+> - 10 produtos
+> - 3 compras (com diferentes status)
+> - avaliações, conversas, mensagens, favoritos
+
+---
+
+### 7. 🚀 Inicie o servidor de desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> A aplicação estará disponível em `http://localhost:3000`
