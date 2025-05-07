@@ -1,24 +1,48 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { produtoService } from "@/lib/request/produto";
-import { MapPin, ChevronRight } from "lucide-react";
+import ProdutoDiv from "@/lib/components/produtoDiv";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
+const PRODUTOS_POR_PAGINA = 4;
+
 export default function ProdutosRecentes() {
   const [produtos, setProdutos] = useState<any[]>([]);
+  const [paginaAtual, setPaginaAtual] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const exibeRecentes = async () => {
-      const produtos = await produtoService.produtosRecentes();
-      setProdutos(produtos);
-      setLoading(false);
+      try {
+        const produtos = await produtoService.produtosRecentes();
+        setProdutos(produtos);
+      } catch (err) {
+        console.error("Erro ao carregar produtos:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     exibeRecentes();
   }, []);
 
-  const produtosSkeleton = Array.from({ length: 4 });
+  const totalPaginas = Math.ceil(produtos.length / PRODUTOS_POR_PAGINA);
+
+  const irParaAnterior = () => {
+    setPaginaAtual((prev) => Math.max(prev - 1, 0));
+  };
+
+  const irParaProximo = () => {
+    setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas - 1));
+  };
+
+  const produtosExibidos = produtos.slice(
+    paginaAtual * PRODUTOS_POR_PAGINA,
+    (paginaAtual + 1) * PRODUTOS_POR_PAGINA
+  );
+
+  const skeletons = Array.from({ length: PRODUTOS_POR_PAGINA });
 
   return (
     <section
@@ -30,49 +54,54 @@ export default function ProdutosRecentes() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="w-full max-w-7xl mx-auto">
+      <div className="w-xs max-w-l mx-auto relative">
         <h2 className="text-3xl font-bold mb-8">Produtos em destaque</h2>
-        <div className="relative">
-          <div className="grid grid-flow-col auto-cols-max overflow-hidden gap-7">
-            {(loading ? produtosSkeleton : produtos).map((item, index) => (
-              <div
-                key={item?.id || index}
-                className="w-74 bg-white rounded-lg overflow-hidden shadow-sm border border-zinc-200"
-              >
+
+        <div className="flex gap-2 justify-center items-center">
+          <button
+            onClick={irParaAnterior}
+            disabled={paginaAtual === 0}
+            className="p-2 bg-white rounded-full shadow disabled:opacity-30"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <div className="flex gap-3">
+            {(loading ? skeletons : produtosExibidos).map((item, index) => (
+              <div key={item?.id || index} className="flex-shrink-0">
                 {loading ? (
-                  <Skeleton height={192} />
+                  <div className="w-74">
+                    <Skeleton height={192} />
+                    <div className="p-4">
+                      <Skeleton width={80} height={24} className="mb-2" />
+                      <Skeleton width={120} height={20} className="mb-2" />
+                      <Skeleton width={60} height={16} className="mb-1" />
+                      <Skeleton width={80} height={16} />
+                    </div>
+                  </div>
                 ) : (
-                  <div className="bg-gray-500 h-48" />
+                  <ProdutoDiv
+                    id={item.id}
+                    nome={item.nome}
+                    preco={item.preco}
+                    cidade={item.usuario?.endereco?.cidade || "Desconhecida"}
+                    data={new Date(item.created_at).toLocaleDateString("pt-BR")}
+                    imagemUrl={item.imagem || "/placeholder.png"}
+                  />
                 )}
-                <div className="p-4">
-                  <div className="font-bold text-xl mb-2">
-                    {loading ? <Skeleton width={80} /> : item.preco}
-                  </div>
-                  <div className="font-bold text-xl mb-2">
-                    {loading ? <Skeleton width={120} /> : item.nome}
-                  </div>
-                  <div className="flex items-center gap-1 text-gray-600 mb-1">
-                    <MapPin size={16} />
-                    {loading ? (
-                      <Skeleton width={60} />
-                    ) : (
-                      <span className="text-sm"></span>
-                    )}
-                  </div>
-                  <div className="text-gray-600 text-sm">
-                    {loading ? <Skeleton width={80} /> : "03/04/2025"}
-                  </div>
-                </div>
               </div>
             ))}
           </div>
-          {!loading && (
-            <button className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full shadow-lg p-2">
-              <ChevronRight className="h-6 w-6 text-gray-600" />
-            </button>
-          )}
+
+          <button
+            onClick={irParaProximo}
+            disabled={paginaAtual >= totalPaginas - 1}
+            className="p-2 bg-white rounded-full shadow disabled:opacity-30"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
         </div>
       </div>
-    </section>
+    </section>  
   );
 }

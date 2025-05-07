@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { CadastrarProduto, ExibirTodosOsProdutos } from "@/lib/services/produtoService";
+import { CadastrarProduto, ExibirProdutosRecentes } from "@/lib/services/produtoService";
 
 
 export async function POST(request: Request) {
@@ -13,9 +13,6 @@ export async function POST(request: Request) {
 };
 
 export async function GET() {
-
-    const todosProdutos = await ExibirTodosOsProdutos();
-
-    return NextResponse.json(todosProdutos.data, { status: todosProdutos.status })
-
-};
+    const produtosRecentes = await ExibirProdutosRecentes();
+    return NextResponse.json(produtosRecentes.data, { status: produtosRecentes.status });
+  }

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ShoppingCart, MessageCircleMore } from 'lucide-react';
+import Link from 'next/link';
 
 const PaginaProduto: React.FC = () => {
   const params = useParams();
@@ -58,10 +59,10 @@ const PaginaProduto: React.FC = () => {
           R$ {produto.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </h1>
         <div className="mt-6 space-y-3">
-          <button className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-md transition">
+          <Link href="/finalizarCompra" className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-md transition">
             <ShoppingCart className="w-5 h-5" />
             Comprar
-          </button>
+          </Link>
           <button className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition">
             <MessageCircleMore className="w-5 h-5" />
             Chat
@@ -71,12 +72,12 @@ const PaginaProduto: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Vendedor</h2>
             <div className="text-sm text-gray-700 space-y-1">
               <p><strong>Nome:</strong> {produto.vendedor.nome}</p>
-              <p><strong>Cidade:</strong> {produto.vendedor.enderecos.cidade || "Não especificado"},{produto.vendedor.enderecos.UF || "Não especificado"}</p>
-              <p><strong>Endereço:</strong> {produto.vendedor.enderecos.Rua || "Não especificado"}</p>
+              <p><strong>Cidade:</strong> {produto.vendedor.enderecos[0].cidade || "Não especificado"}, {produto.vendedor.enderecos[0].UF || "Não especificado"}</p>
+              <p><strong>Endereço:</strong> {produto.vendedor.enderecos[0].bairro || "Não especificado"}</p>
               <p><strong>Telefone:</strong> {produto.vendedor.Telefone || "Não especificado"}</p>
             </div>
             <a
-              href="/perfil/joao-silva"
+              href="/perfilVendedor"
               className="inline-block mt-3 text-sm text-blue-600 hover:underline"
             >
               Ver perfil do vendedor

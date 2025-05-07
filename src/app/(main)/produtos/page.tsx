@@ -4,18 +4,38 @@ import { useEffect, useState } from "react";
 import ProdutoDiv from "@/lib/components/produtoDiv";
 import SelectPersonalizado from "@/lib/components/selectPersonalizado";
 import { produtoService } from "@/lib/request/produto";
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Search } from "lucide-react";
 
 export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const busca = searchParams?.get('busca') || null;
+  const categoria = searchParams?.get('categoria') || null;
+  const condicao = searchParams?.get('condicao') || null;
   const [produtos, setProdutos] = useState<any[]>([]);
   
   useEffect(() => {
+
+
     const buscarProdutos = async () => {
-        const produtos = await produtoService.todosProdutos();
-        setProdutos(produtos);
+        const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao);
+        setProdutos(response.produtos);
     };
     buscarProdutos();
-  }, []);
+  }, [busca, categoria, condicao]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    const query = new URLSearchParams();
+  
+    const termo = (e.target as any).pesquisar.value;
+    if (termo) query.set("busca", termo);
+    
+  
+    router.push("produtos/?" + query.toString());
+  };
 
   const estadoProduto = ['Todos','Quebrado','Novo'];
   const categoriaProduto = ['Todos','Celulares','Placa de vídeo'];
@@ -25,7 +45,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col text-gray-900">
       <main className="flex-1">
         <div className="m-11 max-w-7xl mx-auto">
-          <form className="flex flex-row flex-wrap gap-7 shadow-sm rounded-xl p-5">
+          <form onSubmit={handleSubmit} className="flex flex-row flex-wrap gap-7 shadow-sm rounded-xl p-5">
             <div className="flex items-center gap-2 p-2 text-lg font-semibold shadow-sm rounded-xl ">
               <Search size={17}/>
               <input
@@ -55,8 +75,8 @@ export default function Home() {
                 id={produto.id}
                 nome={produto.nome}
                 preco={produto.preco}
-                cidade={produto.cidade || "Local não informado"}
-                data={produto.data || "Data desconhecida"}
+                cidade={produto.vendedor.enderecos[0].cidade+", "+ produto.vendedor.enderecos[0].UF || "Local não informado"}
+                data={new Date(produto.criadoEm).toLocaleDateString('pt-BR') || "Data desconhecida"}
                 imagemUrl={"/placeholder.png"}
               />
             ))}
