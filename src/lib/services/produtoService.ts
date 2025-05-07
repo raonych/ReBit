@@ -64,6 +64,37 @@ export async function ExibirProdutosRecentes(){
     }
 }
 
+export async function ExibirTodosOsProdutos() {
+  try {
+    const produtos = await prisma.produto.findMany({
+      orderBy: {
+        criadoEm: "desc",
+      },
+      include: {
+        vendedor: {
+          select: {
+            enderecos: {
+              select: {
+                cidade: true,
+                UF: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (produtos.length === 0) {
+      return { status: 200, data: { message: "Nenhum produto encontrado" } };
+    }
+
+    return { status: 200, data: produtos };
+  } catch (error) {
+    console.error("Erro ao retornar produtos:", error);
+    return { status: 500, data: { error: "Erro interno do servidor" } };
+  }
+}
+
 export async function ExibirUnicoProduto(id: number){
     try{
         const produtoId = Number(id);
