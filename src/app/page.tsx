@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import ProdutosRecentes from '@/lib/components/produtosRecentes';
+import ProdutoDiv from '@/lib/components/produtoDiv';
 
 export default function Home() {
   return (
@@ -16,7 +17,6 @@ export default function Home() {
       <main className="flex-1">
         {/* Produtos recentes */}
         <ProdutosRecentes/>
-
         {/* Como funciona? */}
         <section className="py-12 px-4 bg-white">
           <div className="w-full max-w-7xl mx-auto text-center">
