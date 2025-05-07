@@ -55,9 +55,10 @@ export function Header() {
             </Link>
             <Link
               href="/conversas"
-              className="text-sm text-gray-700 hover:text-gray-900"
+              className="flex items-center text-sm text-gray-700 hover:text-gray-900"
             >
               <MessageCircleMore />
+              Chat
             </Link>
             <DropDownCategorias />
           </nav>

@@ -17,6 +17,11 @@ export default function ChatPage() {
   const router = useRouter();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+
       const exibeConversas = async () => {
         const conversas = await conversaService.listarConversas();
         setConversas(conversas.conversas);

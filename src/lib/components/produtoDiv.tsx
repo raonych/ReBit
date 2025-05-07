@@ -1,7 +1,9 @@
 import { MapPin } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 
 type ProdutoDivProps = {
+  id:string;
   nome: string;
   preco: number | string;
   cidade: string;
@@ -10,14 +12,23 @@ type ProdutoDivProps = {
 };
 
 export default function ProdutoDiv({
+  id,
   nome,
   preco,
   cidade,
   data,
-  imagemUrl = "/placeholder.png", // imagem padrão se não for fornecida
+  imagemUrl = "/placeholder.png",
 }: ProdutoDivProps) {
+
+  const router = useRouter();
+
+  const irParaProduto = (id: string) => {
+    router.push(`/produto/${id}`);
+  };
+
+
   return (
-    <div className="w-74 bg-white rounded-lg overflow-hidden shadow-sm border border-zinc-200">
+    <div className="w-74 bg-white rounded-lg overflow-hidden shadow-sm border border-zinc-200 cursor-pointer" onClick={() => irParaProduto(id)} > 
       <div className="bg-gray-100 h-48 relative">
         <Image
           src={imagemUrl}
