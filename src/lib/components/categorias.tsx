@@ -25,7 +25,7 @@ export default function DropDownCategorias() {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm  text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
+        <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm  text-gray-900 ring-inset hover:bg-gray-50">
           Categorias
           <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
         </MenuButton> 

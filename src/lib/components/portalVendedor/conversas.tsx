@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { conversaService } from '@/lib/request/conversas';
 
-interface colunaConversasProps {
+interface ConversasProps {
   onButtonClick: (id: string) => void;
 }
 
-const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
+const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
   const [activeButton, setActiveButton] = useState<string>('btn-1');
   const [conversas, setConversas] = useState<any[]>([]);
 
   useEffect(() => {
     const exibeConversas = async () => {
-      const conversas = await conversaService.listarConversasVendedor();
+      const conversas = await conversaService.listarConversas();
       setConversas(conversas.conversas);
     }
     exibeConversas();
@@ -48,5 +48,5 @@ const colunaConversas: React.FC<colunaConversasProps> = ({ onButtonClick }) => {
   );
 };
 
-export default colunaConversas;
+export default Conversas;
 

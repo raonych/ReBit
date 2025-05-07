@@ -106,12 +106,13 @@ export const usuarioService = {
         Authorization: `Bearer ${token}`,
       }
     });
-
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao retornar produtos do usuario");
+        const error = new Error("Erro ao buscar produtos") as any;
+        error.status = response.status;
+        throw error;
       }
-  
+
       return response.json();
 
     },
