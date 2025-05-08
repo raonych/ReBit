@@ -52,6 +52,17 @@ export async function exibirMeusProdutos(userId: number){
         const meusProdutos = await prisma.produto.findMany({
             where:{
                 vendedorId: userId
+            },
+            include:{
+                vendedor:{
+                    select:{
+                        enderecos:{
+                            select:{
+                                cidade:true
+                            }
+                        }
+                    }
+                }
             }
         })
 

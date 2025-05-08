@@ -84,8 +84,8 @@ export default function ProdutosRecentes() {
                     id={item.id}
                     nome={item.nome}
                     preco={item.preco}
-                    cidade={item.usuario?.endereco?.cidade || "Desconhecida"}
-                    data={new Date(item.created_at).toLocaleDateString("pt-BR")}
+                    cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
+                    data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
                     imagemUrl={item.imagem || "/placeholder.png"}
                   />
                 )}

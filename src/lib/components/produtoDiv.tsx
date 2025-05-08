@@ -40,7 +40,7 @@ export default function ProdutoDiv({
       </div>
       <div className="p-4">
         <div className="font-bold text-2xl mb-2">R$ {preco}</div>
-        <div className="font-bold text-lg mb-2">{nome}</div>
+        <div className="font-bold text-l mb-2">{nome}</div>
         <div className="flex items-center gap-1 text-gray-600 mb-1">
           <MapPin size={16} />
           <span className="text-sm">{cidade}</span>

@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Loader, MapPin } from "lucide-react";
 import { usuarioService } from "@/lib/request/usuarios";
+import ProdutoDiv from "../produtoDiv";
+import Skeleton from "react-loading-skeleton";
 
 const Produtos: React.FC = () => {
   const [produtos, setProdutos] = useState<any[]>([]);
@@ -36,7 +38,6 @@ const Produtos: React.FC = () => {
     );
   }
 
-  // ✅ Caso 404 – Nenhum produto anunciado
   if (error?.status === 404) {
     return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 w-full lg:w-1/2 flex-grow">
@@ -52,7 +53,6 @@ const Produtos: React.FC = () => {
     );
   }
 
-  // ❌ Outros erros
   if (error) {
     return (
       <div className="w-full lg:w-1/2 flex-grow">
@@ -78,23 +78,18 @@ const Produtos: React.FC = () => {
     <div className="w-full lg:w-1/2 flex-grow">
       <div className="relative">
         <div className="grid grid-cols-3 auto-rows gap-11">
-          {produtos.map((item, index) => (
-            <div
-              key={item?.id || index}
-              className="w-74 bg-white rounded-lg overflow-hidden shadow-sm border border-zinc-200"
-            >
-              <div className="bg-gray-500 h-48" />
-              <div className="p-4">
-                <div className="font-bold text-xl mb-2">{item.preco}</div>
-                <div className="font-bold text-xl mb-2">{item.nome}</div>
-                <div className="flex items-center gap-1 text-gray-600 mb-1">
-                  <MapPin size={16} />
-                  <span className="text-sm"></span>
-                </div>
-                <div className="text-gray-600 text-sm">03/04/2025</div>
+          {(produtos).map((item, index) => (
+              <div key={item?.id || index} className="flex-shrink-0">
+                  <ProdutoDiv
+                    id={item.id}
+                    nome={item.nome}
+                    preco={item.preco}
+                    cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
+                    data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
+                    imagemUrl={item.imagem || "/placeholder.png"}
+                  />
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ type Conversa = {
   vendedor: { nome: string };
 };
 
-export default function ChatPage() {
+export default function Conversas() {
   const [conversas, setConversas] = useState<Conversa[]>([]);
   const router = useRouter();
 
@@ -39,7 +39,7 @@ export default function ChatPage() {
             key={conversa.id}
             className="p-4 bg-white rounded shadow hover:bg-gray-50 transition"
           >
-            <Link href={`/chat/${conversa.id}`}>
+            <Link href={`/conversas/${conversa.id}`}>
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-lg font-semibold">
@@ -47,7 +47,7 @@ export default function ChatPage() {
                   </p>
                   <p className="text-gray-500">Com: {conversa.vendedor.nome}</p>
                 </div>
-                <span className="text-blue-600 text-sm">Ver conversa →</span>
+                <span className="text-green-700 text-sm">Ver conversa →</span>
               </div>
             </Link>
           </li>
