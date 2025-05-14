@@ -1,6 +1,6 @@
 export const categoriaService = {
     categorias: async () =>   {
-        const response = await fetch('api/categorias');
+        const response = await fetch('/api/categorias');
 
         if (!response.ok) {
             const errorData = await response.json();

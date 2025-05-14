@@ -1,6 +1,6 @@
 export const conversaService = {
     exibirConversa: async (conversaId: number) =>   {
-        const response = await fetch(`api/conversas/${conversaId}`)
+        const response = await fetch(`/api/conversas/${conversaId}`)
 
         if (!response.ok) {
             const errorData = await response.json();
@@ -13,7 +13,7 @@ export const conversaService = {
     listarConversas: async () => {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("api/conversas", {
+        const response = await fetch("/api/conversas", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export const conversaService = {
     listarConversasVendedor: async () => {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("api/vendedor/conversas", {
+        const response = await fetch("/api/vendedor/conversas", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { ShoppingCart, MessageCircleMore } from 'lucide-react';
+import { ShoppingCart, MessageCircleMore, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 const PaginaProduto: React.FC = () => {
@@ -10,6 +10,7 @@ const PaginaProduto: React.FC = () => {
 
   const [produto, setProduto] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [headingTo, setHeadingTo] = useState(false);
 
   useEffect(() => {
     const buscarProduto = async () => {
@@ -27,7 +28,34 @@ const PaginaProduto: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="p-8">Carregando produto...</div>;
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8 animate-pulse">
+        {/* Imagem Skeleton */} 
+        <div className="lg:col-span-2 space-y-4">
+          <div className="rounded-lg overflow-hidden bg-gray-200 h-[500px]" />
+          <div className="bg-white p-6 rounded-lg shadow space-y-2">
+            <div className="h-6 bg-gray-200 rounded w-1/3" />
+            <div className="h-4 bg-gray-200 rounded w-full" /> 
+            <div className="h-4 bg-gray-200 rounded w-5/6" />
+            <div className="h-4 bg-gray-200 rounded w-2/3" />
+          </div>
+        </div>
+
+        {/* Detalhes Skeleton */}
+        <div className="bg-white p-6 rounded-lg shadow space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/2" />
+          <div className="h-12 bg-gray-200 rounded" />
+          <div className="h-12 bg-gray-200 rounded" />
+          <div className=" pt-4 space-y-2"> 
+            <div className="h-5 bg-gray-200 rounded w-1/4" />
+            <div className="h-4 bg-gray-200 rounded w-3/4" />
+            <div className="h-4 bg-gray-200 rounded w-2/3" />
+            <div className="h-4 bg-gray-200 rounded w-1/2" />
+            <div className="h-4 bg-gray-200 rounded w-1/3" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!produto) {
@@ -36,7 +64,6 @@ const PaginaProduto: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Imagem do produto */}
       <div className="lg:col-span-2 space-y-4">
         <div className="rounded-lg overflow-hidden border">
           <img
@@ -46,22 +73,30 @@ const PaginaProduto: React.FC = () => {
           />
         </div>
 
-        {/* Descrição */}
         <div className="bg-white p-6 rounded-lg shadow border">
           <h2 className="text-2xl font-semibold mb-2">Descrição</h2>
           <p className="text-gray-700 whitespace-pre-wrap">{produto.descricao}</p>
         </div>
       </div>
 
-      {/* Detalhes de compra */}
       <div className="bg-white p-6 rounded-lg shadow border h-fit">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           R$ {produto.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </h1>
         <div className="mt-6 space-y-3">
-          <Link href="/finalizarCompra" className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-md transition">
-            <ShoppingCart className="w-5 h-5" />
-            Comprar
+          <Link href="/finalizarCompra" onClick={() => setHeadingTo(true)} className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-md transition">
+            {
+              headingTo?(
+              <>
+                <Loader2 size={20} className="animate-spin mr-2" />
+              </>
+              ): (
+                <>
+                <ShoppingCart className="w-5 h-5" />
+              Comprar
+              </>     
+            )}
+            
           </Link>
           <button className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition">
             <MessageCircleMore className="w-5 h-5" />
@@ -69,21 +104,21 @@ const PaginaProduto: React.FC = () => {
           </button>
         </div>
         <div className="mt-8 border-t pt-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Vendedor</h2>
-            <div className="text-sm text-gray-700 space-y-1">
-              <p><strong>Nome:</strong> {produto.vendedor.nome}</p>
-              <p><strong>Cidade:</strong> {produto.vendedor.enderecos[0].cidade || "Não especificado"}, {produto.vendedor.enderecos[0].UF || "Não especificado"}</p>
-              <p><strong>Endereço:</strong> {produto.vendedor.enderecos[0].bairro || "Não especificado"}</p>
-              <p><strong>Telefone:</strong> {produto.vendedor.Telefone || "Não especificado"}</p>
-            </div>
-            <a
-              href="/perfilVendedor"
-              className="inline-block mt-3 text-sm text-blue-600 hover:underline"
-            >
-              Ver perfil do vendedor
-            </a>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">Vendedor</h2>
+          <div className="text-sm text-gray-700 space-y-1">
+            <p><strong>Nome:</strong> {produto.vendedor.nome}</p>
+            <p><strong>Cidade:</strong> {produto.vendedor.enderecos[0].cidade || "Não especificado"}, {produto.vendedor.enderecos[0].UF || "Não especificado"}</p>
+            <p><strong>Endereço:</strong> {produto.vendedor.enderecos[0].bairro || "Não especificado"}</p>
+            <p><strong>Telefone:</strong> {produto.vendedor.Telefone || "Não especificado"}</p>
           </div>
+          <a
+            href="/perfilVendedor"
+            className="inline-block mt-3 text-sm text-blue-600 hover:underline"
+          >
+            Ver perfil do vendedor
+          </a>
         </div>
+      </div>
     </div>
   );
 };
