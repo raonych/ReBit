@@ -25,36 +25,52 @@ async function main() {
     )
   );
 
-  // Senha padrão para todos os usuários: "senha123"
   const hashedPassword = await bcrypt.hash("senha123", 10);
-  
-  const vendedor = await prisma.usuario.create({
-    data: {
-      nome: "vendedor",
-      email: "vendedor@gmail.com",
-      senha: hashedPassword
-    }
-  })
 
-  // 2. Criar 10 produtos (um por categoria) com vendedorId = 1
-  const produtos = await Promise.all(
-    categoriasCriadas.map((categoria, index) =>
-      prisma.produto.create({
+  // 2. Criar vendedores com endereço
+  const vendedores = await Promise.all(
+    Array.from({ length: 3 }).map((_, i) =>
+      prisma.usuario.create({
         data: {
-          nome: `${categoria.nome} danificado`,
-          descricao: `Produto da categoria ${categoria.nome} em estado danificado ou usado.`,
-          preco: Math.floor(Math.random() * (800 - 50 + 1)) + 50,
-          condicao: index % 2 === 0 ? 'usado' : 'danificado',
-          imagemUrl: `https://example.com/hardware${index + 1}.jpg`,
-          vendedorId: 1,
-          categoriaId: categoria.id
+          nome: `Vendedor ${i + 1}`,
+          email: `vendedor${i + 1}@gmail.com`,
+          senha: hashedPassword,
+          telefone: `1199999000${i + 1}`,
+          enderecos: {
+            create: {
+              cidade: "São Paulo",
+              UF: "SP",
+              bairro: `Bairro ${i + 1}`,
+              rua: `Rua ${i + 1}`,
+              numero: `${100 + i}`,
+              cep: `0717201${i + 1}`
+            }
+          }
         }
       })
     )
   );
 
-  
-  // 3. Criar 3 usuários compradores
+  // 3. Criar vários produtos por categoria, por vendedor
+  const produtos = [];
+  for (const categoria of categoriasCriadas) {
+    for (const vendedor of vendedores) {
+      const produto = await prisma.produto.create({
+        data: {
+          nome: `${categoria.nome} danificado`,
+          descricao: `Produto da categoria ${categoria.nome} em estado danificado ou usado.`,
+          preco: Math.floor(Math.random() * (800 - 50 + 1)) + 50,
+          condicao: Math.random() > 0.5 ? 'usado' : 'danificado',
+          imagemUrl: `/hardware.jpg`,
+          vendedorId: vendedor.id,
+          categoriaId: categoria.id
+        }
+      });
+      produtos.push(produto);
+    }
+  }
+
+  // 4. Criar compradores
   const compradores = await Promise.all(
     [1, 2, 3].map((i) =>
       prisma.usuario.create({
@@ -62,14 +78,14 @@ async function main() {
           nome: `Comprador ${i}`,
           email: `comprador${i}@exemplo.com`,
           senha: hashedPassword,
-          telefone: `1199999000${i}`
+          telefone: `1199998888${i}`
         }
       })
     )
   );
 
-  // 4. Cada comprador faz 1 compra pendente
-  const comprasPendentes = await Promise.all(
+  // 5. Criar compras pendentes e aprovadas
+  await Promise.all(
     compradores.map((comprador, i) =>
       prisma.compra.create({
         data: {
@@ -83,12 +99,11 @@ async function main() {
     )
   );
 
-  // 5. Um comprador faz compra aprovada e avaliação
-  const compraAprovada = await prisma.compra.create({
+  await prisma.compra.create({
     data: {
       compradorId: compradores[0].id,
-      produtoId: produtos[9].id,
-      valor: produtos[9].preco,
+      produtoId: produtos[produtos.length - 1].id,
+      valor: produtos[produtos.length - 1].preco,
       metodoPagamento: 'cartao_credito',
       status: 'aprovado'
     }
@@ -97,54 +112,44 @@ async function main() {
   await prisma.avaliacao.create({
     data: {
       avaliadorId: compradores[0].id,
-      avaliadoId: 1,
+      avaliadoId: vendedores[0].id,
       nota: 4,
-      comentario: 'Vendedor honesto, produto como descrito.'
+      comentario: 'Vendedor confiável.'
     }
   });
 
-  // 6. Criar conversas com 2+ mensagens cada
-  for (let i = 0; i < compradores.length; i++) {
-    const comprador = compradores[i];
-    const produto = produtos[i + 3];
+  // 6. Criar conversas com pelo menos 3 vendedores diferentes
+  for (const comprador of compradores) {
+    const produtosDeVendedoresDiferentes = produtos.filter(
+      (p, i, arr) =>
+        arr.findIndex((pp) => pp.vendedorId === p.vendedorId) === i
+    ).slice(0, 3);
 
-    const conversa = await prisma.conversa.create({
-      data: {
-        vendedorId: 1,
-        compradorId: comprador.id,
-        produtoId: produto.id,
-        ultimaMensagem: `Última mensagem do ${comprador.nome}`,
-        mensagens: {
-          create: [
-            {
-              texto: `Olá, ainda está disponível?`,
-              remetenteId: comprador.id
-            },
-            {
-              texto: `Estou realmente interessado.`,
-              remetenteId: comprador.id
-            }
-          ]
+    for (const produto of produtosDeVendedoresDiferentes) {
+      await prisma.conversa.create({
+        data: {
+          vendedorId: produto.vendedorId,
+          compradorId: comprador.id,
+          produtoId: produto.id,
+          ultimaMensagem: `Última mensagem do ${comprador.nome}`,
+          mensagens: {
+            create: [
+              {
+                texto: `Olá, estou interessado neste produto.`,
+                remetenteId: comprador.id
+              },
+              {
+                texto: `Pode me dar mais detalhes?`,
+                remetenteId: comprador.id
+              }
+            ]
+          }
         }
-      }
-    });
+      });
+    }
   }
 
-  // 7. Adicionar favoritos
-  await Promise.all(
-    compradores.flatMap((comprador) =>
-      produtos.slice(0, 5).map((produto) =>
-        prisma.favorito.create({
-          data: {
-            usuarioId: comprador.id,
-            produtoId: produto.id
-          }
-        })
-      )
-    )
-  );
-
-  console.log('Seed finalizado com sucesso!');
+  console.log("Seed finalizado com sucesso!");
 }
 
 main()

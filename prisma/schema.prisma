@@ -85,7 +85,7 @@ model Produto {
   vendedorId  Int
   vendedor    Usuario         @relation("Vendedor", fields: [vendedorId], references: [id])
   compra      Compra?
-  conversa    Conversa?
+  conversa    Conversa[]
   favoritos   Favorito[]
 }
 
@@ -127,7 +127,7 @@ model Conversa {
   id             Int        @id @default(autoincrement())
   vendedorId     Int
   compradorId    Int
-  produtoId      Int        @unique
+  produtoId      Int        
   ultimaMensagem String?
   criadoEm       DateTime   @default(now())
   mensagens      Mensagem[]
