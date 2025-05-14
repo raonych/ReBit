@@ -126,9 +126,11 @@ export default function Home() {
               Junte-se a outros que estão fazendo a diferença na redução de lixo
               eletrônico e aproveite todas as vantagens do nosso site.
             </p>
-            <button className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
-              <Link href="/cadastro">Cadastre-se agora</Link>
+            <Link href="/cadastro">
+            <button className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors cursor-pointer">
+              Cadastre-se agora
             </button>
+            </Link>
           </div>
         </section>
       </main>

@@ -166,7 +166,7 @@ export default function Cadastro() {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-lg font-medium text-white bg-zinc-900 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-800 transition-colors ${
+            className={`w-full py-3 px-4 rounded-lg font-medium text-white bg-zinc-900 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-800 transition-colors cursor-pointer ${
               isLoading ? "opacity-80 cursor-not-allowed" : ""
             }`}
           >
@@ -204,7 +204,7 @@ export default function Cadastro() {
           Já tem uma conta?{" "}
           <a
             href="/login"
-            className="font-medium text-zinc-900 hover:underline"
+            className="font-medium text-zinc-900 hover:underline "
           >
             Faça login
           </a>

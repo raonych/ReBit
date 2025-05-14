@@ -35,6 +35,7 @@ export default function Login() {
       });
 
       localStorage.setItem("token", response.token);
+      window.dispatchEvent(new Event("login"));
 
       router.push("/");
     } catch (err) {

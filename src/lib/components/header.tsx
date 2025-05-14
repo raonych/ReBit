@@ -20,6 +20,13 @@ export function Header() {
       setIsloading(false);
     }, []);
 
+  useEffect(() => {
+  const listener = () => {
+    setIsLogged(true);
+  };
+  window.addEventListener("login", listener);
+  return () => window.removeEventListener("login", listener);
+}, []);
     
   const pathname = usePathname();
 

@@ -10,7 +10,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 let socket: Socket
 type ChatProps = {
-    conversaId: string
+    conversaId: any
     onVoltar: () => void
   }
 
