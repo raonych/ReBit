@@ -77,7 +77,7 @@ export default function Home() {
                 preco={produto.preco}
                 cidade={produto.vendedor.enderecos[0].cidade+", "+ produto.vendedor.enderecos[0].UF || "Local não informado"}
                 data={new Date(produto.criadoEm).toLocaleDateString('pt-BR') || "Data desconhecida"}
-                imagemUrl={"/placeholder.png"}
+                imagemUrl={produto.imagemUrl}
               />
             ))}
           </div>

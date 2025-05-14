@@ -5,15 +5,19 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { conversaService } from "@/lib/request/conversas";
 import ChatPage from "@/lib/components/portalVendedor/chat";
+import { usuarioService } from "@/lib/request/usuarios";
 
 type Conversa = {
   id: number;
   produto: { nome: string };
   vendedor: { nome: string };
+  vendedorId: number;
+  comprador: {nome: string};
 };
 
 export default function Conversas() {
   const [conversas, setConversas] = useState<Conversa[]>([]);
+  const [userId, setUserId] = useState<number | null>(null);
   const [conversaId, setConversaId] = useState<number | null>(null);
   const router = useRouter();
 
@@ -24,11 +28,14 @@ export default function Conversas() {
       return;
     }
 
-      const exibeConversas = async () => {
+    const fetchData = async () => {
         const conversas = await conversaService.listarConversas();
+        const usuario = await usuarioService.exibirPerfil();
+
+        setUserId(usuario.id)
         setConversas(conversas.conversas);
       }
-      exibeConversas();
+      fetchData();
     },[]);
 
     const handleVoltar = () => {
@@ -55,7 +62,15 @@ export default function Conversas() {
                       <p className="text-lg font-semibold">
                         Produto: {conversa.produto.nome}
                       </p>
+                      <p className="text-l font-semibold">
+                          {
+                          userId === conversa.vendedorId
+                              ? conversa.comprador.nome
+                              : conversa.vendedor.nome
+                          }
+                        </p>
                     </div>
+                    
                     <span className="text-green-700 text-sm">Ver conversa →</span>
                   </div>
                 </button>
@@ -65,7 +80,7 @@ export default function Conversas() {
         </>
       ) : (
         <ChatPage
-          conversaId={conversaId.toString()}
+          conversaId={conversaId}
           onVoltar={handleVoltar}
         />
       )}

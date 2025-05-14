@@ -67,7 +67,15 @@ export default function ChatPage({ conversaId,  onVoltar }: ChatProps) {
       <button onClick={onVoltar} className="text-gray-600 hover:text-gray-900">
         <ArrowLeft size={24} />
       </button>
-      <h1 className="text-2l font-semibold">{isLoading? <Skeleton width={80} /> : conversa.comprador.nome}</h1>
+      <h1 className="text-2xl font-semibold">
+      {isLoading ? (
+        <Skeleton width={80} />
+      ) : (
+        remetenteId === conversa.vendedorId
+          ? conversa.comprador.nome
+          : conversa.vendedor.nome
+      )}
+    </h1>
       <p className="text-xs mb-4">{isLoading? <Skeleton width={150} /> : conversa.produto.nome}</p>
       <div className="bg-gray-100 h-96 overflow-y-auto p-3 rounded shadow mb-4">
         {

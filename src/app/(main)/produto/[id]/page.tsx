@@ -67,7 +67,7 @@ const PaginaProduto: React.FC = () => {
       <div className="lg:col-span-2 space-y-4">
         <div className="rounded-lg overflow-hidden border">
           <img
-            src={produto.imagem}
+            src={produto.imagemUrl}
             alt={produto.nome}
             className="w-full h-[500px] object-cover"
           />

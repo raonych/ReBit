@@ -57,7 +57,12 @@ export async function listarConversas(userId: number){
                 select:{
                     nome:true
                 }
-              }
+              },
+              comprador:{
+                    select:{
+                        nome:true
+                    }
+                }
             },
           });
 
@@ -102,6 +107,11 @@ export async function exibirConversa(conversaId: number){
             include:{
                 mensagens:true,
                 comprador:{
+                    select:{
+                        nome:true
+                    }
+                },
+                vendedor:{
                     select:{
                         nome:true
                     }
