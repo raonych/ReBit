@@ -4,7 +4,10 @@ import { usuarioUpdateSchema } from '../validators/usuario';
 export async function exibePerfil(userId: number){
     try{
         const perfil = await prisma.usuario.findUnique({
-            where:{id: userId}
+            where:{id: userId},
+            include:{
+                enderecos:true
+            }
         })
         if(!perfil){
             return{status: 404, data:{message:"usuário não encontrado"}}

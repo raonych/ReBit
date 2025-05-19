@@ -25,5 +25,23 @@ export const produtoService = {
         }
       
         return response.json();
+      },
+      
+      cadastrarProduto: async(form: FormData) =>{
+
+         const response = await fetch('/api/produtos',{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+    });
+      
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Erro na exibição de produtos");
+        }
+      
+        return response.json();
       }
 }

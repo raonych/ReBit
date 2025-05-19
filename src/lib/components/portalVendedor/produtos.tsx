@@ -86,7 +86,7 @@ const Produtos: React.FC = () => {
                     preco={item.preco}
                     cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
                     data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
-                    imagemUrl={item.imagem || "/placeholder.png"}
+                    imagemUrl={item.imagemUrl || "/placeholder.png"}
                   />
               </div>
             ))}
