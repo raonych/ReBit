@@ -18,6 +18,7 @@ export default function ProdutosRecentes() {
       try {
         const produtos = await produtoService.produtosRecentes();
         setProdutos(produtos);
+        console.log(produtos);
       } catch (err) {
         console.error("Erro ao carregar produtos:", err);
       } finally {
@@ -86,7 +87,7 @@ export default function ProdutosRecentes() {
                     preco={item.preco}
                     cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
                     data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
-                    imagemUrl={item.imagemUrl || "/placeholder.png"}
+                    imagemUrl={item.fotos[0].url || "/placeholder.png"}
                   />
                 )}
               </div>

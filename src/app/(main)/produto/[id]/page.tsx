@@ -11,13 +11,14 @@ const PaginaProduto: React.FC = () => {
   const [produto, setProduto] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [headingTo, setHeadingTo] = useState(false);
-
+  const [fotos, setFotos] = useState<{ id: number; produtoId: number; url: string }[]>([]);
   useEffect(() => {
     const buscarProduto = async () => {
       try {
         const resposta = await fetch(`/api/produtos/${id}`);
         const dados = await resposta.json();
         setProduto(dados);
+        setFotos(dados.fotos);
       } catch (erro) {
         console.error("Erro ao carregar produto", erro);
       } finally {
@@ -26,6 +27,8 @@ const PaginaProduto: React.FC = () => {
     };
     buscarProduto();
   }, [id]);
+
+  console.log("AQUI",fotos)
 
   if (loading) {
     return (
@@ -66,11 +69,18 @@ const PaginaProduto: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2 space-y-4">
         <div className="rounded-lg overflow-hidden border">
-          <img
-            src={produto.imagemUrl}
-            alt={produto.nome}
-            className="w-full h-[500px] object-cover"
-          />
+          {
+            fotos.map((foto) => (
+              <img
+                key={foto.id}
+                src={foto.url}
+                alt={foto.url}
+                className="w-full h-[500px] object-cover"
+              />
+            ))
+          }
+
+          
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow border">

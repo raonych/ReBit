@@ -47,6 +47,9 @@ export async function ExibirProdutosRecentes(){
                   }
                 }
               },
+              fotos:{
+                take:1
+              },
               categoria:true
             }
           })  
@@ -87,6 +90,7 @@ export async function ExibirUnicoProduto(id: number){
                   },
                 },
               },
+              fotos: true,
               categoria: {
                 select:{ nome: true }
               }
@@ -225,6 +229,9 @@ export async function ProdutosComFiltro(searchParams: any){
             nome: true,
             enderecos: true,
           },
+        },
+        fotos:{
+          take:1
         },
         categoria: true,
       }

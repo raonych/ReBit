@@ -61,13 +61,21 @@ async function main() {
           descricao: `Produto da categoria ${categoria.nome} em estado danificado ou usado.`,
           preco: Math.floor(Math.random() * (800 - 50 + 1)) + 50,
           condicao: Math.random() > 0.5 ? 'usado' : 'danificado',
-          imagemUrl: `/hardware.jpg`,
           vendedorId: vendedor.id,
           categoriaId: categoria.id
         }
       });
       produtos.push(produto);
     }
+  }
+
+  for(const produto of produtos) {
+    await prisma.fotosProduto.create({
+      data: {
+        url: `/hardware.jpg`,
+        produtoId: produto.id
+      }
+    })
   }
 
   // 4. Criar compradores

@@ -78,7 +78,6 @@ model Produto {
   descricao   String?
   preco       Decimal         @db.Decimal(10, 2)
   condicao    CondicaoProduto
-  imagemUrl   String?
   criadoEm    DateTime        @default(now())
   categoriaId Int?
   categoria   Categoria?      @relation(fields: [categoriaId], references: [id])
@@ -87,6 +86,14 @@ model Produto {
   compra      Compra?
   conversa    Conversa[]
   favoritos   Favorito[]
+  fotos       FotosProduto[]
+}
+
+model FotosProduto {
+  id Int @id @default(autoincrement())
+  produtoId Int @unique
+  url String 
+  produto Produto @relation(fields: [produtoId], references: [id])
 }
 
 // Tabela de compras (transação entre usuários)

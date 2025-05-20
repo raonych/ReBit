@@ -65,6 +65,9 @@ export async function exibirMeusProdutos(userId: number){
                             }
                         }
                     }
+                },
+                fotos:{
+                    take:1
                 }
             }
         })
