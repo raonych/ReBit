@@ -13,9 +13,9 @@ export const produtoService = {
     todosProdutosComFiltro: async (busca: string | null, categoria: string | null, condicao: string | null) => {
         const params = new URLSearchParams();
       
-        if (busca) params.append("busca", busca);
-        if (categoria) params.append("categoria", categoria);
-        if (condicao) params.append("condicao", condicao);
+        if (busca) params.append("busca", busca.toLowerCase());
+        if (categoria) params.append("categoria", categoria.toLowerCase());
+        if (condicao) params.append("condicao", condicao.toLowerCase());
       
         const response = await fetch(`/api/produtos/filtrar?${params.toString()}`);
       
@@ -43,5 +43,45 @@ export const produtoService = {
         }
       
         return response.json();
+      },
+      favoritarProduto: async (id: string, favorito: boolean) => {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(`/api/favoritos/${id}`, {
+            method: favorito ? 'DELETE' : 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
+          });
+          return response.ok;
+        } catch (error) {
+          console.error("Erro ao favoritar:", error);
+          return false;
+        }
+      },
+      
+      listarFavoritos: async () => {
+        const token = localStorage.getItem("token");
+        
+        try {
+          const response = await fetch(`/api/favoritos`, {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+    
+          if (!response.ok) {
+            throw new Error("Erro ao buscar favoritos");
+          }
+    
+          const data = await response.json();
+          return data; 
+        } catch (error) {
+          console.error("Erro ao buscar favoritos:", error);
+          return { produtos: [] }; 
+        }
       }
 }
