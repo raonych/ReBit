@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ShoppingCart, MessageCircleMore, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { produtoService } from '@/lib/request/produto';
+import { Heart } from 'lucide-react';
 
 const PaginaProduto: React.FC = () => {
   const params = useParams();
@@ -12,13 +14,18 @@ const PaginaProduto: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [headingTo, setHeadingTo] = useState(false);
   const [fotos, setFotos] = useState<{ id: number; produtoId: number; url: string }[]>([]);
+  const [favoritado, setFavoritado] = useState(false);
+  const [loadingFavorito, setLoadingFavorito] = useState(false);
+
   useEffect(() => {
     const buscarProduto = async () => {
       try {
-        const resposta = await fetch(`/api/produtos/${id}`);
-        const dados = await resposta.json();
+        const dados = await produtoService.produtoUnico(id);
         setProduto(dados);
         setFotos(dados.fotos);
+        if (dados.favoritos.length > 0) {
+          setFavoritado(true);
+        }
       } catch (erro) {
         console.error("Erro ao carregar produto", erro);
       } finally {
@@ -26,14 +33,21 @@ const PaginaProduto: React.FC = () => {
       }
     };
     buscarProduto();
-  }, [id]);
+  }, [id,produto]);
 
-  console.log("AQUI",fotos)
+
+  const toggleFavorito = async () => {
+    setLoadingFavorito(true);
+    const sucesso = await produtoService.favoritarProduto(produto.id, favoritado);
+    if (sucesso) {
+      setFavoritado(!favoritado);
+    }
+    setLoadingFavorito(false);
+  };
 
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8 animate-pulse">
-        {/* Imagem Skeleton */} 
         <div className="lg:col-span-2 space-y-4">
           <div className="rounded-lg overflow-hidden bg-gray-200 h-[500px]" />
           <div className="bg-white p-6 rounded-lg shadow space-y-2">
@@ -44,7 +58,6 @@ const PaginaProduto: React.FC = () => {
           </div>
         </div>
 
-        {/* Detalhes Skeleton */}
         <div className="bg-white p-6 rounded-lg shadow space-y-4">
           <div className="h-8 bg-gray-200 rounded w-1/2" />
           <div className="h-12 bg-gray-200 rounded" />
@@ -68,21 +81,27 @@ const PaginaProduto: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2 space-y-4">
-        <div className="rounded-lg overflow-hidden border">
-          {
-            fotos.map((foto) => (
-              <img
-                key={foto.id}
-                src={foto.url}
-                alt={foto.url}
-                className="w-full h-[500px] object-cover"
-              />
-            ))
-          }
+        <div className="relative rounded-lg overflow-hidden border">
+          {fotos.map((foto) => (
+            <img
+              key={foto.id}
+              src={foto.url}
+              alt={foto.url}
+              className="w-full h-[500px] object-cover"
+            />
+          ))}
 
-          
+          <button
+            onClick={toggleFavorito}
+            disabled={loadingFavorito}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 hover:bg-white transition"
+          >
+            <Heart
+              size={24}
+              className={favoritado ? "text-red-600 fill-red-600" : "text-gray-500"}
+            />
+          </button>
         </div>
-
         <div className="bg-white p-6 rounded-lg shadow border">
           <h2 className="text-2xl font-semibold mb-2">Descrição</h2>
           <p className="text-gray-700 whitespace-pre-wrap">{produto.descricao}</p>

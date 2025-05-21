@@ -14,7 +14,7 @@ export default function Home() {
   const busca = searchParams?.get('busca') || null;
   const categoria = searchParams?.get('categoria') || null;
   const condicao = searchParams?.get('condicao') || null;
-  const [categoriaProduto, setCategoriaProduto]= useState([]); 
+  const [categoriaProduto, setCategoriaProduto]= useState<any[]>([]); 
   const [estadoSelecionado, setEstadoSelecionado] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
   const [produtos, setProdutos] = useState<any[]>([]);
@@ -26,7 +26,7 @@ export default function Home() {
         setProdutos(response.produtos);
         const categorias = await categoriaService.categorias();
         const nomesCategorias = categorias.categorias.map((categoria: { nome: any; }) => categoria.nome)
-        setCategoriaProduto(nomesCategorias);
+        setCategoriaProduto(["Todos", ...nomesCategorias]);
         setIsLoading(false);
     };
     fetchData();
@@ -98,6 +98,7 @@ export default function Home() {
                 cidade={produto.vendedor.enderecos[0].cidade+", "+ produto.vendedor.enderecos[0].UF || "Local não informado"}
                 data={new Date(produto.criadoEm).toLocaleDateString('pt-BR') || "Data desconhecida"}
                 imagemUrl={produto.fotos[0].url}
+                jaFavoritado={produto.favoritos.length > 0 }
               />
             ))}
           </div>

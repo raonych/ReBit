@@ -87,6 +87,7 @@ const Produtos: React.FC = () => {
                     cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
                     data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
                     imagemUrl={item.fotos[0].url || "/placeholder.png"}
+                    jaFavoritado={item.favoritos > 0}
                   />
               </div>
             ))}

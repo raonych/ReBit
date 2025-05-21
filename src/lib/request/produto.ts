@@ -18,7 +18,24 @@ export const produtoService = {
       
           return response.json();
     },
+    produtoUnico: async (id: string) =>{
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/produtos/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Erro na exibição do produto");
+          }
+      
+          return response.json();
+    },
     todosProdutosComFiltro: async (busca: string | null, categoria: string | null, condicao: string | null) => {
         const params = new URLSearchParams();
         const token = localStorage.getItem("token");
@@ -34,7 +51,7 @@ export const produtoService = {
               Authorization: `Bearer ${token}`,
             },
           });
-          
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || "Erro na exibição de produtos");

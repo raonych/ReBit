@@ -57,7 +57,9 @@ export async function ExibeProdutosVendedor(vendedorId: number){
                 preco: true,
                 nome: true,
                 condicao: true,
-                imagemUrl: true,
+                fotos:{
+                    take: 1
+                },
                 criadoEm: true,
                 vendedor:{
                     select:{
