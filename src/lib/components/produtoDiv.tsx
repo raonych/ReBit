@@ -74,7 +74,7 @@ export default function ProdutoDiv({
         />
         <button
           onClick={toggleFavorito}
-          className="absolute top-2 right-2 z-10 p-1 rounded-full bg-white/80 hover:bg-white"
+          className="absolute top-2 right-2 z-10 p-1 rounded-full bg-white/80 hover:bg-white cursor-pointer"
         >
           <Heart
             size={20}
