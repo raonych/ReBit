@@ -1,6 +1,15 @@
 export const produtoService = {
     produtosRecentes: async () =>   {
-        const response = await fetch('/api/produtos/');
+        const token = localStorage.getItem("token");
+      const response = await fetch('/api/produtos/',
+        {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
         if (!response.ok) {
             const errorData = await response.json();
@@ -12,13 +21,20 @@ export const produtoService = {
 
     todosProdutosComFiltro: async (busca: string | null, categoria: string | null, condicao: string | null) => {
         const params = new URLSearchParams();
-      
+        const token = localStorage.getItem("token");
+
         if (busca) params.append("busca", busca.toLowerCase());
         if (categoria) params.append("categoria", categoria.toLowerCase());
         if (condicao) params.append("condicao", condicao.toLowerCase());
       
-        const response = await fetch(`/api/produtos/filtrar?${params.toString()}`);
-      
+        const response = await fetch(`/api/produtos/filtrar?${params.toString()}`,{
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || "Erro na exibição de produtos");

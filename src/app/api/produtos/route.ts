@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { CadastrarProduto, ExibirProdutosRecentes } from "@/lib/services/produtoService";
+import { getUserIdFromToken } from '@/lib/auth';
 
 
 export async function POST(request: Request) {
@@ -12,7 +13,8 @@ export async function POST(request: Request) {
 
 };
 
-export async function GET() {
-    const produtosRecentes = await ExibirProdutosRecentes();
+export async function GET(request: Request) {
+    const userId = getUserIdFromToken(request);
+    const produtosRecentes = await ExibirProdutosRecentes(userId);
     return NextResponse.json(produtosRecentes.data, { status: produtosRecentes.status });
   }

@@ -27,7 +27,7 @@ export async function CadastrarProduto(body: any){
     }
 }
 
-export async function ExibirProdutosRecentes(){
+export async function ExibirProdutosRecentes(userId: number | null){
     try{
 
         const produtosRecentes = await prisma.produto.findMany({
@@ -49,6 +49,10 @@ export async function ExibirProdutosRecentes(){
               },
               fotos:{
                 take:1
+              },
+              favoritos: {
+                where: userId ? {usuarioId: userId} : undefined,
+                select: { id: true }
               },
               categoria:true
             }

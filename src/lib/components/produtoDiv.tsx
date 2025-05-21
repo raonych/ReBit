@@ -1,7 +1,7 @@
 import { Heart, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { produtoService } from "../request/produto";
 
 type ProdutoDivProps = {
@@ -11,6 +11,7 @@ type ProdutoDivProps = {
   cidade: string;
   data: string;
   imagemUrl?: string;
+  jaFavoritado: boolean;
 };
 
 export default function ProdutoDiv({
@@ -20,6 +21,7 @@ export default function ProdutoDiv({
   cidade,
   data,
   imagemUrl = "/placeholder.png",
+  jaFavoritado
 }: ProdutoDivProps) {
   const router = useRouter();
   const [favoritado, setFavoritado] = useState(false);
@@ -29,8 +31,12 @@ export default function ProdutoDiv({
     router.push(`/produto/${id}`);
   };
 
+   useEffect(() => {
+  setFavoritado(jaFavoritado);
+  }, [jaFavoritado]);
+
   const toggleFavorito = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // evita que clique no botão dispare o irParaProduto
+    e.stopPropagation();
     setLoading(true);
 
     const sucesso = await produtoService.favoritarProduto(id, favoritado);
