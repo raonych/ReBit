@@ -1,0 +1,288 @@
+"use client"
+
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { MapPin, User, Package, ChevronRight, Edit2, Check, ArrowLeft } from "lucide-react"
+
+// Dados simulados para demonstração
+const produtoDemo = {
+  id: "123",
+  nome: "Placa de vídeo GTX 1060 6GB",
+  preco: 799.9,
+  imagem: "/placeholder.svg?height=120&width=120",
+  vendedor: "TechRecycle",
+}
+
+const enderecoDemo = {
+  principal: {
+    nome: "Casa",
+    rua: "Rua das Flores, 123",
+    bairro: "Jardim Primavera",
+    cidade: "São Paulo",
+    estado: "SP",
+    cep: "01234-567",
+    complemento: "Apto 42",
+  },
+  trabalho: {
+    nome: "Trabalho",
+    rua: "Av. Paulista, 1000",
+    bairro: "Bela Vista",
+    cidade: "São Paulo",
+    estado: "SP",
+    cep: "01310-100",
+    complemento: "Sala 1520",
+  },
+}
+
+export default function ConfirmarPedido() {
+  const [enderecoSelecionado, setEnderecoSelecionado] = useState("principal")
+  const [recebedor, setRecebedor] = useState("proprio")
+  const [nomeRecebedor, setNomeRecebedor] = useState("")
+  const [documentoRecebedor, setDocumentoRecebedor] = useState("")
+  const [editandoRecebedor, setEditandoRecebedor] = useState(false)
+
+  const frete = 25.9
+  const total = produtoDemo.preco + frete
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <Link href="/carrinho" className="flex items-center text-gray-600 mb-6 hover:text-gray-900 transition-colors">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Voltar para o carrinho
+        </Link>
+
+        <h1 className="text-2xl md:text-3xl font-bold mb-8">Confirmar dados do pedido</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Coluna principal com endereço e recebedor */}
+          <div className="md:col-span-2 space-y-6">
+            {/* Seção de produto */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-lg font-medium flex items-center">
+                  <Package className="h-5 w-5 mr-2 text-gray-600" />
+                  Produto
+                </h2>
+              </div>
+              <div className="p-4">
+                <div className="flex items-center">
+                  <div className="h-20 w-20 relative rounded-md overflow-hidden border border-gray-200">
+                    <Image
+                      src={produtoDemo.imagem || "/placeholder.svg"}
+                      alt={produtoDemo.nome}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="ml-4 flex-1">
+                    <h3 className="font-medium">{produtoDemo.nome}</h3>
+                    <p className="text-sm text-gray-500">Vendido por: {produtoDemo.vendedor}</p>
+                    <p className="font-medium mt-1">R$ {produtoDemo.preco.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Seção de endereço de entrega */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-lg font-medium flex items-center">
+                  <MapPin className="h-5 w-5 mr-2 text-gray-600" />
+                  Endereço de entrega
+                </h2>
+              </div>
+              <div className="p-4">
+                <div className="space-y-4">
+                  {Object.keys(enderecoDemo).map((key) => {
+                    const endereco = enderecoDemo[key as keyof typeof enderecoDemo]
+                    return (
+                      <div
+                        key={key}
+                        className="flex items-start space-x-3 border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
+                      >
+                        <div className="flex items-center h-5">
+                          <input
+                            type="radio"
+                            id={`endereco-${key}`}
+                            name="endereco"
+                            value={key}
+                            checked={enderecoSelecionado === key}
+                            onChange={() => setEnderecoSelecionado(key)}
+                            className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label htmlFor={`endereco-${key}`} className="font-medium cursor-pointer">
+                            {endereco.nome}
+                          </label>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {endereco.rua}, {endereco.complemento}
+                            <br />
+                            {endereco.bairro} - {endereco.cidade}/{endereco.estado}
+                            <br />
+                            CEP: {endereco.cep}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <button className="mt-4 px-4 py-2 border border-gray-300 rounded-md text-sm flex items-center hover:bg-gray-50 transition-colors">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Adicionar novo endereço
+                </button>
+              </div>
+            </div>
+
+            {/* Seção de quem receberá */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-lg font-medium flex items-center">
+                  <User className="h-5 w-5 mr-2 text-gray-600" />
+                  Quem receberá o pedido
+                </h2>
+              </div>
+              <div className="p-4">
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3 border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                    <div className="flex items-center h-5">
+                      <input
+                        type="radio"
+                        id="recebedor-proprio"
+                        name="recebedor"
+                        value="proprio"
+                        checked={recebedor === "proprio"}
+                        onChange={() => setRecebedor("proprio")}
+                        className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="recebedor-proprio" className="font-medium cursor-pointer">
+                        Eu mesmo
+                      </label>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Você mesmo receberá o produto no endereço selecionado
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3 border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                    <div className="flex items-center h-5">
+                      <input
+                        type="radio"
+                        id="recebedor-outra"
+                        name="recebedor"
+                        value="outra-pessoa"
+                        checked={recebedor === "outra-pessoa"}
+                        onChange={() => setRecebedor("outra-pessoa")}
+                        className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="recebedor-outra" className="font-medium cursor-pointer">
+                        Outra pessoa
+                      </label>
+
+                      {recebedor === "outra-pessoa" && !editandoRecebedor && nomeRecebedor && (
+                        <div className="mt-2 p-3 bg-gray-50 rounded-md">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="font-medium">{nomeRecebedor}</p>
+                              <p className="text-sm text-gray-600">CPF/CNPJ: {documentoRecebedor}</p>
+                            </div>
+                            <button
+                              onClick={() => setEditandoRecebedor(true)}
+                              className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {recebedor === "outra-pessoa" && (editandoRecebedor || !nomeRecebedor) && (
+                        <div className="mt-3 space-y-3">
+                          <div>
+                            <label htmlFor="nome-recebedor" className="block text-sm font-medium text-gray-700">
+                              Nome completo
+                            </label>
+                            <input
+                              id="nome-recebedor"
+                              type="text"
+                              value={nomeRecebedor}
+                              onChange={(e) => setNomeRecebedor(e.target.value)}
+                              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                              placeholder="Nome de quem receberá"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="documento-recebedor" className="block text-sm font-medium text-gray-700">
+                              CPF/CNPJ
+                            </label>
+                            <input
+                              id="documento-recebedor"
+                              type="text"
+                              value={documentoRecebedor}
+                              onChange={(e) => setDocumentoRecebedor(e.target.value)}
+                              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                              placeholder="CPF ou CNPJ"
+                            />
+                          </div>
+                          <button
+                            onClick={() => setEditandoRecebedor(false)}
+                            className="w-full py-2 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center"
+                          >
+                            <Check className="h-4 w-4 mr-2" />
+                            Confirmar recebedor
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna lateral com resumo */}
+          <div className="md:col-span-1">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden sticky top-6">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-lg font-medium">Resumo do pedido</h2>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Produto</span>
+                    <span>R$ {produtoDemo.preco.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Frete</span>
+                    <span>R$ {frete.toFixed(2)}</span>
+                  </div>
+                  <div className="my-3 border-t border-gray-200 pt-3"></div>
+                  <div className="flex justify-between font-medium text-lg">
+                    <span>Total</span>
+                    <span>R$ {total.toFixed(2)}</span>
+                  </div>
+
+                  <button className="w-full mt-6 py-3 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center">
+                    Ir para pagamento
+                    <ChevronRight className="h-4 w-4 ml-2" />
+                  </button>
+
+                  <p className="text-xs text-gray-500 text-center mt-3">
+                    Ao continuar, você concorda com os termos de uso e políticas de privacidade.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
