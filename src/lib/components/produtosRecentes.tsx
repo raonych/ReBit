@@ -28,6 +28,8 @@ export default function ProdutosRecentes() {
     exibeRecentes();
   }, []);
 
+  console.log(produtos)
+
   const totalPaginas = Math.ceil(produtos.length / PRODUTOS_POR_PAGINA);
 
   const irParaAnterior = () => {
@@ -87,7 +89,7 @@ export default function ProdutosRecentes() {
                     preco={item.preco}
                     cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
                     data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
-                    imagemUrl={item.fotos[0].url || "/placeholder.png"}
+                    imagemUrl={item.fotos[0] || "/placeholder.png"}
                     jaFavoritado={item.favoritos.length > 0}
                   />
                 )}

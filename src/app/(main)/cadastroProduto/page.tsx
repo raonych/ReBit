@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { categoriaService } from '@/lib/request/categorias';
+import {produtoService} from '@/lib/request/produto';
+import { usuarioService } from '@/lib/request/usuarios';
 
 export default function CadastroProduto() {
   const router = useRouter();
@@ -11,21 +14,21 @@ export default function CadastroProduto() {
   const [preco, setPreco] = useState('');
   const [categoria, setCategoria] = useState('');
   const [condicao, setCondicao] = useState('');
+  const [categorias, setCategorias] = useState<any[]>([]);
   const [imagemFile, setImagemFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-  const categorias = [
-    'Placas de rede',
-    'Placas-mãe',
-    'Gabinetes',
-    'Memórias RAM',
-    'Placas de vídeo',
-    'Notebooks quebrados',
-    'SSDs',
-    'Fontes',
-    'Coolers',
-    'Processadores',
-  ];
+  const [vendedorId, setVendedorId] = useState(null);
+  useEffect(()=>{
+   const fetchData = async ()=>{
+    const data = await categoriaService.categorias(); 
+    const userId = await usuarioService.exibirPerfil();
+    setVendedorId(userId.id);
+    setCategorias(data.categorias);
+    
+   }
+   
+   fetchData();
+  },[])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -34,38 +37,46 @@ export default function CadastroProduto() {
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!imagemFile) {
-      alert('Por favor, selecione uma imagem.');
+  
+    if (!vendedorId) {
+      alert("Aguardando carregamento do perfil do usuário...");
       return;
     }
 
-    const formData = new FormData();
-    formData.append('nome', nome);
-    formData.append('descricao', descricao);
-    formData.append('preco', preco);
-    formData.append('categoria', categoria);
-    formData.append('condicao', condicao);
-    formData.append('imagem', imagemFile);
+    // Garante que o campo de preço seja um número válido
+    const precoNumerico = parseFloat(preco);
+    if (isNaN(precoNumerico)) {
+      alert("Preço inválido");
+      return;
+    }
 
+    const idCategoria = parseInt(categoria);
+  
+    // Monta o objeto com os dados do produto
+    const dados = {
+      nome,
+      descricao,
+      preco: precoNumerico,
+      condicao: condicao.toLocaleLowerCase(),
+      categoriaId: idCategoria,
+      vendedorId
+    };
+  
+
+    console.log(dados)
     try {
-      const response = await fetch('/api/produtos', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error('Erro ao cadastrar produto');
-
-      alert('Produto cadastrado com sucesso!');
-      router.push('/produtos');
-    } catch (error) {
+      await produtoService.cadastrarProduto(dados);
+      alert("Produto cadastrado com sucesso!");
+      router.push("/produtos");
+    } catch (error: any) {
       console.error(error);
-      alert('Erro ao cadastrar produto');
+      alert(error.message || "Erro ao cadastrar produto");
     }
   };
+
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -107,6 +118,8 @@ export default function CadastroProduto() {
           <div className="flex-1 flex flex-col gap-4">
             <input
               type="text"
+              id="nome"
+              name="nome"
               placeholder="Nome"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
@@ -115,6 +128,7 @@ export default function CadastroProduto() {
             />
             <input
               type="number"
+              id="preco"
               placeholder="Preço"
               value={preco}
               onChange={(e) => setPreco(e.target.value)}
@@ -123,6 +137,7 @@ export default function CadastroProduto() {
             />
 
             <select
+              id="categoria"
               value={categoria}
               onChange={(e) => setCategoria(e.target.value)}
               className="border rounded px-4 py-3"
@@ -130,8 +145,8 @@ export default function CadastroProduto() {
             >
               <option value="">Categoria</option>
               {categorias.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+                <option key={cat.id} value={cat.id}>
+                  {cat.nome}
                 </option>
               ))}
             </select>
