@@ -27,7 +27,7 @@ export async function CadastrarProduto(body: any){
     }
 }
 
-export async function ExibirProdutosRecentes(){
+export async function ExibirProdutosRecentes(userId: number | null){
     try{
 
         const produtosRecentes = await prisma.produto.findMany({
@@ -47,6 +47,13 @@ export async function ExibirProdutosRecentes(){
                   }
                 }
               },
+              fotos:{
+                take:1
+              },
+              favoritos: {
+                where: userId ? {usuarioId: userId} : undefined,
+                select: { id: true }
+              },
               categoria:true
             }
           })  
@@ -65,7 +72,7 @@ export async function ExibirProdutosRecentes(){
 }
 
 
-export async function ExibirUnicoProduto(id: number){
+export async function ExibirUnicoProduto(id: number, userId: number | null){
     try{
         const produtoId = Number(id);
         const produto = await prisma.produto.findUnique({
@@ -87,9 +94,14 @@ export async function ExibirUnicoProduto(id: number){
                   },
                 },
               },
+              fotos: true,
               categoria: {
                 select:{ nome: true }
-              }
+              },
+              favoritos: {
+                where: userId ? {usuarioId: userId} : undefined,
+                select: { id: true }
+              },
             },
           });
 
@@ -172,7 +184,7 @@ export async function DeleteProduto(id: number,userId: number){
     } 
 }  
 
-export async function ProdutosComFiltro(searchParams: any){
+export async function ProdutosComFiltro(searchParams: any, userId: number | null){
   try {
 
     const validatedData = querySchema.safeParse(Object.fromEntries(searchParams));
@@ -225,6 +237,13 @@ export async function ProdutosComFiltro(searchParams: any){
             nome: true,
             enderecos: true,
           },
+        },
+        fotos:{
+          take:1
+        },
+        favoritos: {
+          where: userId ? {usuarioId: userId} : undefined,
+          select: { id: true }
         },
         categoria: true,
       }

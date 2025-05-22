@@ -5,7 +5,8 @@ import ProdutoDiv from "@/lib/components/produtoDiv";
 import SelectPersonalizado from "@/lib/components/selectPersonalizado";
 import { produtoService } from "@/lib/request/produto";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
+import { categoriaService } from "@/lib/request/categorias";
 
 export default function Home() {
   const router = useRouter();
@@ -13,33 +14,50 @@ export default function Home() {
   const busca = searchParams?.get('busca') || null;
   const categoria = searchParams?.get('categoria') || null;
   const condicao = searchParams?.get('condicao') || null;
+  const [categoriaProduto, setCategoriaProduto]= useState<any[]>([]); 
+  const [estadoSelecionado, setEstadoSelecionado] = useState('');
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
   const [produtos, setProdutos] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-
-
-    const buscarProdutos = async () => {
+    const fetchData = async () => {
         const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao);
         setProdutos(response.produtos);
+        const categorias = await categoriaService.categorias();
+        const nomesCategorias = categorias.categorias.map((categoria: { nome: any; }) => categoria.nome)
+        setCategoriaProduto(["Todos", ...nomesCategorias]);
+        setIsLoading(false);
     };
-    buscarProdutos();
+    fetchData();
   }, [busca, categoria, condicao]);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   
     const query = new URLSearchParams();
-  
+   
     const termo = (e.target as any).pesquisar.value;
     if (termo) query.set("busca", termo);
-    
-  
-    router.push("produtos/?" + query.toString());
+    if (categoriaSelecionada && categoriaSelecionada !== 'Todos') {
+      query.set("categoria", categoriaSelecionada);
+    }
+    if (estadoSelecionado && estadoSelecionado !== 'Todos') {
+      query.set("condicao", estadoSelecionado);
+    } 
+    router.push("produtos/?" + query.toString()); 
   };
 
-  const estadoProduto = ['Todos','Quebrado','Novo'];
-  const categoriaProduto = ['Todos','Celulares','Placa de vídeo'];
-  const ordemProduto = ['Recentes','Mais caro','Mais barato'];
+  const estadoProduto = ['Todos','Danificado','Novo','usado'];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader className='animate-spin mx-auto'/>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col text-gray-900">
@@ -56,10 +74,12 @@ export default function Home() {
                 placeholder="Pesquisar"
               />
             </div>
-            
-            <SelectPersonalizado opcoes={ordemProduto}/>
-            <SelectPersonalizado opcoes={estadoProduto}/>
-            <SelectPersonalizado opcoes={categoriaProduto}/>
+            <SelectPersonalizado 
+              onChange={setEstadoSelecionado}
+              opcoes={estadoProduto}/>
+            <SelectPersonalizado 
+              onChange={setCategoriaSelecionada} 
+              opcoes={categoriaProduto}/>
 
             <button type="submit" className="p-2 px-5 text-lg float-end font-bold text-white shadow-sm rounded-xl bg-green-800">
               Filtrar
@@ -77,7 +97,8 @@ export default function Home() {
                 preco={produto.preco}
                 cidade={produto.vendedor.enderecos[0].cidade+", "+ produto.vendedor.enderecos[0].UF || "Local não informado"}
                 data={new Date(produto.criadoEm).toLocaleDateString('pt-BR') || "Data desconhecida"}
-                imagemUrl={produto.imagemUrl}
+                imagemUrl={produto.fotos[0].url}
+                jaFavoritado={produto.favoritos.length > 0 }
               />
             ))}
           </div>

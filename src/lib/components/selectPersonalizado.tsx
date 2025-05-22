@@ -29,7 +29,7 @@ export default function SelectPersonalizado({ opcoes, onChange }: Props) {
         ref={spanRef}
         className="absolute invisible whitespace-nowrap text-lg font-semibold p-2"
       >
-        {opcoes.reduce((a, b) => (a.length > b.length ? a : b))}
+        {opcoes.reduce((a, b) => (a.length > b.length ? a : b), '')}
       </span>
 
       <div style={{ width: largura + 48 }} className="relative">

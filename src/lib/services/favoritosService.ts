@@ -37,7 +37,7 @@ export async function exibeFavoritos(usuarioId: number){
           });
 
           if(favoritos.length === 0){
-            return { status: 200, data: { message: "Nenhum produto encontrado"} };
+            return { status: 200, data: { message: "Nenhum produto encontrado", favoritos: []} };
           }
 
           return{status: 200, data: {favoritos}};

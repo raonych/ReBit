@@ -4,7 +4,8 @@ import { getUserIdFromToken } from '@/lib/auth';
 
 export async function GET(request: Request,{ params }: { params: { id: number } }) {
     const {id} = await params;
-    const produto = await ExibirUnicoProduto(+id);
+    const userId = getUserIdFromToken(request)
+    const produto = await ExibirUnicoProduto(+id, userId);
 
     return NextResponse.json(produto.data, { status: produto.status })
 
