@@ -29,6 +29,8 @@ export default function ProdutosFavoritos() {
       const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao)
 
       // Filtrando apenas produtos favoritados (simulação front-end)
+      const produtosFavoritos = response.produtos.filter((produto: any) => produto.favoritos.length > 0)
+      setProdutos(produtosFavoritos)
 
       const categorias = await categoriaService.categorias()
       const nomesCategorias = categorias.categorias.map((categoria: { nome: any }) => categoria.nome)
