@@ -60,22 +60,27 @@ export const produtoService = {
         return response.json();
       },
       
-      cadastrarProduto: async(form: FormData) =>{
-
-         const response = await fetch('/api/produtos',{
+      cadastrarProduto: async (dados: any) => {
+        const response = await fetch("/api/produtos", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(form),
-    });
+          body: JSON.stringify(dados),
+        });
       
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Erro na exibição de produtos");
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
         }
       
-        return response.json();
+        if (!response.ok) {
+          throw new Error(data?.error || "Erro no produto");
+        }
+      
+        return data;
       },
       favoritarProduto: async (id: string, favorito: boolean) => {
         const token = localStorage.getItem("token");
@@ -116,5 +121,6 @@ export const produtoService = {
           console.error("Erro ao buscar favoritos:", error);
           return { produtos: [] }; 
         }
-      }
+      },
+      
 }
