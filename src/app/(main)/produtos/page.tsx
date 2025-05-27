@@ -49,7 +49,7 @@ export default function Home() {
     router.push("produtos/?" + query.toString()); 
   };
 
-  const estadoProduto = ['Todos','Danificado','Novo','usado'];
+  const estadoProduto = ['Todos','Danificado','Novo','Usado'];
 
   if (isLoading) {
     return (

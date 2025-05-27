@@ -55,6 +55,13 @@ export function Header() {
         isLogged ? (
           <nav className="flex items-center gap-8 relative z-50">
             <Link
+              href="/favoritos"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              Favoritos
+            </Link>
+
+            <Link
               href="/perfil"
               className="text-sm text-gray-700 hover:text-gray-900"
             >
