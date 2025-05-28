@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useParams } from "next/navigation";
 
 // Interface para os pedaços de confete
 interface ConfettiPiece {
@@ -24,6 +25,10 @@ interface ConfettiPiece {
 }
 
 export default function FinalizarCompra() {
+
+  const params = useParams(); 
+  const id = params?.produtoId as string;
+  
   const [paymentMethod, setPaymentMethod] = useState<
     "credit" | "debit" | "pix"
   >("credit");

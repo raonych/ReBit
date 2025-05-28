@@ -24,11 +24,9 @@ export default function ProdutosFavoritos() {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Usando a mesma função de API do código original
-      // Na implementação real, você substituiria isso por uma chamada específica para favoritos
       const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao)
 
-      // Filtrando apenas produtos favoritados (simulação front-end)
+      // Filtrando apenas produtos favoritados
       const produtosFavoritos = response.produtos.filter((produto: any) => produto.favoritos.length > 0)
       setProdutos(produtosFavoritos)
 

@@ -1,3 +1,5 @@
+import { exibirEnderecos } from "../services/enderecoService";
+
 export const usuarioService = {
   cadastrar: async (dados: { nome: string; email: string; senha: string }) => {
     const response = await fetch("/api/auth/cadastro", {
@@ -90,6 +92,28 @@ export const usuarioService = {
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Erro ao cadastrar endereço");
+    }
+
+    return response.json();
+  },
+
+  exibirEnderecos: async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token não encontrado. Usuário não autenticado.");
+    }
+
+    const response = await fetch("/api/auth/enderecos", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+    });
+
+    if (!response.ok && response.status != 404) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Erro ao retornar endereço");
     }
 
     return response.json();

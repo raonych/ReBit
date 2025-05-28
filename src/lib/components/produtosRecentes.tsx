@@ -89,7 +89,7 @@ export default function ProdutosRecentes() {
                     preco={item.preco}
                     cidade={item.vendedor.enderecos[0].cidade || "Desconhecida"}
                     data={new Date(item.criadoEm).toLocaleDateString("pt-BR")}
-                    imagemUrl={item.fotos[0] || "/placeholder.png"}
+                    imagemUrl={item.fotos[0].url || "/placeholder.png"}
                     jaFavoritado={item.favoritos.length > 0}
                   />
                 )}

@@ -23,3 +23,23 @@ export async function cadastrarEndereco(userId: number, dados: any) {
     return { status: 500, data: { error: "Erro interno do servidor" } };
   }
 }
+
+export async function exibirEnderecos(userId: number){
+  try{
+    const enderecos = await prisma.endereco.findMany({
+      where:{
+        usuarioId: userId
+      }
+    }) 
+
+    if(enderecos.length === 0){
+      return {status: 404, data: {message:"Nenhum endereço cadastrado"}}
+    }
+
+    return {status: 200, data: enderecos};
+
+  }catch(error){
+    console.error("Erro ao exibir endereços", error);
+    return {status: 500, data: {error : "Erro interno do servidor"}}
+  }
+}

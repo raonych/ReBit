@@ -2,7 +2,6 @@ import { prisma } from '@/lib/prisma';
 import { ZodError } from "zod";
 import { produtoCreateSchema, produtoUpdateSchema, querySchema } from '@/lib/validators/produto';
 import { Search } from 'lucide-react';
-import { CondicaoProduto } from '@prisma/client';
 
 export async function CadastrarProduto(body: any){
     try{

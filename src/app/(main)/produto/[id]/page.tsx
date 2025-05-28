@@ -33,7 +33,7 @@ const PaginaProduto: React.FC = () => {
       }
     };
     buscarProduto();
-  }, [id,produto]);
+  }, [id]);
 
 
   const toggleFavorito = async () => {
@@ -113,7 +113,7 @@ const PaginaProduto: React.FC = () => {
           R$ {produto.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </h1>
         <div className="mt-6 space-y-3">
-          <Link href="/finalizarCompra" onClick={() => setHeadingTo(true)} className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-md transition">
+          <Link href={`/confirmarCompra/${id}`} onClick={() => setHeadingTo(true)} className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-md transition">
             {
               headingTo?(
               <>
@@ -127,7 +127,7 @@ const PaginaProduto: React.FC = () => {
             )}
             
           </Link>
-          <button className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition">
+          <button  className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition">
             <MessageCircleMore className="w-5 h-5" />
             Chat
           </button>

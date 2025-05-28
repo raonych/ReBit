@@ -1,56 +1,70 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { MapPin, User, Package, ChevronRight, Edit2, Check, ArrowLeft } from "lucide-react"
+import { MapPin, User, Package, ChevronRight, Edit2, Check, ArrowLeft, Loader } from "lucide-react"
+import { useParams } from "next/navigation"
+import { produtoService } from "@/lib/request/produto"
+import { usuarioService } from "@/lib/request/usuarios"
 
-// Dados simulados para demonstração
-const produtoDemo = {
-  id: "123",
-  nome: "Placa de vídeo GTX 1060 6GB",
-  preco: 799.9,
-  imagem: "/placeholder.svg?height=120&width=120",
-  vendedor: "TechRecycle",
-}
 
-const enderecoDemo = {
-  principal: {
-    nome: "Casa",
-    rua: "Rua das Flores, 123",
-    bairro: "Jardim Primavera",
-    cidade: "São Paulo",
-    estado: "SP",
-    cep: "01234-567",
-    complemento: "Apto 42",
-  },
-  trabalho: {
-    nome: "Trabalho",
-    rua: "Av. Paulista, 1000",
-    bairro: "Bela Vista",
-    cidade: "São Paulo",
-    estado: "SP",
-    cep: "01310-100",
-    complemento: "Sala 1520",
-  },
-}
+const ConfirmarPedido: React.FC = () => {
+  const params = useParams();
+  const id = params?.produtoId as string;
 
-export default function ConfirmarPedido() {
-  const [enderecoSelecionado, setEnderecoSelecionado] = useState("principal")
+  const [loading, setLoading] = useState(true);
+  const [produto, setProduto] = useState<any>(null);
+  const [enderecos, setEnderecos] = useState<any[]>([]);
+  const [enderecoSelecionado, setEnderecoSelecionado] = useState<string | null>(null); 
   const [recebedor, setRecebedor] = useState("proprio")
   const [nomeRecebedor, setNomeRecebedor] = useState("")
   const [documentoRecebedor, setDocumentoRecebedor] = useState("")
   const [editandoRecebedor, setEditandoRecebedor] = useState(false)
+  const [foto, setFoto] = useState();
 
-  const frete = 25.9
-  const total = produtoDemo.preco + frete
+  useEffect(() => {
+    const fetchData = async () => {
+      const produtoData = await produtoService.produtoUnico(id);
+      const enderecosData = await usuarioService.exibirEnderecos();
+
+      if (enderecosData.length > 0) {
+        setEnderecos(enderecosData);
+        setEnderecoSelecionado(enderecosData[0].key); 
+      } else {
+        setEnderecos([]);
+        setEnderecoSelecionado(null); 
+      }
+  
+      setFoto(produtoData.fotos[0].url);
+      setProduto(produtoData);  
+      setLoading(false);
+    };
+    if(loading){
+      fetchData();
+    }
+    
+  }, [id, loading]);
+
+  console.log(produto);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader className="animate-spin mx-auto" />
+      </div>
+    )
+  }
+
+  const frete = 25.9;
+  const total = parseFloat(produto?.preco) + frete;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <Link href="/carrinho" className="flex items-center text-gray-600 mb-6 hover:text-gray-900 transition-colors">
+        <Link href="/produto/" className="flex items-center text-gray-600 mb-6 hover:text-gray-900 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Voltar para o carrinho
+          Voltar para o produto
         </Link>
 
         <h1 className="text-2xl md:text-3xl font-bold mb-8">Confirmar dados do pedido</h1>
@@ -70,16 +84,16 @@ export default function ConfirmarPedido() {
                 <div className="flex items-center">
                   <div className="h-20 w-20 relative rounded-md overflow-hidden border border-gray-200">
                     <Image
-                      src={produtoDemo.imagem || "/placeholder.svg"}
-                      alt={produtoDemo.nome}
+                      src={foto || "/placeholder.svg"}
+                      alt={produto?.nome}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <div className="ml-4 flex-1">
-                    <h3 className="font-medium">{produtoDemo.nome}</h3>
-                    <p className="text-sm text-gray-500">Vendido por: {produtoDemo.vendedor}</p>
-                    <p className="font-medium mt-1">R$ {produtoDemo.preco.toFixed(2)}</p>
+                    <h3 className="font-medium">{produto?.nome}</h3>
+                    <p className="text-sm text-gray-500">Vendido por: {produto?.vendedor}</p>
+                    <p className="font-medium mt-1">R$ {parseFloat(produto?.preco).toFixed(2)}</p>
                   </div>
                 </div>
               </div>
@@ -95,9 +109,8 @@ export default function ConfirmarPedido() {
               </div>
               <div className="p-4">
                 <div className="space-y-4">
-                  {Object.keys(enderecoDemo).map((key) => {
-                    const endereco = enderecoDemo[key as keyof typeof enderecoDemo]
-                    return (
+                  {enderecos.length > 0 ? (
+                    enderecos.map((endereco, key) => (
                       <div
                         key={key}
                         className="flex items-start space-x-3 border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
@@ -108,32 +121,36 @@ export default function ConfirmarPedido() {
                             id={`endereco-${key}`}
                             name="endereco"
                             value={key}
-                            checked={enderecoSelecionado === key}
-                            onChange={() => setEnderecoSelecionado(key)}
+                            checked={enderecoSelecionado === String(key)}
+                            onChange={() => setEnderecoSelecionado(String(key))}
                             className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300"
                           />
                         </div>
                         <div className="flex-1">
-                          <label htmlFor={`endereco-${key}`} className="font-medium cursor-pointer">
-                            {endereco.nome}
-                          </label>
                           <p className="text-sm text-gray-600 mt-1">
-                            {endereco.rua}, {endereco.complemento}
+                            {endereco?.rua}, {endereco?.complemento}
                             <br />
-                            {endereco.bairro} - {endereco.cidade}/{endereco.estado}
+                            {endereco?.bairro} - {endereco?.cidade}/{endereco?.estado}
                             <br />
-                            CEP: {endereco.cep}
+                            CEP: {endereco?.cep}
                           </p>
                         </div>
                       </div>
-                    )
-                  })}
+                    ))
+                  ) : (
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600 mt-1">
+                        Você ainda não possui nenhum endereço cadastrado
+                        <Link href="/enderecos">Cadastrar endereço</Link>
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                <button className="mt-4 px-4 py-2 border border-gray-300 rounded-md text-sm flex items-center hover:bg-gray-50 transition-colors">
+                <Link className="mt-4 px-4 py-2 border border-gray-300 rounded-md text-sm flex items-center hover:bg-gray-50 transition-colors" href={"/enderecos"}>
                   <MapPin className="h-4 w-4 mr-2" />
                   Adicionar novo endereço
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -257,7 +274,7 @@ export default function ConfirmarPedido() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Produto</span>
-                    <span>R$ {produtoDemo.preco.toFixed(2)}</span>
+                    <span>R$ {parseFloat(produto?.preco).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Frete</span>
@@ -286,3 +303,5 @@ export default function ConfirmarPedido() {
     </div>
   )
 }
+
+export default ConfirmarPedido;
