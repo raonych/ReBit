@@ -11,9 +11,29 @@ export async function iniciaCompra(body: any, userId:  number){
                 preco:true
             }
         })
+        
+        if(!body.remetenteDoc || !body.remetenteNome){
+            const comprador = await prisma.usuario.findUnique({
+            where:{
+                id: userId
+            }
+        });
+
+        body.remetenteNome = comprador?.nome;
+        body.remetenteDoc = comprador?.telefone;
+        }
+        
 
         if(!produtoPreco){
             return{status:404,data:{message:"produto não encontrado",success:false}}
+        }
+
+        const enderecoExistente = await prisma.endereco.findUnique({
+        where: { id: parseInt(body.enderecoId)}
+        });
+
+        if (!enderecoExistente) {
+        return{status:404,data:{message:"endereço não encontrado",success:false}}
         }
 
         const compra = await prisma.compra.create({
@@ -22,7 +42,10 @@ export async function iniciaCompra(body: any, userId:  number){
                 metodoPagamento:body.metodoPagamento,
                 compradorId: userId,
                 status:"pendente",
-                produtoId: parseInt(body.produtoId)
+                enderecoId: parseInt(body.enderecoId),
+                produtoId: parseInt(body.produtoId),
+                remetenteNome: body.remetenteNome,
+                remetenteDoc: body.remetenteDoc
 
             }
         })

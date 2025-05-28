@@ -13,7 +13,7 @@ type PedidoProps = {
   id: string;
   handleConfirm: () => void;
   handleForm:(dados: {
-    enderecoSelecionado: string | null;
+    enderecoId: string | null;
     nomeRecebedor: string;
     documentoRecebedor: string;
   }) => void;
@@ -24,7 +24,7 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
   const [loading, setLoading] = useState(true);
   const [produto, setProduto] = useState<any>(null);
   const [enderecos, setEnderecos] = useState<any[]>([]);
-  const [enderecoSelecionado, setEnderecoSelecionado] = useState<string | null>(null); 
+  const [enderecoId, setEnderecoId] = useState<string | null>(null); 
   const [recebedor, setRecebedor] = useState("proprio")
   const [nomeRecebedor, setNomeRecebedor] = useState("")
   const [documentoRecebedor, setDocumentoRecebedor] = useState("")
@@ -38,10 +38,10 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
 
       if (enderecosData.length > 0) {
         setEnderecos(enderecosData);
-        setEnderecoSelecionado(enderecosData[0].key); 
+        setEnderecoId(enderecosData[0].key); 
       } else {
         setEnderecos([]);
-        setEnderecoSelecionado(null); 
+        setEnderecoId(null); 
       }
   
       setFoto(produtoData.fotos[0].url);
@@ -123,12 +123,13 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
                       >
                         <div className="flex items-center h-5">
                           <input
+                          required
                             type="radio"
-                            id={`endereco-${key}`}
+                            id={`endereco-${endereco.id}`}
                             name="endereco"
-                            value={key}
-                            checked={enderecoSelecionado === String(key)}
-                            onChange={() => setEnderecoSelecionado(String(key))}
+                            value={endereco.id}
+                            checked={enderecoId === String(endereco.id)}
+                            onChange={() => setEnderecoId(String(endereco.id))}
                             className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300"
                           />
                         </div>
@@ -294,7 +295,7 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
                   <button
                     onClick={() =>
                       handleForm({
-                        enderecoSelecionado,
+                        enderecoId,
                         nomeRecebedor,
                         documentoRecebedor,
                       })

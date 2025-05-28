@@ -78,34 +78,50 @@ async function main() {
     })
   }
 
-  // 4. Criar compradores
-  const compradores = await Promise.all(
-    [1, 2, 3].map((i) =>
-      prisma.usuario.create({
-        data: {
-          nome: `Comprador ${i}`,
-          email: `comprador${i}@exemplo.com`,
-          senha: hashedPassword,
-          telefone: `1199998888${i}`
+ // 4- Criar compradores com endereço
+const compradores = await Promise.all(
+  [1, 2, 3].map((i) =>
+    prisma.usuario.create({
+      data: {
+        nome: `Comprador ${i}`,
+        email: `comprador${i}@exemplo.com`,
+        senha: hashedPassword,
+        telefone: `1199998888${i}`,
+        enderecos: {
+          create: {
+            cidade: "São Paulo",
+            UF: "SP",
+            bairro: `Bairro ${i}`,
+            rua: `Rua ${i}`,
+            numero: `${200 + i}`,
+            cep: `0800000${i}`
+          }
         }
-      })
-    )
-  );
+      },
+      include: {
+        enderecos: true
+      }
+    })
+  )
+);
 
   // 5. Criar compras pendentes e aprovadas
   await Promise.all(
-    compradores.map((comprador, i) =>
-      prisma.compra.create({
-        data: {
-          compradorId: comprador.id,
-          produtoId: produtos[i].id,
-          valor: produtos[i].preco,
-          metodoPagamento: 'pix',
-          status: 'pendente'
-        }
-      })
-    )
-  );
+  compradores.map((comprador, i) =>
+    prisma.compra.create({
+      data: {
+        compradorId: comprador.id,
+        produtoId: produtos[i].id,
+        valor: produtos[i].preco,
+        metodoPagamento: 'pix',
+        status: 'pendente',
+        enderecoId: comprador.enderecos[0].id,
+        remetenteNome: comprador.nome,
+        remetenteDoc: comprador.telefone
+      }
+    })
+  )
+);
 
   await prisma.compra.create({
     data: {
@@ -113,7 +129,10 @@ async function main() {
       produtoId: produtos[produtos.length - 1].id,
       valor: produtos[produtos.length - 1].preco,
       metodoPagamento: 'cartao_credito',
-      status: 'aprovado'
+      status: 'aprovado',
+      enderecoId: compradores[0].enderecos[0].id,
+      remetenteNome: compradores[0].nome,
+      remetenteDoc: compradores[0].telefone
     }
   });
 

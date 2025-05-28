@@ -1,9 +1,9 @@
 export const compraService = {
     
-    iniciarCompra: async(dados: any) => {
+    iniciarCompra: async(dados: {remetenteNome: string | null, remetenteDoc: string | null, enderecoId: string }) => {
 
         const token = localStorage.getItem("token");
-
+        console.log(dados.enderecoId)
         const response = await fetch("/api/compra", {
           method: "POST",
           headers: {

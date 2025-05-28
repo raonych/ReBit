@@ -39,43 +39,55 @@ export default function CadastroProduto() {
   };
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  
-    if (!vendedorId) {
-      alert("Aguardando carregamento do perfil do usuário...");
-      return;
-    }
+  e.preventDefault();
 
-    // Garante que o campo de preço seja um número válido
-    const precoNumerico = parseFloat(preco);
-    if (isNaN(precoNumerico)) {
-      alert("Preço inválido");
-      return;
-    }
+  if (!imagemFile) {
+    alert("Selecione uma imagem");
+    return;
+  }
 
-    const idCategoria = parseInt(categoria);
-  
-    // Monta o objeto com os dados do produto
-    const dados = {
-      nome,
-      descricao,
-      preco: precoNumerico,
-      condicao: condicao.toLocaleLowerCase(),
-      categoriaId: idCategoria,
-      vendedorId
-    };
-  
+ 
+  const formData = new FormData();
+  formData.append('file', imagemFile);
 
-    console.log(dados)
-    try {
-      await produtoService.cadastrarProduto(dados);
-      alert("Produto cadastrado com sucesso!");
-      router.push("/produtos");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message || "Erro ao cadastrar produto");
-    }
+  const imageUploadResponse = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!imageUploadResponse.ok) {
+    alert("Erro ao fazer upload da imagem");
+    return;
+  }
+
+  const imageData = await imageUploadResponse.json();
+  const imagemUrl = imageData.url;
+
+  const precoNumerico = parseFloat(preco);
+  if (isNaN(precoNumerico)) {
+    alert("Preço inválido");
+    return;
+  }
+
+  const dados = {
+    nome,
+    descricao,
+    preco: precoNumerico,
+    condicao: condicao.toLowerCase(),
+    categoriaId: parseInt(categoria),
+    vendedorId,
+    imagemUrl: imagemUrl,
   };
+  console.log(dados)
+  try {
+    await produtoService.cadastrarProduto(dados);
+    alert("Produto cadastrado com sucesso!");
+    router.push("/produtos");
+  } catch (error: any) {
+    console.error(error);
+    alert(error.message || "Erro ao cadastrar produto");
+  }
+};
 
 
   return (

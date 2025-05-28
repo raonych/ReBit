@@ -7,7 +7,7 @@ export const produtoCreateSchema = z.object({
   preco: z.preprocess((val) => Number(val), z.number().positive()),
   condicao: z.enum(["novo", "usado", "danificado"]),
   vendedorId: z.preprocess((val) => Number(val), z.number().int()),
-  imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string().optional())
+  imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string())
 });
 
 export const produtoUpdateSchema = z.object({

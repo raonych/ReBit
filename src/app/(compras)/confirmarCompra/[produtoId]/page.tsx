@@ -26,7 +26,7 @@ console.log("params:", params)
 console.log("produtoId:", produtoId)
 
   const handleForm = (dados: {
-      enderecoSelecionado: string | null;
+      enderecoId: string | null;
       nomeRecebedor: string | null;
       documentoRecebedor: string | null;
     }) =>{
@@ -36,8 +36,8 @@ console.log("produtoId:", produtoId)
     }
 
   const handlePayment = async (metodoPagamento: string) =>{
-    console.log(metodoPagamento)
-      const data = {metodoPagamento, produtoId}
+      const data = {metodoPagamento, produtoId, ...pedidoData}
+          console.log("AQUI",data)
       const response = await compraService.iniciarCompra(data);
       setPaymentDone(true);
   };

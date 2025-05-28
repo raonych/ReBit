@@ -8,8 +8,17 @@ export async function CadastrarProduto(body: any){
 
         const validatedData = produtoCreateSchema.parse(body)
 
+        const { imagemUrl, ...produtoData } = validatedData;
+
         const novoProduto = await prisma.produto.create({
-            data: {...validatedData}
+            data: {...produtoData}
+        })
+
+        await prisma.fotosProduto.create({
+          data:{
+            produtoId: novoProduto.id,
+            url: imagemUrl
+          }
         })
 
         return { status: 201, data: novoProduto };
