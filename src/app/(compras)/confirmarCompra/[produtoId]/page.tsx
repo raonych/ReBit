@@ -62,7 +62,7 @@ const ConfirmarPedido: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <Link href="/produto/" className="flex items-center text-gray-600 mb-6 hover:text-gray-900 transition-colors">
+        <Link href={`/produto/${id}`} className="flex items-center text-gray-600 mb-6 hover:text-gray-900 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar para o produto
         </Link>
@@ -92,7 +92,7 @@ const ConfirmarPedido: React.FC = () => {
                   </div>
                   <div className="ml-4 flex-1">
                     <h3 className="font-medium">{produto?.nome}</h3>
-                    <p className="text-sm text-gray-500">Vendido por: {produto?.vendedor}</p>
+                    <p className="text-sm text-gray-500">Vendido por: {produto?.vendedor.nome}</p>
                     <p className="font-medium mt-1">R$ {parseFloat(produto?.preco).toFixed(2)}</p>
                   </div>
                 </div>
@@ -141,13 +141,12 @@ const ConfirmarPedido: React.FC = () => {
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mt-1">
                         Você ainda não possui nenhum endereço cadastrado
-                        <Link href="/enderecos">Cadastrar endereço</Link>
                       </p>
                     </div>
                   )}
                 </div>
 
-                <Link className="mt-4 px-4 py-2 border border-gray-300 rounded-md text-sm flex items-center hover:bg-gray-50 transition-colors" href={"/enderecos"}>
+                <Link  href={"/enderecos"} className="mt-4 px-4 py-2 border border-gray-300 rounded-md text-sm flex items-center hover:bg-gray-50 transition-colors">
                   <MapPin className="h-4 w-4 mr-2" />
                   Adicionar novo endereço
                 </Link>
