@@ -3,11 +3,9 @@ import { compraCreateSchema, compraUpdateSchema } from '../validators/compra';
 
 export async function iniciaCompra(body: any, userId:  number){
     try{
-        const validatedData = compraCreateSchema.parse(body);
-
-        const produtoPreco = await prisma.produto.findUnique({
+      const produtoPreco = await prisma.produto.findUnique({
             where:{
-                id:validatedData.produtoId
+                id: parseInt(body.produtoId)
             },
             select:{
                 preco:true
@@ -21,10 +19,10 @@ export async function iniciaCompra(body: any, userId:  number){
         const compra = await prisma.compra.create({
             data:{
                 valor:produtoPreco.preco,
-                metodoPagamento:validatedData.metodoPagamento,
+                metodoPagamento:body.metodoPagamento,
                 compradorId: userId,
                 status:"pendente",
-                produtoId: validatedData.produtoId
+                produtoId: parseInt(body.produtoId)
 
             }
         })

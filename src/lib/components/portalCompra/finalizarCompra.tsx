@@ -9,6 +9,7 @@ import {
   QrCode,
   Loader2,
   ShoppingBag,
+  ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,14 +25,18 @@ interface ConfettiPiece {
   delay: number;
 }
 
-export default function FinalizarCompra() {
+type CompraProps = {
+    id: string
+    handleConfirm: () => void
+    handlePayment: (metodoPagament: string) => void
+    paymentDone: boolean 
+  }
 
-  const params = useParams(); 
-  const id = params?.produtoId as string;
+export default function FinalizarCompra({id, handleConfirm, handlePayment, paymentDone}: CompraProps) {
   
   const [paymentMethod, setPaymentMethod] = useState<
-    "credit" | "debit" | "pix"
-  >("credit");
+    "cartao_debito" | "cartao_credito" | "pix"
+  >("cartao_credito");
   const [cardNumber, setCardNumber] = useState("");
   const [cardName, setCardName] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
@@ -143,8 +148,10 @@ export default function FinalizarCompra() {
 
   const handleFinishPayment = () => {
     setIsLoading(true);
-
-    // Simulação de processamento de pagamento
+    handlePayment(paymentMethod);
+    if(paymentDone){
+      setIsLoading(false)
+    }
     setTimeout(() => {
       setIsLoading(false);
       setShowOrderSummary(true);
@@ -177,6 +184,10 @@ export default function FinalizarCompra() {
 
   return (
     <div className="max-w-md mx-auto p-6">
+      <button onClick={handleConfirm} className="flex items-center text-gray-600 mb-6 hover:text-gray-900 transition-colors">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Voltar para o produto
+        </button>
       <h1 className="text-3xl font-bold mb-1">Finalizar Compra</h1>
       <p className="text-gray-500 mb-6">
         Escolha seu método de pagamento preferido
@@ -186,11 +197,11 @@ export default function FinalizarCompra() {
       <div className="grid grid-cols-3 gap-2 mb-6">
         <button
           className={`flex items-center justify-center gap-2 py-3 px-4 rounded-md ${
-            paymentMethod === "credit"
+            paymentMethod === "cartao_credito"
               ? "bg-black text-white"
               : "bg-gray-100 text-gray-700"
           }`}
-          onClick={() => setPaymentMethod("credit")}
+          onClick={() => setPaymentMethod("cartao_credito")}
         >
           <CreditCard size={18} />
           <span className="text-sm">Cartão de crédito</span>
@@ -198,11 +209,11 @@ export default function FinalizarCompra() {
 
         <button
           className={`flex items-center justify-center gap-2 py-3 px-4 rounded-md ${
-            paymentMethod === "debit"
+            paymentMethod === "cartao_debito"
               ? "bg-black text-white"
               : "bg-gray-100 text-gray-700"
           }`}
-          onClick={() => setPaymentMethod("debit")}
+          onClick={() => setPaymentMethod("cartao_debito")}
         >
           <CheckCircle2 size={18} />
           <span className="text-sm">Cartão de débito</span>
@@ -222,7 +233,7 @@ export default function FinalizarCompra() {
       </div>
 
       {/* Formulário de cartão */}
-      {(paymentMethod === "credit" || paymentMethod === "debit") && (
+      {(paymentMethod === "cartao_credito" || paymentMethod === "cartao_debito") && (
         <div className="space-y-4">
           <div>
             <label

@@ -61,6 +61,7 @@ model Endereco {
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
   usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+  compra       Compra[]
 }
 
 // Tabela de categorias de produtos
@@ -103,9 +104,13 @@ model Compra {
   valor           Decimal
   metodoPagamento MetodoPagamento
   status          StatusPagamento
+  enderecoId      Int
   criadoEm        DateTime        @default(now())
   atualizadoEm    DateTime        @updatedAt
+  remetenteNome   String          
+  remetenteDoc    String
   comprador       Usuario         @relation(fields: [compradorId], references: [id])
+  enderecoEntrega Endereco        @relation(fields: [enderecoId], references: [id])
   produtoId       Int             @unique // Relacionamento 1-para-1
   produto         Produto         @relation(fields: [produtoId], references: [id])
 }
