@@ -46,5 +46,24 @@ export const conversaService = {
           }
       
           return response.json();
-    }
+    },
+    iniciarConversa: async (produtoId: string) => {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/conversas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(produtoId),
+        });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Erro no cadastro de conversa");
+        }
+    
+        return response.json();
+  },
 }

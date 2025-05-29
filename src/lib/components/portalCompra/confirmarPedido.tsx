@@ -243,7 +243,7 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
                           </div>
                           <div>
                             <label htmlFor="documento-recebedor" className="block text-sm font-medium text-gray-700">
-                              CPF/CNPJ
+                              Celular
                             </label>
                             <input
                               id="documento-recebedor"
@@ -251,7 +251,7 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
                               value={documentoRecebedor}
                               onChange={(e) => setDocumentoRecebedor(e.target.value)}
                               className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
-                              placeholder="CPF ou CNPJ"
+                              placeholder="Ex: (11)98323-9784"
                             />
                           </div>
                           <button

@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { produtoCreateSchema, produtoUpdateSchema, querySchema } from '@/lib/validators/produto';
 import { Search } from 'lucide-react';
 
-export async function CadastrarProduto(body: any){
+export async function CadastrarProduto(body: any, userId: number){
     try{
 
         const validatedData = produtoCreateSchema.parse(body)
@@ -167,7 +167,7 @@ export async function DeleteProduto(id: number,userId: number){
     try{ 
         const produto = await prisma.produto.findFirst({
             where: {
-            id: +id,
+            id: id,
             vendedorId: userId,
             },
         });
@@ -176,9 +176,16 @@ export async function DeleteProduto(id: number,userId: number){
             return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
           }
 
+
+          await prisma.favorito.deleteMany({ where: { produtoId: id } });
+          await prisma.conversa.deleteMany({ where: { produtoId: id } });
+          await prisma.fotosProduto.deleteMany({ where: { produtoId: id } });
+          await prisma.compra.deleteMany({ where: { produtoId: id } });
+
+
           const deleteProduto = await prisma.produto.delete({
             where: {
-              id: +id
+              id: id
             }
           });
 

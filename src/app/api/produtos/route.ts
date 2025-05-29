@@ -5,9 +5,15 @@ import { getUserIdFromToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
 
+    const userId = getUserIdFromToken(request);
+
+    if(!userId){
+        return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+    }
+
     const body = await request.json()
 
-    const novoProduto = await CadastrarProduto(body);
+    const novoProduto = await CadastrarProduto(body, userId);
 
     return NextResponse.json(novoProduto.data, { status: novoProduto.status })
 

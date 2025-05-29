@@ -25,14 +25,14 @@ export async function PUT(request: Request, {params}: {params: {id: number}}) {
     return NextResponse.json(produto.data, { status: produto.status })
 }
 
-export async function DELETE(request: Request, {params}: {params: {id: number}}){
+export async function DELETE(request: Request, {params}: {params: {id: string}}){
     const userId = getUserIdFromToken(request);
     const {id} = await params;
 
     if (!userId){
         return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
-
-    const res = await DeleteProduto(+id, userId);
+    const intId = parseInt(id);
+    const res = await DeleteProduto(intId, userId);
     return NextResponse.json(res.data, { status: res.status })    
 }
