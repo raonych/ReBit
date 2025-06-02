@@ -18,15 +18,14 @@ export function Header() {
         setIsLogged(true);
       }
       setIsloading(false);
+
+      const listener = () => {
+        setIsLogged(true);
+      };
+      window.addEventListener("login", listener);
+      return () => window.removeEventListener("login", listener);
     }, []);
 
-  useEffect(() => {
-  const listener = () => {
-    setIsLogged(true);
-  };
-  window.addEventListener("login", listener);
-  return () => window.removeEventListener("login", listener);
-}, []);
     
   const pathname = usePathname();
 
@@ -54,6 +53,12 @@ export function Header() {
         {!isLoading && (
         isLogged ? (
           <nav className="flex items-center gap-8 relative z-50">
+            <Link
+              href="/portalVendedor"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              Portal Vendedor
+            </Link>
             <Link
               href="/favoritos"
               className="text-sm text-gray-700 hover:text-gray-900"

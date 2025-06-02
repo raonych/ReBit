@@ -172,6 +172,7 @@ export default function CadastroProduto() {
               <option value="">Condição</option>
               <option value="Usado">Usado</option>
               <option value="Danificado">Danificado</option>
+              <option value="Novo">Novo</option>
             </select>
 
             <textarea

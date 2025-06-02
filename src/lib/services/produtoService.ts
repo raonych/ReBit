@@ -176,18 +176,11 @@ export async function DeleteProduto(id: number,userId: number){
             return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
           }
 
-
-          await prisma.favorito.deleteMany({ where: { produtoId: id } });
-          await prisma.conversa.deleteMany({ where: { produtoId: id } });
-          await prisma.fotosProduto.deleteMany({ where: { produtoId: id } });
-          await prisma.compra.deleteMany({ where: { produtoId: id } });
-
-
-          const deleteProduto = await prisma.produto.delete({
-            where: {
-              id: id
-            }
-          });
+        await prisma.produto.delete({
+          where: {
+            id: id
+          }
+        });
 
         return { status: 200, data: {message:"Produto deletado com sucesso!"} };
 

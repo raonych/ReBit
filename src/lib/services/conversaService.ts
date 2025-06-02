@@ -1,10 +1,8 @@
 import { prisma } from '@/lib/prisma';
 
-import { createConversaSchema } from "../validators/conversa";
-
 export async function iniciarConversa(body: any, userId: number) {
     try {
-      const produtoId = parseInt(body.produtoId);
+      const produtoId = parseInt(body);
       if (isNaN(produtoId)) {
         console.log("ID do produto inválido.")
         return { status: 400, data: { message: "ID do produto inválido." } };
@@ -21,7 +19,12 @@ export async function iniciarConversa(body: any, userId: number) {
           data: { message: "Produto não encontrado para iniciar conversa" }
         };
       }
-  
+      if(produto.vendedorId == userId){
+        return {
+          status: 400,
+          data: { message: "Não foi possivel iniciar a conversa, produto postado pelo mesmo usuário" }
+        };
+      }
       const conversaExistente = await prisma.conversa.findFirst({
         where: {
           vendedorId: produto.vendedorId,
@@ -48,7 +51,10 @@ export async function iniciarConversa(body: any, userId: number) {
 export async function listarConversas(userId: number){
     try{
         const conversas = await prisma.conversa.findMany({
-            where: {
+          orderBy:{
+                  criadoEm: 'desc',
+                },
+          where: {        
               OR: [
                 { compradorId: userId },
                 { produto: { vendedorId: userId } },

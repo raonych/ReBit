@@ -94,7 +94,7 @@ model FotosProduto {
   id Int @id @default(autoincrement())
   produtoId Int @unique
   url String 
-  produto Produto @relation(fields: [produtoId], references: [id])
+  produto Produto @relation(fields: [produtoId], references: [id],  onDelete: Cascade)
 }
 
 // Tabela de compras (transação entre usuários)
@@ -112,7 +112,7 @@ model Compra {
   comprador       Usuario         @relation(fields: [compradorId], references: [id])
   enderecoEntrega Endereco        @relation(fields: [enderecoId], references: [id])
   produtoId       Int             @unique // Relacionamento 1-para-1
-  produto         Produto         @relation(fields: [produtoId], references: [id])
+  produto         Produto         @relation(fields: [produtoId], references: [id],  onDelete: Cascade)
 }
 
 // Tabela de avaliações
@@ -131,7 +131,7 @@ model Favorito {
   id        Int     @id @default(autoincrement())
   usuario   Usuario @relation(fields: [usuarioId], references: [id])
   usuarioId Int
-  produto   Produto @relation(fields: [produtoId], references: [id])
+  produto   Produto @relation(fields: [produtoId], references: [id],  onDelete: Cascade)
   produtoId Int
 }
 
@@ -145,7 +145,7 @@ model Conversa {
   mensagens      Mensagem[]
   vendedor       Usuario    @relation("ConversasVenda", fields: [vendedorId], references: [id])
   comprador      Usuario    @relation("ConversasCompra", fields: [compradorId], references: [id])
-  produto        Produto    @relation(fields: [produtoId], references: [id])
+  produto        Produto    @relation(fields: [produtoId], references: [id],  onDelete: Cascade)
 }
 
 model Mensagem {
@@ -155,7 +155,7 @@ model Mensagem {
   texto       String
   enviadaEm   DateTime  @default(now())
 
-  conversa    Conversa  @relation(fields: [conversaId], references: [id])
+  conversa    Conversa  @relation(fields: [conversaId], references: [id], onDelete: Cascade)
   remetente   Usuario   @relation("MensagensDoUsuario", fields: [remetenteId], references: [id])
 
 }

@@ -39,10 +39,9 @@ const PaginaProduto: React.FC = () => {
   }, [id]);
 
   const handleChat = async () => {
-    console.log(id)
-    const chat = await conversaService.iniciarConversa(id);
+    const chat = await conversaService.iniciarConversa(id);    
     if(chat){
-      router.push("/conversas");
+      router.push(`/conversas/${chat.conversa.id}`);
     }
   } 
 
@@ -137,7 +136,7 @@ const PaginaProduto: React.FC = () => {
             )}
             
           </Link>
-          <button  onClick={handleChat} className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition">
+          <button  onClick={handleChat} className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition cursor-pointer">
             <MessageCircleMore className="w-5 h-5" />
             Chat
           </button>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { conversaService } from '@/lib/request/conversas';
+import { setLazyProp } from 'next/dist/server/api-utils';
 
 interface ConversasProps {
   onButtonClick: (id: string) => void;
@@ -9,11 +10,18 @@ interface ConversasProps {
 const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
   const [activeButton, setActiveButton] = useState<string>('btn-1');
   const [conversas, setConversas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const exibeConversas = async () => {
-      const conversas = await conversaService.listarConversas();
-      setConversas(conversas.conversas);
+      try {
+        const response = await conversaService.listarConversasVendedor();
+        setConversas(response.conversas)
+      } catch (err: any) {
+        setConversas([])
+      } finally {
+        setLoading(false)
+      }  
     }
     exibeConversas();
   },[]);
@@ -27,10 +35,14 @@ const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
   return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-4 py-5 sm:px-6 border-b border-gray-100">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">conversas</h3>
+          <h2 className="text-lg font-medium leading-6 text-gray-900">conversas</h2>
         </div>
         <div className="divide-y divide-gray-100">
-          {conversas.map((conversa) => (
+          {!loading && conversas.length == 0?(
+            <div className="w-full text-left px-4 py-4 flex items-center justify-between" >
+              Nenhum comprador iniciou conversas com você ainda.
+            </div>
+          ) : (conversas.map((conversa) => (
             <button
               key={conversa.id}
               onClick={() => handleClick(conversa.id)}
@@ -42,7 +54,7 @@ const Conversas: React.FC<ConversasProps> = ({ onButtonClick }) => {
             >
               <span className="font-medium">{conversa.ultimaMensagem}</span>
             </button>
-          ))}
+          )))}
         </div>
       </div>
   );

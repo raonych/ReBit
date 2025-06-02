@@ -49,7 +49,6 @@ export const conversaService = {
     },
     iniciarConversa: async (produtoId: string) => {
       const token = localStorage.getItem("token");
-
       const response = await fetch("/api/conversas", {
           method: "POST",
           headers: {

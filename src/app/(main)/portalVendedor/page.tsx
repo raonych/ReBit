@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Conversas from '@/lib/components/portalVendedor/conversas';
 import Produtos from '@/lib/components/portalVendedor/produtos';
-import ChatPage from '@/lib/components/portalVendedor/chat';
+import ChatPage from '@/lib/components/chat';
 import { useRouter } from "next/navigation";
 import { Loader } from 'lucide-react';
 
@@ -46,7 +46,7 @@ function Seller() {
               <Conversas onButtonClick={handleSetConversa} />
             )}
             </div>
-            <Produtos />
+              <Produtos />
           </div>
         </div>
       </main>

@@ -4,8 +4,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { conversaService } from "@/lib/request/conversas";
-import ChatPage from "@/lib/components/portalVendedor/chat";
+import ChatPage from "@/lib/components/chat";
 import { usuarioService } from "@/lib/request/usuarios";
+import { Loader } from "lucide-react";
 
 type Conversa = {
   id: number;
@@ -19,6 +20,7 @@ export default function Conversas() {
   const [conversas, setConversas] = useState<Conversa[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
   const [conversaId, setConversaId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function Conversas() {
 
         setUserId(usuario.id)
         setConversas(conversas.conversas);
+        setIsLoading(false);
       }
       fetchData();
     },[]);
@@ -41,6 +44,14 @@ export default function Conversas() {
     const handleVoltar = () => {
       setConversaId(null);
     };
+
+  if(isLoading){
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader className="animate-spin mx-auto" />
+      </div>
+    )
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -57,7 +68,7 @@ export default function Conversas() {
                   onClick={() => setConversaId(conversa.id)}
                   className="w-full text-left"
                 >
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center cursor-pointer">
                     <div>
                       <p className="text-lg font-semibold">
                         Produto: {conversa.produto.nome}

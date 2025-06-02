@@ -8,9 +8,8 @@ export async function POST(request: Request){
     if(!userId){
         return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
-
     const body = await request.json();
-
+    console.log("aq", body)
     const conversa = await iniciarConversa(body, userId);
 
     return NextResponse.json(conversa.data, {status: conversa.status})
