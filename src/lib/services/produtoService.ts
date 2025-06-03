@@ -37,8 +37,17 @@ export async function CadastrarProduto(body: any, userId: number){
 
 export async function ExibirProdutosRecentes(userId: number | null){
     try{
-
         const produtosRecentes = await prisma.produto.findMany({
+            where: {
+              OR: [
+                { compra: null },
+                {
+                  compra: {
+                    status: { not: "aprovado" }
+                  }
+                }
+              ]
+            },
             orderBy: {
               criadoEm: 'desc'
             },
@@ -65,7 +74,6 @@ export async function ExibirProdutosRecentes(userId: number | null){
               categoria:true
             }
           })  
-
 
           if (produtosRecentes.length === 0) {
             return { status: 200, data: { message: "Nenhum produto encontrado"} };
