@@ -4,13 +4,13 @@ import { usuarioService } from "@/lib/request/usuarios";
 import { MapPin, User, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import router from "next/router";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
 export default function PerfilUsuario() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userData, setUserData] = useState<any | null>(null);
-
+  const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -44,14 +44,23 @@ export default function PerfilUsuario() {
     <div className="min-h-screen flex flex-col text-gray-900">
       <main className="flex-1 py-8 px-4">
         <div className="w-full max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8">Perfil do Usuário</h1>
-
+          <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold">Perfil do Usuário</h1>
+          <button onClick={async () => { 
+            router.push("/");
+            await usuarioService.logout(); 
+          }}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
+          >
+            Sair
+          </button>
+        </div>
           <div className="bg-white rounded-xl shadow-sm border border-zinc-200 p-8 mb-8">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="w-full md:w-1/3 flex flex-col items-center">
                 <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-zinc-200 mb-4">
                   {profileImage ? (
-                    <Image
+                    <Image  
                       src={profileImage}
                       alt="Foto de perfil"
                       fill

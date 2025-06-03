@@ -35,10 +35,35 @@ export async function AvaliaProduto(body: any, userId: number){
     }
 }
 
-export async function ExibeAvaliacoes(vendedorId: number){
+export async function ExibeAvaliacoes(vendedorId: string){
+    try{
+        const id = parseInt(vendedorId);
+        const avaliacoes = await prisma.avaliacao.findMany({
+            where:{avaliadoId: id}
+        })
+
+        if(avaliacoes.length === 0){
+            return{status:200,data:{message:"Nenhuma avaliação encontrada."}};
+        }
+
+        return{status:200,data:{avaliacoes}}
+    }catch(error){
+        console.error("Erro ao buscar avaliações:", error);
+        return { status: 500, data: {success: false, error: "Erro interno do servidor" } };
+    }
+}
+
+export async function ExibeAvaliacoesUsuario(userId: number){
     try{
         const avaliacoes = await prisma.avaliacao.findMany({
-            where:{avaliadoId: vendedorId}
+            where:{avaliadoId: userId},
+            include:{
+                avaliador: {
+                    select:{
+                        nome:true
+                    }
+                }
+            }
         })
 
         if(avaliacoes.length === 0){

@@ -37,7 +37,6 @@ console.log("produtoId:", produtoId)
 
   const handlePayment = async (metodoPagamento: string) =>{
       const data = {metodoPagamento, produtoId, ...pedidoData}
-          console.log("AQUI",data)
       const response = await compraService.iniciarCompra(data);
       setPaymentDone(true);
   };

@@ -118,8 +118,13 @@ export async function ExibirUnicoProduto(id: number, userId: number | null){
                 where: userId ? {usuarioId: userId} : undefined,
                 select: { id: true }
               },
+              compra: true
             },
           });
+
+          if (!produto || (produto.compra && produto.compra.status === "aprovado")) {
+            return { status: 200, data: { message: "Nenhum produto encontrado" } };
+          }
 
         return(
             produto?
@@ -244,7 +249,17 @@ export async function ProdutosComFiltro(searchParams: any, userId: number | null
               condicao: {
                 equals: condicao 
               }
-            } : {}
+            } : {},
+            {
+            OR: [
+              { compra: null },
+              {
+                compra: {
+                  status: { not: "aprovado" }
+                }
+              }
+            ]
+          }
         ],
       },
       include: {
@@ -262,6 +277,7 @@ export async function ProdutosComFiltro(searchParams: any, userId: number | null
           select: { id: true }
         },
         categoria: true,
+        
       }
     });
 

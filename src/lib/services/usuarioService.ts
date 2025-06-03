@@ -54,7 +54,15 @@ export async function exibirMeusProdutos(userId: number){
         
         const meusProdutos = await prisma.produto.findMany({
             where:{
-                vendedorId: userId
+                vendedorId: userId,
+                OR: [
+                { compra: null },
+                {
+                  compra: {
+                    status: { not: "aprovado" }
+                  }
+                }
+              ]
             },
             include:{
                 vendedor:{

@@ -77,8 +77,11 @@ export default function ProdutoDiv({
           className="absolute top-2 right-2 z-10 p-1 rounded-full bg-white/80 hover:bg-white cursor-pointer"
         >
           <Heart
-            size={20}
-            className={favoritado ? "text-red-600 fill-red-600" : "text-gray-500"}
+            className={`transition-all duration-300 ${
+              favoritado
+                ? "text-red-600 fill-red-600 text-[23px]"
+                : "text-gray-500 text-[20px]"
+            }`}
           />
         </button>
       </div>

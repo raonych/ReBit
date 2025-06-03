@@ -59,7 +59,7 @@ export async function iniciaCompra(body: any, userId:  number){
 
 }
 
-export async function aprovaCompra(body: any, userId: number){
+export async function atualizaStatusCompra(body: any, userId: number){
     try{
         const validatedData = compraUpdateSchema.parse(body);
 
@@ -73,6 +73,17 @@ export async function aprovaCompra(body: any, userId: number){
         if(!compra){
             return{status: 404, data:{message:"Nenhuma compra a ser aprovada"}}
         }
+
+        if(validatedData.status == "falhou"){
+            await prisma.compra.delete({
+                where:{
+                    id: validatedData.compraId
+                }
+            })
+
+            return{status: 200, data:{success:true, data: {message: "compra deletada com sucesso"}}}
+        }
+
 
         const  atualizaCompra = await prisma.compra.update({
             where:{
