@@ -22,8 +22,6 @@ const ConfirmarCompra: React.FC = () => {
     :
     setConfirmado(true) 
   };
-console.log("params:", params)
-console.log("produtoId:", produtoId)
 
   const handleForm = (dados: {
       enderecoId: string | null;

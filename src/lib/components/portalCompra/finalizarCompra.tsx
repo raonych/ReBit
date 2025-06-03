@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
+import { produtoService } from "@/lib/request/produto";
 
 // Interface para os pedaços de confete
 interface ConfettiPiece {
@@ -47,7 +48,7 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
-
+  const [produto, setProduto] = useState<any>(null);
   // Função para formatar o número do cartão
   const formatCardNumber = (value: string) => {
     const digits = value.replace(/\D/g, "");
@@ -73,6 +74,17 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
 
   // Detectar a bandeira do cartão
   useEffect(() => {
+
+    const fetchData = async () => {
+        const produtoData = await produtoService.produtoUnico(id);
+        if(produtoData){
+          setProduto(produtoData);  
+        }
+        
+      };
+      fetchData();
+
+
     const cleanNumber = cardNumber.replace(/\s/g, "");
 
     if (cleanNumber.length < 2) {
@@ -98,7 +110,7 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
     } else {
       setCardBrand(null);
     }
-  }, [cardNumber]);
+  }, [id,cardNumber]);
 
   // Gerar confetes quando o modal é aberto
   useEffect(() => {
@@ -392,7 +404,6 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
           />
         </svg>
-        Seus dados estão protegidos com criptografia SSL
       </div>
 
       <button
@@ -509,8 +520,8 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between">
-                      <h3 className="font-bold">Produto Seminovo</h3>
-                      <span className="font-bold">R$279,90</span>
+                      <h3 className="font-bold">Produto {produto.condicao}</h3>
+                      <span className="font-bold">R$ {produto.preco.replace(".", ",")}</span>
                     </div>
                     <p className="text-gray-500 text-sm">Quantidade: 1</p>
                   </div>
@@ -523,7 +534,7 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
                 >
                   <div className="flex justify-between">
                     <span className="text-gray-500">Subtotal</span>
-                    <span>R$ 279,90</span>
+                    <span>R$ {produto.preco.replace(".", ",")}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Frete</span>
@@ -541,7 +552,7 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
                   className="flex justify-between items-center"
                 >
                   <span className="text-xl font-bold">Total</span>
-                  <span className="text-xl font-bold">R$279,90</span>
+                  <span className="text-xl font-bold">R$ {produto.preco.replace(".", ",")}</span>
                 </motion.div>
 
                 {/* Informações adicionais */}
@@ -549,7 +560,6 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
                   variants={itemVariants}
                   className="space-y-1 text-sm text-gray-500"
                 >
-                  <p>* Frete calculado para CEP: 01000-000</p>
                   <p>* Entrega estimada: 3-5 dias úteis</p>
                 </motion.div>
 

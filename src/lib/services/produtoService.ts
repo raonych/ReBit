@@ -39,14 +39,7 @@ export async function ExibirProdutosRecentes(userId: number | null){
     try{
         const produtosRecentes = await prisma.produto.findMany({
             where: {
-              OR: [
-                { compra: null },
-                {
-                  compra: {
-                    status: { not: "aprovado" }
-                  }
-                }
-              ]
+              compra: null 
             },
             orderBy: {
               criadoEm: 'desc'
@@ -122,7 +115,7 @@ export async function ExibirUnicoProduto(id: number, userId: number | null){
             },
           });
 
-          if (!produto || (produto.compra && produto.compra.status === "aprovado")) {
+          if (!produto || (produto.compra)) {
             return { status: 200, data: { message: "Nenhum produto encontrado" } };
           }
 
@@ -250,16 +243,7 @@ export async function ProdutosComFiltro(searchParams: any, userId: number | null
                 equals: condicao 
               }
             } : {},
-            {
-            OR: [
-              { compra: null },
-              {
-                compra: {
-                  status: { not: "aprovado" }
-                }
-              }
-            ]
-          }
+          { compra: null }
         ],
       },
       include: {
