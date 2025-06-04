@@ -22,8 +22,6 @@ const ConfirmarCompra: React.FC = () => {
     :
     setConfirmado(true) 
   };
-console.log("params:", params)
-console.log("produtoId:", produtoId)
 
   const handleForm = (dados: {
       enderecoId: string | null;
@@ -37,7 +35,6 @@ console.log("produtoId:", produtoId)
 
   const handlePayment = async (metodoPagamento: string) =>{
       const data = {metodoPagamento, produtoId, ...pedidoData}
-          console.log("AQUI",data)
       const response = await compraService.iniciarCompra(data);
       setPaymentDone(true);
   };

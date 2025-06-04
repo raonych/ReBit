@@ -1,51 +1,60 @@
 import { prisma } from '@/lib/prisma';
 
-import { createConversaSchema } from "../validators/conversa";
-
-export async function iniciarConversa(body: any, userId: number){
-    try{
-
-        const validatedData = createConversaSchema.parse(body);
-        const produto = await prisma.produto.findFirst({
-            where:{id: validatedData.produtoId},
-            select:{
-                vendedorId:true
-            }
-        })
-
-        if(!produto){
-            return{status:404, data:{message:"Só é possivel iniciar conversas referentes a produtos"}}
+export async function iniciarConversa(body: any, userId: number) {
+    try {
+      const produtoId = parseInt(body);
+      if (isNaN(produtoId)) {
+        console.log("ID do produto inválido.")
+        return { status: 400, data: { message: "ID do produto inválido." } };
+      }
+  
+      const produto = await prisma.produto.findFirst({
+        where: { id: produtoId },
+        select: { vendedorId: true }
+      });
+  
+      if (!produto) {
+        return {
+          status: 404,
+          data: { message: "Produto não encontrado para iniciar conversa" }
+        };
+      }
+      if(produto.vendedorId == userId){
+        return {
+          status: 400,
+          data: { message: "Não foi possivel iniciar a conversa, produto postado pelo mesmo usuário" }
+        };
+      }
+      const conversaExistente = await prisma.conversa.findFirst({
+        where: {
+          vendedorId: produto.vendedorId,
+          compradorId: userId,
+          produtoId: produtoId
         }
-
-        const conversaExistente = await prisma.conversa.findFirst({
-            where: {
-                vendedorId: produto.vendedorId,
-                compradorId: userId,
-                produtoId: validatedData.produtoId
-            }
-          })
-        
-          const conversa = conversaExistente || await prisma.conversa.create({
-            data:{
-                vendedorId: produto.vendedorId,
-                compradorId: userId,
-                produtoId: validatedData.produtoId
-    
-            }
-          })
-
-        return{status:200, data:{conversa}}
-
-    }catch(error){
-        console.error("Erro ao iniciar conversa:", error)
-        return { status: 500, data: { error: "Erro interno do servidor" } };
+      });
+  
+      const conversa = conversaExistente || await prisma.conversa.create({
+        data: {
+          vendedorId: produto.vendedorId,
+          compradorId: userId,
+          produtoId: produtoId
+        }
+      });
+  
+      return { status: 200, data: { conversa } };
+    } catch (error) {
+      console.error("Erro ao iniciar conversa:", error);
+      return { status: 500, data: { error: "Erro interno do servidor" } };
     }
-}
+  }
 
 export async function listarConversas(userId: number){
     try{
         const conversas = await prisma.conversa.findMany({
-            where: {
+          orderBy:{
+                  criadoEm: 'desc',
+                },
+          where: {        
               OR: [
                 { compradorId: userId },
                 { produto: { vendedorId: userId } },

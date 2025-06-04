@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { produtoCreateSchema, produtoUpdateSchema, querySchema } from '@/lib/validators/produto';
 import { Search } from 'lucide-react';
 
-export async function CadastrarProduto(body: any){
+export async function CadastrarProduto(body: any, userId: number){
     try{
 
         const validatedData = produtoCreateSchema.parse(body)
@@ -37,8 +37,10 @@ export async function CadastrarProduto(body: any){
 
 export async function ExibirProdutosRecentes(userId: number | null){
     try{
-
         const produtosRecentes = await prisma.produto.findMany({
+            where: {
+              compra: null 
+            },
             orderBy: {
               criadoEm: 'desc'
             },
@@ -65,7 +67,6 @@ export async function ExibirProdutosRecentes(userId: number | null){
               categoria:true
             }
           })  
-
 
           if (produtosRecentes.length === 0) {
             return { status: 200, data: { message: "Nenhum produto encontrado"} };
@@ -111,13 +112,14 @@ export async function ExibirUnicoProduto(id: number, userId: number | null){
                 where: userId ? {usuarioId: userId} : undefined,
                 select: { id: true }
               },
+              compra: true
             },
           });
 
-        if (!produto) {
-          return { status: 200, data: { message: "Nenhum produto encontrado"} };
-        }
-
+          if (!produto || (produto.compra)) {
+            return { status: 200, data: { message: "Nenhum produto encontrado" } };
+          }
+          
         // Calcular a média das avaliações
         const avaliacoes = produto.vendedor.avaliacoesRecebidas;
         const notaMedia = avaliacoes.length > 0
@@ -186,7 +188,7 @@ export async function DeleteProduto(id: number,userId: number){
     try{ 
         const produto = await prisma.produto.findFirst({
             where: {
-            id: +id,
+            id: id,
             vendedorId: userId,
             },
         });
@@ -195,11 +197,11 @@ export async function DeleteProduto(id: number,userId: number){
             return { status: 404, data: { error: "Produto não encontrado ou você não tem permissão" } };
           }
 
-          const deleteProduto = await prisma.produto.delete({
-            where: {
-              id: +id
-            }
-          });
+        await prisma.produto.delete({
+          where: {
+            id: id
+          }
+        });
 
         return { status: 200, data: {message:"Produto deletado com sucesso!"} };
 
@@ -255,7 +257,8 @@ export async function ProdutosComFiltro(searchParams: any, userId: number | null
               condicao: {
                 equals: condicao 
               }
-            } : {}
+            } : {},
+          { compra: null }
         ],
       },
       include: {
@@ -273,6 +276,7 @@ export async function ProdutosComFiltro(searchParams: any, userId: number | null
           select: { id: true }
         },
         categoria: true,
+        
       }
     });
 

@@ -37,6 +37,28 @@ export const usuarioService = {
 
     return response.json();
   },
+  logout: async() =>{
+    
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("api/usuario", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    if (!response.ok) {
+      const error = new Error("É necessário estar logado") as any;
+      error.status = response.status;
+      throw error;
+    }
+
+    localStorage.removeItem("token");
+    window.dispatchEvent(new Event("logout"));
+    
+  },
   
   exibirPerfil: async() =>{
 
@@ -175,5 +197,98 @@ export const usuarioService = {
     }
 
     return response.json();
-  }
+  },
+
+    exibirMinhasAvaliacoes: async() =>{
+
+      const token = localStorage.getItem("token");
+
+
+      const response = await fetch("/api/avaliacao",{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      
+      if (!response.ok) {
+        const error = new Error("Erro ao buscar avaliações") as any;
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+
+
+    },
+    exibirMinhasVendas: async() =>{
+
+      const token = localStorage.getItem("token");
+
+
+      const response = await fetch("/api/vendedor/vendas",{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      
+      if (!response.ok) {
+        const error = new Error("Erro ao buscar vendas") as any;
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+
+
+    },
+    exibirMinhasCompras: async () =>{
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/compra",{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      
+      if (!response.ok) {
+        const error = new Error("Erro ao buscar compras") as any;
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+
+    },
+
+    enviarAvaliacao: async (dados: any) =>{
+      const token = localStorage.getItem("token");
+    
+      const response = await fetch("/api/avaliacao",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: JSON.stringify(dados),
+      });
+      
+      if (!response.ok) {
+        const error = new Error("Erro ao enviar avaliacao") as any;
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+
+    },
+
+
+  
 };

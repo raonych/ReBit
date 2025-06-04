@@ -61,10 +61,13 @@ export const produtoService = {
       },
       
       cadastrarProduto: async (dados: any) => {
+        const token = localStorage.getItem("token");
+        
         const response = await fetch("/api/produtos", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(dados),
         });
@@ -122,5 +125,29 @@ export const produtoService = {
           return { produtos: [] }; 
         }
       },
+
+      ExcluirProduto: async (produtoId: string) => {
+        const token = localStorage.getItem("token"); 
+
+        try {
+          const response = await fetch(`/api/produtos/${produtoId}`, {
+            method: 'DELETE',
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+    
+          if (!response.ok) {
+            throw new Error("Erro ao excluir produto");
+          }
+    
+          const data = await response.json();
+          return data; 
+        } catch (error) {
+          console.error("Erro ao excluir produto:", error);
+          return { produtos: [] }; 
+        }
+      }
       
 }

@@ -96,6 +96,13 @@ export async function exibeVendasUsuario(userId: number){
                 produto:{
                     vendedorId: userId
                 }
+            },
+            include:{
+                produto:{
+                    select: {
+                        nome: true
+                    }
+                }
             }
         })
         if(compras.length === 0){

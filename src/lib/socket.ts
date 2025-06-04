@@ -16,7 +16,7 @@ export type NextApiResponseWithSocket = NextApiResponse & {
 const ioHandler = (_req: any, res: NextApiResponseWithSocket) => {
 
   if (!res.socket.server.io) {
-    console.log('🔌 Socket.IO iniciado')
+    console.log(' Socket.IO iniciado')
 
     const httpServer: NetServer = res.socket.server as any
     const io = new IOServer(httpServer, {
@@ -29,18 +29,18 @@ const ioHandler = (_req: any, res: NextApiResponseWithSocket) => {
 
       socket.on('joinRoom', (conversaId: number) => {
         socket.join(String(conversaId))
-        console.log(`🛏️ Socket ${socket.id} entrou na sala ${conversaId}`)
+        console.log(` Socket ${socket.id} entrou na sala ${conversaId}`)
       })
 
 
 
       socket.on('sendMessage', async ({ conversaId, texto, remetenteId }) => {
         try {
-          const mensagem = await enviarMensgem(conversaId, texto, remetenteId)
+          const mensagem = await enviarMensgem(parseInt(conversaId), texto, remetenteId)
 
           io.to(String(conversaId)).emit('newMessage', mensagem)
         } catch (err) {
-          console.error('❌ Erro ao enviar mensagem:', err)
+          console.error(' Erro ao enviar mensagem:', err)
         }
       })
     })

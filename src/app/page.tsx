@@ -118,7 +118,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Seção adicional para manter o padrão de alternância */}
         <section className="py-16 px-4 bg-white">
           <div className="w-full max-w-7xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-8">Crie uma Conta</h2>

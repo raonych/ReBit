@@ -39,4 +39,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-./public/uploadImages/*
+
+/public/uploadImages/*

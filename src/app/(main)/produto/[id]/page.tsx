@@ -1,10 +1,12 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ShoppingCart, MessageCircleMore, Loader2, Star } from 'lucide-react';
 import Link from 'next/link';
 import { produtoService } from '@/lib/request/produto';
 import { Heart } from 'lucide-react';
+import { conversaService } from '@/lib/request/conversas';
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (
@@ -25,8 +27,10 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   );
 };
 
+
 const PaginaProduto: React.FC = () => {
   const params = useParams();
+  const router = useRouter();
   const id = params?.id as string;
 
   const [produto, setProduto] = useState<any>(null);
@@ -54,6 +58,12 @@ const PaginaProduto: React.FC = () => {
     buscarProduto();
   }, [id]);
 
+  const handleChat = async () => {
+    const chat = await conversaService.iniciarConversa(id);    
+    if(chat){
+      router.push(`/conversas/${chat.conversa.id}`);
+    }
+  } 
 
   const toggleFavorito = async () => {
     setLoadingFavorito(true);
@@ -146,7 +156,7 @@ const PaginaProduto: React.FC = () => {
             )}
             
           </Link>
-          <button  className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition">
+          <button  onClick={handleChat} className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition cursor-pointer">
             <MessageCircleMore className="w-5 h-5" />
             Chat
           </button>

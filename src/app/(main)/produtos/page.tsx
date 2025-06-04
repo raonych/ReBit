@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader, Search } from "lucide-react";
 import { categoriaService } from "@/lib/request/categorias";
 
-export default function Home() {
+export default function Produtos() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const busca = searchParams?.get('busca') || null;

@@ -18,15 +18,24 @@ export function Header() {
         setIsLogged(true);
       }
       setIsloading(false);
+
+      const listener = () => {
+        setIsLogged(true);
+      };
+
+      const logoutListener = () => {
+        setIsLogged(false);
+      }
+          
+      window.addEventListener("login", listener);
+       window.addEventListener("logout", logoutListener);
+      return () => {
+        window.removeEventListener("login", listener);
+        window.removeEventListener("logout", logoutListener);
+        
+      }
     }, []);
 
-  useEffect(() => {
-  const listener = () => {
-    setIsLogged(true);
-  };
-  window.addEventListener("login", listener);
-  return () => window.removeEventListener("login", listener);
-}, []);
     
   const pathname = usePathname();
 
@@ -55,6 +64,12 @@ export function Header() {
         isLogged ? (
           <nav className="flex items-center gap-8 relative z-50">
             <Link
+              href="/portal"
+              className="text-sm text-gray-700 hover:text-gray-900"
+            >
+              Portal do anunciante
+            </Link>
+            <Link
               href="/favoritos"
               className="text-sm text-gray-700 hover:text-gray-900"
             >
@@ -65,7 +80,7 @@ export function Header() {
               href="/perfil"
               className="text-sm text-gray-700 hover:text-gray-900"
             >
-              Perfil
+              Minha conta
             </Link>
             <Link
               href="/conversas"

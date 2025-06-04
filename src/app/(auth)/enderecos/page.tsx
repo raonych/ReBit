@@ -34,7 +34,7 @@ export default function CadastroEndereco() {
   };
 
   const buscarCEP = async () => {
-    if (formData.cep.length !== 8) return;
+    if (formData.cep.length > 9) return;
 
     try {
       const response = await fetch(
@@ -68,6 +68,7 @@ export default function CadastroEndereco() {
     setIsLoading(true);
 
     try {
+      console.log(formData)
       await usuarioService.cadastrarEndereco(formData);
       setMensagem("Endereço cadastrado com sucesso!");
 
@@ -131,7 +132,7 @@ export default function CadastroEndereco() {
                 value={formData.cep}
                 onChange={handleChange}
                 onBlur={buscarCEP}
-                maxLength={8}
+                maxLength={9}
                 required
                 className="w-full px-4 py-2 rounded border bg-zinc-50 border-zinc-300"
               />

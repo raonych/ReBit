@@ -4,8 +4,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { conversaService } from "@/lib/request/conversas";
-import ChatPage from "@/lib/components/portalVendedor/chat";
+import ChatPage from "@/lib/components/chat";
 import { usuarioService } from "@/lib/request/usuarios";
+import { Loader } from "lucide-react";
 
 type Conversa = {
   id: number;
@@ -19,6 +20,7 @@ export default function Conversas() {
   const [conversas, setConversas] = useState<Conversa[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
   const [conversaId, setConversaId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,11 +31,18 @@ export default function Conversas() {
     }
 
     const fetchData = async () => {
+      try{
         const conversas = await conversaService.listarConversas();
         const usuario = await usuarioService.exibirPerfil();
 
         setUserId(usuario.id)
-        setConversas(conversas.conversas);
+        setConversas(conversas.conversas);       
+      }catch(error){
+        setConversas([]);
+      }finally{
+        setIsLoading(false);
+      }
+        
       }
       fetchData();
     },[]);
@@ -41,6 +50,22 @@ export default function Conversas() {
     const handleVoltar = () => {
       setConversaId(null);
     };
+
+  if(isLoading){
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader className="animate-spin mx-auto" />
+      </div>
+    )
+  };
+
+  if(conversas.length == 0 || conversas == undefined){
+    return (
+      <div className="h-full flex flex-col items-center justify-center py-20 text-center px-6">
+        <p className="text-gray-600 text-lg mb-4">Você ainda não iniciou nenhuma conversa.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -57,7 +82,7 @@ export default function Conversas() {
                   onClick={() => setConversaId(conversa.id)}
                   className="w-full text-left"
                 >
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center cursor-pointer">
                     <div>
                       <p className="text-lg font-semibold">
                         Produto: {conversa.produto.nome}
