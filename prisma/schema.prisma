@@ -36,6 +36,7 @@ model Usuario {
   senha               String
   telefone            String?     @db.VarChar(14)
   criadoEm            DateTime    @default(now())
+  fotoPerfil          String?
   enderecos           Endereco[]
   produtos            Produto[]   @relation("Vendedor")
   compras             Compra[]

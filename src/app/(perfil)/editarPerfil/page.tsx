@@ -1,30 +1,138 @@
 "use client";
 
-import type React from "react";
-
-import { useState, useRef } from "react";
-import { Upload, MapPin, User } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Upload, MapPin, User, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usuarioService } from "@/lib/request/usuarios";
+import { useRouter } from 'next/navigation';
+import EnderecoForm from "@/lib/components/endereco/EnderecoForm";
 
 export default function EditarPerfil() {
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [imagemFile, setImagemFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [userData, setUserData] = useState<any>();
+  const [enderecos, setEnderecos] = useState<any[]>([]);
+  const [editandoEndereco, setEditandoEndereco] = useState<number | null>(null);
+  const [adicionandoEndereco, setAdicionandoEndereco] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    telefone: ''
+  });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const user = await usuarioService.exibirPerfil();
+        const enderecosData = await usuarioService.exibirEnderecos();
+        
+        setUserData(user);
+        setEnderecos(enderecosData);
+        if (user.fotoPerfil) {
+          setProfileImage(user.fotoPerfil);
+        }
+        setFormData({
+          nome: user.nome || '',
+          email: user.email || '',
+          telefone: user.telefone || ''
+        });
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImagemFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         setProfileImage(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+
+      // Upload da imagem
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao fazer upload da imagem');
+        }
+
+        const data = await response.json();
+    
+        await usuarioService.atualizarFotoPerfil(data.url);
+        
+      
+        const user = await usuarioService.exibirPerfil();
+        setUserData(user);
+      } catch (error) {
+        console.error('Erro ao fazer upload:', error);
+      }
     }
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
+  const handleEnderecoSubmit = async (dados: any) => {
+    try {
+      if (editandoEndereco) {
+         await usuarioService.atualizarEndereco(editandoEndereco, dados);
+      } else {
+        await usuarioService.cadastrarEndereco(dados);
+      }
+      
+      // Recarregar endereços
+      const enderecosAtualizados = await usuarioService.exibirEnderecos();
+      setEnderecos(enderecosAtualizados);
+      
+      setEditandoEndereco(null);
+      setAdicionandoEndereco(false);
+    } catch (error) {
+      console.error("Erro ao salvar endereço:", error);
+    }
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await usuarioService.atualizarPerfil(formData);
+      router.push('/perfil');
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col text-gray-900">
@@ -34,12 +142,12 @@ export default function EditarPerfil() {
 
           <div className="bg-white rounded-xl shadow-sm border border-zinc-200 p-8 mb-8">
             <div className="flex flex-col md:flex-row gap-8 items-start">
-              {/* foto de perfil*/}
+              {/* Foto de perfil */}
               <div className="w-full md:w-1/3 flex flex-col items-center">
                 <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-zinc-200 mb-4">
                   {profileImage ? (
                     <Image
-                      src={profileImage || "/placeholder.svg"}
+                      src={profileImage}
                       alt="Foto de perfil"
                       fill
                       className="object-cover"
@@ -58,7 +166,7 @@ export default function EditarPerfil() {
                   className="hidden"
                 />
                 <button
-                  onClick={triggerFileInput}
+                  onClick={() => fileInputRef.current?.click()}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   <Upload size={16} />
@@ -72,199 +180,106 @@ export default function EditarPerfil() {
                   <User size={20} className="text-gray-600" />
                   Informações Pessoais
                 </h2>
-
-                <form className="space-y-6">
+                <div className="space-y-4">
                   <div>
-                    <label
-                      htmlFor="nome"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Nome completo
-                    </label>
+                    <label className="block text-sm font-medium text-zinc-700">Nome</label>
                     <input
                       type="text"
-                      id="nome"
-                      className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      placeholder="Seu nome completo"
+                      name="nome"
+                      value={formData.nome}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded border bg-zinc-50 border-zinc-300"
                     />
                   </div>
-
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      E-mail
-                    </label>
+                    <label className="block text-sm font-medium text-zinc-700">Email</label>
                     <input
                       type="email"
-                      id="email"
-                      className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      placeholder="seu.email@exemplo.com"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded border bg-zinc-50 border-zinc-300"
                     />
                   </div>
-
                   <div>
-                    <label
-                      htmlFor="telefone"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Telefone
-                    </label>
+                    <label className="block text-sm font-medium text-zinc-700">Telefone</label>
                     <input
                       type="tel"
-                      id="telefone"
-                      className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                      placeholder="(00) 00000-0000"
+                      name="telefone"
+                      value={formData.telefone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 rounded border bg-zinc-50 border-zinc-300"
                     />
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Endereço */}
+          {/* Seção de Endereços */}
           <div className="bg-white rounded-xl shadow-sm border border-zinc-200 p-8">
-            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
-              <MapPin size={20} className="text-gray-600" />
-              Endereço
-            </h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <MapPin size={20} className="text-gray-600" />
+                Endereços
+              </h2>
+              {!adicionandoEndereco && !editandoEndereco && (
+                <button
+                  onClick={() => setAdicionandoEndereco(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-600 transition-colors"
+                >
+                  <Plus size={16} />
+                  Adicionar Endereço
+                </button>
+              )}
+            </div>
 
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="cep"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    CEP
-                  </label>
-                  <input
-                    type="text"
-                    id="cep"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    placeholder="00000-000"
-                  />
-                </div>
+            <div className="space-y-6">
+              {adicionandoEndereco && (
+                <EnderecoForm
+                  onSubmit={handleEnderecoSubmit}
+                  onCancel={() => setAdicionandoEndereco(false)}
+                />
+              )}
 
-                <div>
-                  <label
-                    htmlFor="rua"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Rua
-                  </label>
-                  <input
-                    type="text"
-                    id="rua"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    placeholder="Nome da rua"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="numero"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Número
-                  </label>
-                  <input
-                    type="text"
-                    id="numero"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    placeholder="123"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="bairro"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Bairro
-                  </label>
-                  <input
-                    type="text"
-                    id="bairro"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    placeholder="Nome do bairro"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="complemento"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Complemento
-                  </label>
-                  <input
-                    type="text"
-                    id="complemento"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    placeholder="Apto 101, Bloco B"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="cidade"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Cidade
-                  </label>
-                  <input
-                    type="text"
-                    id="cidade"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                    placeholder="Nome da cidade"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="uf"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    UF
-                  </label>
-                  <select
-                    id="uf"
-                    className="w-full px-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
-                  >
-                    <option value="">Selecione</option>
-                    <option value="AC">AC</option>
-                    <option value="AL">AL</option>
-                    <option value="AP">AP</option>
-                    <option value="AM">AM</option>
-                    <option value="BA">BA</option>
-                    <option value="CE">CE</option>
-                    <option value="DF">DF</option>
-                    <option value="ES">ES</option>
-                    <option value="GO">GO</option>
-                    <option value="MA">MA</option>
-                    <option value="MT">MT</option>
-                    <option value="MS">MS</option>
-                    <option value="MG">MG</option>
-                    <option value="PA">PA</option>
-                    <option value="PB">PB</option>
-                    <option value="PR">PR</option>
-                    <option value="PE">PE</option>
-                    <option value="PI">PI</option>
-                    <option value="RJ">RJ</option>
-                    <option value="RN">RN</option>
-                    <option value="RS">RS</option>
-                    <option value="RO">RO</option>
-                    <option value="RR">RR</option>
-                    <option value="SC">SC</option>
-                    <option value="SP">SP</option>
-                    <option value="SE">SE</option>
-                    <option value="TO">TO</option>
-                  </select>
-                </div>
-              </div>
-            </form>
+              {enderecos && enderecos.length > 0 ? (
+                enderecos.map((endereco: any) => (
+                  <div key={endereco.id}>
+                    {editandoEndereco === endereco.id ? (
+                      <EnderecoForm
+                        endereco={endereco}
+                        onSubmit={handleEnderecoSubmit}
+                        onCancel={() => setEditandoEndereco(null)}
+                      />
+                    ) : (
+                      <div className="p-6 border rounded-lg">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <p><strong>CEP:</strong> {endereco.cep}</p>
+                          <p><strong>Rua:</strong> {endereco.rua}</p>
+                          <p><strong>Número:</strong> {endereco.numero}</p>
+                          <p><strong>Bairro:</strong> {endereco.bairro}</p>
+                          <p><strong>Complemento:</strong> {endereco.complemento || '-'}</p>
+                          <p><strong>Cidade:</strong> {endereco.cidade}</p>
+                          <p><strong>UF:</strong> {endereco.UF}</p>
+                        </div>
+                        <div className="flex justify-end mt-4">
+                          <button
+                            onClick={() => setEditandoEndereco(endereco.id)}
+                            className="px-4 py-2 text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                          >
+                            Editar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500 py-4">
+                  Nenhum endereço cadastrado
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Botões de ação */}
@@ -275,7 +290,10 @@ export default function EditarPerfil() {
             >
               Cancelar
             </Link>
-            <button className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
+            <button
+              onClick={handleSubmit}
+              className="px-6 py-3 bg-green-700 text-white rounded-lg font-medium hover:bg-green-600 transition-colors"
+            >
               Salvar alterações
             </button>
           </div>

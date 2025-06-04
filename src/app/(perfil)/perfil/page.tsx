@@ -22,6 +22,7 @@ export default function PerfilUsuario() {
       try {
         const user = await usuarioService.exibirPerfil();
         setUserData(user);
+        setProfileImage(user.fotoPerfil);
       } catch (error) {
         console.error("Erro ao carregar perfil:", error);
       }
@@ -61,7 +62,7 @@ export default function PerfilUsuario() {
                 <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-zinc-200 mb-4">
                   {profileImage ? (
                     <Image  
-                      src={profileImage}
+                      src={userData.fotoPerfil}
                       alt="Foto de perfil"
                       fill
                       className="object-cover"

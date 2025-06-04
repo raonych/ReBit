@@ -43,3 +43,37 @@ export async function exibirEnderecos(userId: number){
     return {status: 500, data: {error : "Erro interno do servidor"}}
   }
 }
+
+export async function atualizarEndereco(enderecoId: number, userId: number, dados: any) {
+  try {
+    const enderecoData = enderecoSchema.parse(dados);
+
+    const enderecoExistente = await prisma.endereco.findFirst({
+      where: {
+        id: enderecoId,
+        usuarioId: userId
+      }
+    });
+
+    if (!enderecoExistente) {
+      return { status: 404, data: { error: "Endereço não encontrado ou não pertence ao usuário" } };
+    }
+
+    const endereco = await prisma.endereco.update({
+      where: { id: enderecoId },
+      data: {
+        ...enderecoData,
+        usuarioId: userId
+      }
+    });
+
+    return { status: 200, data: endereco };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { status: 400, data: { error: error.errors } };
+    }
+
+    console.error("Erro ao atualizar endereço:", error);
+    return { status: 500, data: { error: "Erro interno do servidor" } };
+  }
+}

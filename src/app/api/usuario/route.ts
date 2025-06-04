@@ -1,27 +1,28 @@
 import { NextResponse } from "next/server";
-import { atualizaPerfil, exibePerfil } from "@/lib/services/usuarioService";
 import { getUserIdFromToken } from "@/lib/auth";
+import { exibePerfil, atualizarPerfil } from "@/lib/services/usuarioService";
 
-export async function GET(request: Request){
-    const userId = getUserIdFromToken(request);
+export async function GET(req: Request) {
+    const userId = getUserIdFromToken(req);
 
     if(!userId){
         return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    const perfil = await exibePerfil(userId);
+    const resultado = await exibePerfil(userId);
 
-    return NextResponse.json(perfil.data, { status: perfil.status })
+    return NextResponse.json(resultado.data, { status: resultado.status })
 }
 
-export async function PUT(request: Request){
-    const userId = getUserIdFromToken(request);
-    const body = await request.json();
+export async function PUT(req: Request) {
+    const userId = getUserIdFromToken(req);
 
     if(!userId){
         return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
 
-    const perfilAtualizado = await atualizaPerfil(body,userId);
-    return NextResponse.json(perfilAtualizado.data, { status: perfilAtualizado.status })
+    const body = await req.json();
+    const resultado = await atualizarPerfil(userId, body);
+
+    return NextResponse.json(resultado.data, { status: resultado.status })
 }

@@ -289,6 +289,91 @@ export const usuarioService = {
 
     },
 
+    atualizarFotoPerfil: async (fotoUrl: string) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token não encontrado. Usuário não autenticado.");
+      }
 
-  
+      const response = await fetch("/api/usuario/foto", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ fotoUrl }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao atualizar foto de perfil");
+      }
+
+      return response.json();
+    },
+
+    atualizarEndereco: async (enderecoId: number, dados: {
+      cep: string;
+      estado: string;
+      cidade: string;
+      bairro: string;
+      rua: string;
+      numero: string;
+      complemento?: string;
+    }) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token não encontrado. Usuário não autenticado.");
+      }
+
+      const body = {
+        cep: dados.cep,
+        UF: dados.estado,
+        cidade: dados.cidade,
+        bairro: dados.bairro,
+        rua: dados.rua,
+        numero: dados.numero,
+        complemento: dados.complemento,
+      };
+
+      const response = await fetch(`/api/auth/enderecos/${enderecoId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao atualizar endereço");
+      }
+
+      return response.json();
+    },
+
+    atualizarPerfil: async (dados: any) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token não encontrado. Usuário não autenticado.");
+      }
+
+      const response = await fetch("/api/usuario", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(dados),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao atualizar perfil");
+      }
+
+      return response.json();
+    },
+
 };

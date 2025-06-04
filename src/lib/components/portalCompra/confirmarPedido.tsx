@@ -295,9 +295,9 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
                   <button
                     onClick={() =>
                       handleForm({
-                        enderecoId,
-                        nomeRecebedor,
-                        documentoRecebedor,
+                        enderecoId: enderecoId ? enderecoId : "1",
+                        nomeRecebedor: nomeRecebedor,
+                        documentoRecebedor: documentoRecebedor,
                       })
                     }
                     className="w-full mt-6 py-3 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors flex items-center justify-center"

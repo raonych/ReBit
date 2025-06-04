@@ -20,6 +20,7 @@ export async function ExibeVendedor(vendedorId: number){
                 take: 3,
                 orderBy: { criadoEm: "desc" },
                 select: {
+                  id: true,
                   nota: true,
                   comentario: true,
                   criadoEm: true,

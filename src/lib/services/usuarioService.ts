@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { usuarioUpdateSchema } from '../validators/usuario';
+import { ZodError } from 'zod';
 
 export async function exibePerfil(userId: number){
     try{
@@ -90,4 +91,40 @@ export async function exibirMeusProdutos(userId: number){
         console.error("Erro ao carregar seus produtos:", error)
         return { status: 500, data: { error: "Erro interno do servidor" } };
     }
+}
+
+export async function atualizarFotoPerfil(userId: number, fotoUrl: string) {
+  try {
+    const usuario = await prisma.usuario.update({
+      where: { id: userId },
+      data: { fotoPerfil: fotoUrl }
+    });
+
+    const { senha: _, ...usuarioSemSenha } = usuario;
+    return { status: 200, data: usuarioSemSenha };
+  } catch (error) {
+    console.error("Erro ao atualizar foto de perfil:", error);
+    return { status: 500, data: { error: "Erro interno do servidor" } };
+  }
+}
+
+export async function atualizarPerfil(userId: number, dados: any) {
+  try {
+    const dadosAtualizados = usuarioUpdateSchema.parse(dados);
+
+    const usuario = await prisma.usuario.update({
+      where: { id: userId },
+      data: dadosAtualizados
+    });
+
+    const { senha: _, ...usuarioSemSenha } = usuario;
+    return { status: 200, data: usuarioSemSenha };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { status: 400, data: { error: error.errors } };
+    }
+
+    console.error("Erro ao atualizar perfil:", error);
+    return { status: 500, data: { error: "Erro interno do servidor" } };
+  }
 }
