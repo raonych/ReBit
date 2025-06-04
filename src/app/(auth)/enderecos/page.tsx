@@ -68,7 +68,7 @@ export default function CadastroEndereco() {
     setIsLoading(true);
 
     try {
-      console.log(formData)
+      console.log(formData);
       await usuarioService.cadastrarEndereco(formData);
       setMensagem("Endereço cadastrado com sucesso!");
 
@@ -231,7 +231,7 @@ export default function CadastroEndereco() {
 
             <button
               type="button"
-              onClick={() => router.push("/login")}
+              onClick={() => router.push("/")}
               className="w-full py-3 px-4 bg-zinc-200 text-zinc-800 rounded-lg hover:bg-zinc-300 transition-all"
             >
               Pular etapa
