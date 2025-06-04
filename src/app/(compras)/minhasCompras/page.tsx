@@ -17,15 +17,92 @@ import {
 } from "lucide-react"
 import { usuarioService } from "@/lib/request/usuarios"
 import { conversaService } from "@/lib/request/conversas"
+import Link from "next/link"
 
-
-const MinhasCompras: React.FC = () => {
-  const router = useRouter()
-  const [abaAtiva, setAbaAtiva] = useState<"pendente" | "aprovado">("pendente")
+const MinhasComprasWrapper: React.FC = () => {
   const [compras, setCompras] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<{ status: number; message: string } | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
+  useEffect(() => {
+    const buscarCompras = async () => {
+      try {
+        setIsLoading(true)
+        const minhasCompras = await usuarioService.exibirMinhasCompras()
+        setCompras(minhasCompras)
+        setError(null)
+      } catch (err: any) {
+        setError({ status: err.status || 500, message: err.message || "Erro ao carregar compras" })
+        setCompras([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    buscarCompras()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center p-8">
+        <div className="text-center">
+          <Loader className="h-10 w-10 animate-spin mx-auto" />
+          <p className="mt-4 text-gray-500">Carregando compras...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center p-6">
+        <div className="text-center p-6 bg-red-50 rounded-lg">
+          <p className="text-red-600 mb-2">Erro ao carregar compras</p>
+          <p className="text-gray-600">{error.message}</p>
+          <button
+            onClick={() => location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if(compras.length > 0 && compras != undefined){
+    
+    return <MinhasCompras comprasProp={compras} />
+
+  }
+
+  return (
+    <div className="max-h-screen flex flex-col">
+      <div className="h-full flex flex-col items-center justify-center py-20 text-center px-6">
+        <p className="text-gray-600 text-lg mb-4">Você ainda não comprou nenhum produto.</p>
+        <Link
+          href="/produtos"
+          className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+        >
+          Explorar produtos
+        </Link>
+      </div>
+      </div>
+    )
+
+}
+
+
+interface ComprasProps {
+  comprasProp: any[]
+}
+
+const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
+
+  const router = useRouter()
+  const [abaAtiva, setAbaAtiva] = useState<"pendente" | "aprovado">("pendente")  
+
+  const [compras, setCompras] = useState<any[]>([])
   const [modalAberto, setModalAberto] = useState(false)
   const [vendedorAvaliado, setVendedorAvaliado] = useState<{ id: string; nome: string }>({ id: "", nome: "" })
   const [produtoAvaliado, setProdutoAvaliado ] = useState<string | null>();
@@ -40,23 +117,11 @@ const MinhasCompras: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    const buscarCompras = async () => {
-      try {
-        setIsLoading(true)
-        const minhasCompras = await usuarioService.exibirMinhasCompras()
-        setCompras(minhasCompras || [])
-        setError(null)
-      } catch (err: any) {
-        setError({ status: err.status || 500, message: err.message || "Erro ao carregar compras" })
-        setCompras([])
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  useEffect(()=>{
 
-    buscarCompras()
-  }, [])
+    setCompras(comprasProp)
+
+  },[comprasProp])
 
   // Filtrar compras por status
   const comprasPendentes = compras.filter((compra) => compra.status === "pendente")
@@ -138,34 +203,6 @@ const MinhasCompras: React.FC = () => {
     } finally {
       setEnviandoAvaliacao(false)
     }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="h-full flex items-center justify-center p-8">
-        <div className="text-center">
-          <Loader className="h-10 w-10 animate-spin mx-auto" />
-          <p className="mt-4 text-gray-500">Carregando compras...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="h-full flex items-center justify-center p-6">
-        <div className="text-center p-6 bg-red-50 rounded-lg">
-          <p className="text-red-600 mb-2">Erro ao carregar compras</p>
-          <p className="text-gray-600">{error.message}</p>
-          <button
-            onClick={() => location.reload()}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Tentar novamente
-          </button>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -455,4 +492,4 @@ const MinhasCompras: React.FC = () => {
   )
 }
 
-export default MinhasCompras
+export default MinhasComprasWrapper

@@ -31,12 +31,18 @@ export default function Conversas() {
     }
 
     const fetchData = async () => {
+      try{
         const conversas = await conversaService.listarConversas();
         const usuario = await usuarioService.exibirPerfil();
 
         setUserId(usuario.id)
-        setConversas(conversas.conversas);
+        setConversas(conversas.conversas);       
+      }catch(error){
+        setConversas([]);
+      }finally{
         setIsLoading(false);
+      }
+        
       }
       fetchData();
     },[]);
@@ -52,6 +58,14 @@ export default function Conversas() {
       </div>
     )
   };
+
+  if(conversas.length == 0 || conversas == undefined){
+    return (
+      <div className="h-full flex flex-col items-center justify-center py-20 text-center px-6">
+        <p className="text-gray-600 text-lg mb-4">Você ainda não iniciou nenhuma conversa.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4">

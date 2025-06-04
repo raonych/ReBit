@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { conversaService } from '@/lib/request/conversas';
-import { setLazyProp } from 'next/dist/server/api-utils';
 
 interface ConversasProps {
   onButtonClick: (id: string) => void;
@@ -17,6 +15,10 @@ const Conversas: React.FC<ConversasProps> = ({ onButtonClick, conversas }) => {
     onButtonClick(id);
   };
   
+  setTimeout(()=>{
+    setLoading(false)
+  }, 1500) 
+
   return (
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="px-4 py-5 sm:px-6 border-b border-gray-100">

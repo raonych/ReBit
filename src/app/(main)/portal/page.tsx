@@ -13,6 +13,7 @@ import { usuarioService } from "@/lib/request/usuarios"
 import { produtoService } from "@/lib/request/produto"
 import { conversaService } from "@/lib/request/conversas"
 import { compraService } from "@/lib/request/compra"
+import Link from "next/link"
 
 
 // Componente customizado de abas
@@ -225,13 +226,16 @@ function Seller() {
     {
       id: "vendas",
       label: "Vendas",
-      content: (
+      content: vendas.length > 0 ||  vendas.length != undefined ? (
         <Vendas
           isLoading={vendasLoading}
           error={vendasError}
           vendas={vendas}
           atualizaStatusCompra={atualizaStatusCompra}
-        />
+        />) : (
+          <div className="h-full flex flex-col items-center justify-center py-20 text-center px-6">
+            <p className="text-gray-600 text-lg mb-4">Você ainda não vendeu nenhum produto.</p>
+        </div>
       ),
     },
   ]
