@@ -140,4 +140,40 @@ export const usuarioService = {
       return response.json();
 
     },
+
+  exibirVendedor: async (id: string) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`/api/vendedor/${id}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Erro ao exibir vendedor");
+    }
+
+    return response.json();
+  },
+
+  exibirProdutosVendedor: async (id: string) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`/api/vendedor/${id}/produtos`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Erro ao exibir produtos do vendedor");
+    }
+
+    return response.json();
+  }
 };

@@ -100,6 +100,7 @@ export async function ExibirUnicoProduto(id: number, userId: number | null){
                       cep: true,
                     },
                   },
+                  avaliacoesRecebidas: true,
                 },
               },
               fotos: true,
@@ -113,12 +114,30 @@ export async function ExibirUnicoProduto(id: number, userId: number | null){
             },
           });
 
-        return(
-            produto?
-            { status: 200, data: produto}
-            :
-            { status: 200, data: { message: "Nenhum produto encontrado"} }
-        );
+        if (!produto) {
+          return { status: 200, data: { message: "Nenhum produto encontrado"} };
+        }
+
+        // Calcular a média das avaliações
+        const avaliacoes = produto.vendedor.avaliacoesRecebidas;
+        const notaMedia = avaliacoes.length > 0
+          ? avaliacoes.reduce((acc, curr) => acc + curr.nota, 0) / avaliacoes.length
+          : 0;
+
+        // Remover as avaliações do objeto final e adicionar apenas a nota média
+        const { avaliacoesRecebidas, ...vendedorSemAvaliacoes } = produto.vendedor;
+        const vendedorComNota = {
+          ...vendedorSemAvaliacoes,
+          notaVendedor: notaMedia
+        };
+
+        return {
+          status: 200,
+          data: {
+            ...produto,
+            vendedor: vendedorComNota
+          }
+        };
 
     }catch(error){
         console.error("Erro ao retornar produto:", error)

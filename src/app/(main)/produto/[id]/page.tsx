@@ -1,10 +1,29 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { ShoppingCart, MessageCircleMore, Loader2 } from 'lucide-react';
+import { ShoppingCart, MessageCircleMore, Loader2, Star } from 'lucide-react';
 import Link from 'next/link';
 import { produtoService } from '@/lib/request/produto';
 import { Heart } from 'lucide-react';
+
+const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          size={16}
+          className={`${
+            star <= rating
+              ? "text-yellow-400 fill-yellow-400"
+              : "text-gray-300 fill-gray-300"
+          }`}
+        />
+      ))}
+      <span className="ml-2 text-sm text-gray-600">({rating.toFixed(1)})</span>
+    </div>
+  );
+};
 
 const PaginaProduto: React.FC = () => {
   const params = useParams();
@@ -136,16 +155,20 @@ const PaginaProduto: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-800 mb-2">Vendedor</h2>
           <div className="text-sm text-gray-700 space-y-1">
             <p><strong>Nome:</strong> {produto.vendedor.nome}</p>
+            <div className="flex items-center gap-2">
+              <strong>Avaliação:</strong>
+              <StarRating rating={produto.vendedor.notaVendedor || 0} />
+            </div>
             <p><strong>Cidade:</strong> {produto.vendedor.enderecos[0].cidade || "Não especificado"}, {produto.vendedor.enderecos[0].UF || "Não especificado"}</p>
             <p><strong>Endereço:</strong> {produto.vendedor.enderecos[0].bairro || "Não especificado"}</p>
             <p><strong>Telefone:</strong> {produto.vendedor.Telefone || "Não especificado"}</p>
           </div>
-          <a
-            href="/perfilVendedor"
+          <Link
+            href={`/perfilVendedor/${produto.vendedorId}`}
             className="inline-block mt-3 text-sm text-blue-600 hover:underline"
           >
             Ver perfil do vendedor
-          </a>
+          </Link>
         </div>
       </div>
     </div>
