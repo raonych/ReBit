@@ -209,6 +209,49 @@ export const usuarioService = {
 
 
     },
+    exibirMinhasCompras: async () =>{
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/api/compra",{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      
+      if (!response.ok) {
+        const error = new Error("Erro ao buscar compras") as any;
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+
+    },
+
+    enviarAvaliacao: async (dados: any) =>{
+      const token = localStorage.getItem("token");
+    
+      const response = await fetch("/api/avaliacao",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: JSON.stringify(dados),
+      });
+      
+      if (!response.ok) {
+        const error = new Error("Erro ao enviar avaliacao") as any;
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+
+    },
 
 
   

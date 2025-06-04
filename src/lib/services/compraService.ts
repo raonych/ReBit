@@ -106,7 +106,23 @@ export async function atualizaStatusCompra(body: any, userId: number){
 export async function exibeComprasUsuario(userId: number){
     try{
         const compras = await prisma.compra.findMany({
-            where:{compradorId:userId}
+            where:{compradorId:userId},
+            include:{
+                produto:{
+                    select:{
+                        nome: true,
+                        condicao: true,
+                        categoria: true,
+                        vendedor:{
+                            select:{
+                                id:true,
+                                nome:true,
+                                telefone: true
+                            }
+                        }
+                    }
+                }
+            }
         })
         if(compras.length === 0){
             return{status:200, data:{message:"usuário ainda não realizou nenhuma compra"}}
