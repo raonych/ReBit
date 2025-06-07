@@ -1,10 +1,10 @@
 "use client";
 
 import { usuarioService } from "@/lib/request/usuarios";
-import { MapPin, User, Mail, Phone } from "lucide-react";
+import { MapPin, User, Mail, Phone, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function PerfilUsuario() {
@@ -46,16 +46,17 @@ export default function PerfilUsuario() {
       <main className="flex-1 py-8 px-4">
         <div className="w-full max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Perfil do Usuário</h1>
-          <button onClick={async () => { 
-            router.push("/");
-            await usuarioService.logout(); 
-          }}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
-          >
-            Sair
-          </button>
-        </div>
+            <h1 className="text-3xl font-bold">Perfil do Usuário</h1>
+            <button
+              onClick={async () => {
+                router.push("/");
+                await usuarioService.logout();
+              }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors"
+            >
+              Sair
+            </button>
+          </div>
           <div className="bg-white rounded-xl shadow-sm border border-zinc-200 p-8 mb-8">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="w-full md:w-1/3 flex flex-col items-center">
@@ -81,9 +82,15 @@ export default function PerfilUsuario() {
                   <User size={20} className="text-gray-600" />
                   Informações Pessoais
                 </h2>
-                <p><strong>Nome:</strong> {userData.nome}</p>
-                <p className="flex items-center gap-2"><Mail size={16} /> {userData.email}</p>
-                <p className="flex items-center gap-2"><Phone size={16} /> {userData.telefone}</p>
+                <p>
+                  <strong>Nome:</strong> {userData.nome}
+                </p>
+                <p className="flex items-center gap-2">
+                  <Mail size={16} /> {userData.email}
+                </p>
+                <p className="flex items-center gap-2">
+                  <Phone size={16} /> {userData.telefone}
+                </p>
               </div>
             </div>
           </div>
@@ -94,17 +101,39 @@ export default function PerfilUsuario() {
               Endereço
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
-              <p><strong>CEP:</strong> {userData.enderecos[0]?.cep}</p>
-              <p><strong>Rua:</strong> {userData.enderecos[0]?.rua}</p>
-              <p><strong>Número:</strong> {userData.enderecos[0]?.numero}</p>
-              <p><strong>Bairro:</strong> {userData.enderecos[0]?.bairro}</p>
-              <p><strong>Complemento:</strong> {userData.enderecos[0]?.complemento}</p>
-              <p><strong>Cidade:</strong> {userData.enderecos[0]?.cidade}</p>
-              <p><strong>UF:</strong> {userData.enderecos[0]?.UF}</p>
+              <p>
+                <strong>CEP:</strong> {userData.enderecos[0]?.cep}
+              </p>
+              <p>
+                <strong>Rua:</strong> {userData.enderecos[0]?.rua}
+              </p>
+              <p>
+                <strong>Número:</strong> {userData.enderecos[0]?.numero}
+              </p>
+              <p>
+                <strong>Bairro:</strong> {userData.enderecos[0]?.bairro}
+              </p>
+              <p>
+                <strong>Complemento:</strong>{" "}
+                {userData.enderecos[0]?.complemento}
+              </p>
+              <p>
+                <strong>Cidade:</strong> {userData.enderecos[0]?.cidade}
+              </p>
+              <p>
+                <strong>UF:</strong> {userData.enderecos[0]?.UF}
+              </p>
             </div>
           </div>
 
-          <div className="flex justify-end mt-8">
+          <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+            <Link
+              href="/minhasCompras"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <ShoppingBag size={18} />
+              Minhas Compras
+            </Link>
             <Link
               href="/editarPerfil"
               className="px-6 py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
