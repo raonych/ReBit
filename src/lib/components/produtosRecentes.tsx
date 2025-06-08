@@ -119,13 +119,15 @@ export default function ProdutosRecentes() {
                 >
                   {loading ? (
                     <div className="w-full max-w-[280px]">
-                      <Skeleton height={192} className="rounded-lg" />
-                      <div className="p-4">
-                        <Skeleton width="60%" height={24} className="mb-2" />
-                        <Skeleton width="80%" height={20} className="mb-2" />
-                        <Skeleton width="40%" height={16} className="mb-1" />
-                        <Skeleton width="50%" height={16} />
-                      </div>
+                      <div className="w-74">
+                        <Skeleton height={192} />
+                        <div className="p-4">
+                          <Skeleton width={80} height={24} className="mb-2" />
+                          <Skeleton width={120} height={20} className="mb-2" />
+                          <Skeleton width={60} height={16} className="mb-1" />
+                          <Skeleton width={80} height={16} />
+                        </div>
+                  </div>  
                     </div>
                   ) : (
                     <div className="w-full max-w-[280px] relative">

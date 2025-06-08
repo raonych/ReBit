@@ -214,7 +214,7 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
                           <div className="flex justify-between items-start">
                             <div>
                               <p className="font-medium">{nomeRecebedor}</p>
-                              <p className="text-sm text-gray-600">CPF/CNPJ: {documentoRecebedor}</p>
+                              <p className="text-sm text-gray-600">Celular: {documentoRecebedor}</p>
                             </div>
                             <button
                               onClick={() => setEditandoRecebedor(true)}

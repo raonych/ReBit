@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Upload, MapPin, User, Plus } from "lucide-react";
+import { Upload, MapPin, User, Plus, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usuarioService } from "@/lib/request/usuarios";
@@ -129,7 +129,7 @@ export default function EditarPerfil() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+        <Loader className="animate-spin h-32 w-32"/>
       </div>
     );
   }
