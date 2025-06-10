@@ -28,7 +28,7 @@ export async function criarUsuario(dados: {
   const token = jwt.sign(
     { id: novoUsuario.id, email: novoUsuario.email },
     SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: "4h" }
   );
 
   const { senha, ...usuarioSemSenha } = novoUsuario;
