@@ -1,7 +1,7 @@
 import { exibirEnderecos } from "../services/enderecoService";
 
 export const usuarioService = {
-  cadastrar: async (dados: { nome: string; email: string; senha: string }) => {
+  cadastrar: async (dados: { nome: string; email: string; senha: string, telefone: string }) => {
     const response = await fetch("/api/auth/cadastro", {
       method: "POST",
       headers: {

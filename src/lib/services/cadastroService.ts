@@ -8,6 +8,7 @@ export async function criarUsuario(dados: {
   nome: string;
   email: string;
   senha: string;
+  telefone: string; 
 }) {
   const usuarioExistente = await prisma.usuario.findUnique({
     where: { email: dados.email },
@@ -21,7 +22,7 @@ export async function criarUsuario(dados: {
   const hashedPassword = await bcrypt.hash(dados.senha, 10);
 
   const novoUsuario = await prisma.usuario.create({
-    data: { ...dados, senha: hashedPassword },
+    data: { ...dados, senha: hashedPassword, telefone:dados.telefone},
   });
 
   const token = jwt.sign(

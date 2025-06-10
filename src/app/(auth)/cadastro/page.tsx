@@ -9,6 +9,8 @@ export default function Cadastro() {
     nome: "",
     email: "",
     senha: "",
+    confirmarSenha: "",
+    telefone: "",
     termos: false,
   });
   const [error, setError] = useState("");
@@ -17,14 +19,42 @@ export default function Cadastro() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  
+    if (name === "telefone") {
+      // Remove todos os caracteres não numéricos
+      const numericValue = value.replace(/\D/g, "");
+      
+      // Aplica a formatação (11) 99999-9999
+      let formattedValue = numericValue;
+      if (numericValue.length >= 2) {
+        formattedValue = `(${numericValue.slice(0, 2)})`;
+        if (numericValue.length >= 3) {
+          formattedValue += ` ${numericValue.slice(2, 7)}`;
+          if (numericValue.length >= 8) {
+            formattedValue += `-${numericValue.slice(7, 11)}`;
+          }
+        }
+      }
+      
+      setFormData((prev) => ({
+        ...prev,
+        [name]: formattedValue,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.senha !== formData.confirmarSenha) {
+      setError("As senhas não coincidem");
+      return;
+    }
 
     if (!formData.termos) {
       setError("Você deve aceitar os termos e condições");
@@ -39,6 +69,7 @@ export default function Cadastro() {
         nome: formData.nome,
         email: formData.email,
         senha: formData.senha,
+        telefone: formData.telefone
       });
 
       localStorage.setItem("token", token);
@@ -141,6 +172,46 @@ export default function Cadastro() {
               placeholder="••••••••"
             />
             <p className="mt-1 text-xs text-zinc-500">Mínimo 6 caracteres</p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirmarSenha"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Confirme sua senha
+            </label>
+            <input
+              id="confirmarSenha"
+              name="confirmarSenha"
+              type="password"
+              value={formData.confirmarSenha}
+              onChange={handleChange}
+              required
+              minLength={6}
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="telefone"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Telefone
+            </label>
+            <input
+              id="telefone"
+              name="telefone"
+              type="tel"
+              value={formData.telefone}
+              onChange={handleChange}
+              required
+              maxLength={15}
+              className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
+              placeholder="(11) 99999-9999"
+            />
           </div>
 
           <div className="flex items-start">

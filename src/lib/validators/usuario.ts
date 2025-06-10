@@ -4,7 +4,7 @@ export const usuarioSchema = z.object({
   nome: z.string().min(3, "O nome deve ter no mínimo 3 caracteres"),
   email: z.string().email("Email inválido"),
   senha: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
-  telefone: z.string().optional(),
+ telefone: z.string().regex(/^\(\d{2}\)\s?\d{4,5}-\d{4}$/, "Formato de telefone inválido"),
 });
 
 export const usuarioUpdateSchema = z.object({
