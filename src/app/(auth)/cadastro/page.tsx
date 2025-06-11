@@ -228,9 +228,9 @@ export default function Cadastro() {
             </div>
             <label htmlFor="termos" className="ml-2 text-sm text-zinc-700">
               Eu concordo com os{" "}
-              <a href="#" className="font-medium text-zinc-900 hover:underline">
+              <Link href="termos-de-uso" className="font-medium text-zinc-900 hover:underline">
                 Termos e Condições
-              </a>
+              </Link>
             </label>
           </div>
 

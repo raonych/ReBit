@@ -184,7 +184,7 @@ export function Header() {
               ) : (
                 <>
                   <Link
-                    href="/Produtos"
+                    href="/produtos"
                     onClick={handleLinkClick}
                     className="py-3 text-sm text-gray-700 hover:text-gray-900 transition-colors border-b border-gray-100 last:border-b-0"
                   >
