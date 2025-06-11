@@ -68,6 +68,12 @@ export function Header() {
           {/* Desktop Navigation */}
           {!isLoading && (
             <nav className="hidden lg:flex items-center gap-6 xl:gap-8 relative z-50">
+            <Link
+            href="/produtos"
+            className="text-sm text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            Produtos
+          </Link>
               {isLogged ? (
                 <>
                   <Link
@@ -101,13 +107,7 @@ export function Header() {
                   </div>
                 </>
               ) : (
-                <>
-                  <Link
-                    href="/funcionamento"
-                    className="text-sm text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Funcionamento
-                  </Link>
+                <>                
                   <Link
                     href="/login"
                     className="text-sm text-gray-700 hover:text-gray-900 transition-colors"
@@ -175,7 +175,7 @@ export function Header() {
                     Chat
                   </Link>
                   {/* Dropdown centralizado para mobile */}
-                  <div className="py-3 border-b border-gray-100 last:border-b-0 flex justify-center">
+                  <div className="py-3  ml-50 border-b border-gray-100 last:border-b-0 flex ">
                     <div className="w-full max-w-xs">
                       <DropDownCategorias />
                     </div>
@@ -184,11 +184,11 @@ export function Header() {
               ) : (
                 <>
                   <Link
-                    href="/funcionamento"
+                    href="/Produtos"
                     onClick={handleLinkClick}
                     className="py-3 text-sm text-gray-700 hover:text-gray-900 transition-colors border-b border-gray-100 last:border-b-0"
                   >
-                    Funcionamento
+                    Produtos
                   </Link>
                   <Link
                     href="/login"
@@ -198,7 +198,7 @@ export function Header() {
                     Login
                   </Link>
                   {/* Dropdown centralizado para mobile */}
-                  <div className="py-3 border-b border-gray-100 last:border-b-0 flex justify-center">
+                  <div className="py-3 ml-50 border-b border-gray-100 last:border-b-0 flex justify-center">
                     <div className="w-full max-w-xs">
                       <DropDownCategorias />
                     </div>
