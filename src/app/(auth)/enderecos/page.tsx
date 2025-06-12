@@ -73,8 +73,8 @@ export default function CadastroEndereco() {
       setMensagem("Endereço cadastrado com sucesso!");
 
       setTimeout(() => {
-        router.push("/enderecos");
-      }, 1000);
+        router.push("/login");
+      }, 500);
     } catch (err) {
       if (err instanceof Error) {
         setErro(err.message);

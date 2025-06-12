@@ -335,42 +335,6 @@ export default function FinalizarCompra({id, handleConfirm, handlePayment, payme
               />
             </div>
           </div>
-
-          <div>
-            <label
-              htmlFor="installments"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Parcelas
-            </label>
-            <select
-              id="installments"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
-            >
-              <option value="1">1 x de R$299,90 (sem juros)</option>
-              <option value="2">2 x de R$149,95 (sem juros)</option>
-              <option value="3">3 x de R$99,97 (sem juros)</option>
-              <option value="4">4 x de R$74,98 (sem juros)</option>
-              <option value="5">5 x de R$59,98 (sem juros)</option>
-              <option value="6">6 x de R$49,98 (sem juros)</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="saveCard"
-              checked={saveCard}
-              onChange={(e) => setSaveCard(e.target.checked)}
-              className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="saveCard"
-              className="ml-2 block text-sm text-gray-700"
-            >
-              Salvar cartão para compras futuras
-            </label>
-          </div>
         </div>
       )}
 

@@ -32,7 +32,7 @@ export default function SelectPersonalizado({ opcoes, onChange }: Props) {
         {opcoes.reduce((a, b) => (a.length > b.length ? a : b), '')}
       </span>
 
-      <div style={{ width: largura + 48 }} className="relative">
+      <div style={{ width: largura + 48 }} className="relative z-50">
         <Listbox value={selecionado} onChange={handleChange}>
           {({ open }) => (
             <div className="relative">
@@ -50,7 +50,7 @@ export default function SelectPersonalizado({ opcoes, onChange }: Props) {
                 </span>
               </Listbox.Button>
 
-              <Listbox.Options className="absolute mt-1 w-full bg-white rounded-xl shadow-lg z-10 focus: outline-0">
+              <Listbox.Options className="absolute mt-1 w-full bg-white rounded-xl shadow-lg z-50 focus: outline-0">
                 {opcoes.map((opcao, idx) => (   
                   <Listbox.Option
                     key={idx}

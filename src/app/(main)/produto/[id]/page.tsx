@@ -8,6 +8,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { produtoService } from "@/lib/request/produto"
 import { conversaService } from "@/lib/request/conversas"
+import { usuarioService } from "@/lib/request/usuarios"
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (
@@ -56,6 +57,12 @@ const PaginaProduto: React.FC = () => {
   }, [id])
 
   const handleChat = async () => {
+    try{
+      const usuario = await usuarioService.exibirPerfil(); 
+    }catch(error){
+      router.push("/login");
+    }
+    
     const chat = await conversaService.iniciarConversa(id)
     if (chat) {
       router.push(`/conversas/${chat.conversa.id}`)
@@ -239,7 +246,7 @@ const PaginaProduto: React.FC = () => {
 
                     <div className="flex items-center gap-2">
                       <Phone className="h-4 w-4 flex-shrink-0" />
-                      <span>{produto.vendedor.Telefone || "Não especificado"}</span>
+                      <span>{produto.vendedor.telefone || "Não especificado"}</span>
                     </div>
                   </div>
 

@@ -88,7 +88,7 @@ export default function ProdutosFavoritos() {
         {produtos.length > 0 && (
           <>
             {/* Filtros */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-8">
               <div className="p-4 border-b border-gray-200">
                 <h2 className="text-lg font-medium flex items-center">
                   <Filter className="h-5 w-5 mr-2 text-gray-600" />
