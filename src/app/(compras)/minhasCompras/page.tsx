@@ -206,12 +206,12 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm mx-25">
-      <div className="p-6 border-b border-gray-100">
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">Minhas Compras</h1>
+    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm mx-4 md:mx-25">
+      <div className="p-4 md:p-6 border-b border-gray-100">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Minhas Compras</h1>
 
         {compras.length > 0 && (
-          <div className="flex items-center space-x-6 text-sm">
+          <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-6 text-sm">
             <div className="flex items-center space-x-2">
               <DollarSign className="w-4 h-4 text-blue-600" />
               <span className="text-gray-600">Total gasto:</span>
@@ -224,7 +224,8 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
           </div>
         )}
       </div>
-      <div className="flex border-b border-gray-200">
+
+      <div className="flex border-b border-gray-100">
         <button
           onClick={() => setAbaAtiva("pendente")}
           className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
@@ -253,7 +254,7 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="p-4 md:p-6">
         {abaAtiva === "pendente" && (
           <div className="space-y-4">
             {comprasPendentes.length === 0 ? (
@@ -264,9 +265,9 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
               </div>
             ) : (
               comprasPendentes.map((compra) => (
-                <div key={compra.id} className="p-4 border border-orange-200 rounded-lg ">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-2">
+                <div key={compra.id} className="p-4 border border-orange-200 rounded-lg">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                    <div className="flex items-center space-x-2 mb-2 md:mb-0">
                       <Clock className="w-5 h-5 text-orange-600" />
                       <span className="font-medium text-orange-800">Aguardando Aprovação</span>
                     </div>
@@ -290,6 +291,7 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
                         <span className="text-sm font-medium">{formatarCondicao(compra.produto.condicao)}</span>
                       </div>
                     </div>
+                    
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4 text-gray-500" />
@@ -311,17 +313,17 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
                     </div>
                   </div>
 
-                  <div className="flex space-x-3">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={() => onContatarVendedor(compra.produtoId)}
-                      className="flex-1 px-4 py-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold py-3 rounded-md transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                      className="flex-1 px-4 py-2 border border-green-700 text-green-500 hover:bg-green-50 font-semibold rounded-md transition-colors flex items-center justify-center space-x-2 cursor-pointer"
                     >
                       <MessageCircle className="w-4 h-4" />
                       <span>Contatar Vendedor</span>
                     </button>
                     <button
                       onClick={() => handleCancelarCompra(compra.id)}
-                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center space-x-2 cursor-pointer"
+                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
                     >
                       <X className="w-4 h-4" />
                       <span>Cancelar</span>
@@ -344,8 +346,8 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
             ) : (
               comprasAprovadas.map((compra) => (
                 <div key={compra.id} className="p-4 border border-green-200 rounded-lg">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                    <div className="flex items-center space-x-2 mb-2 md:mb-0">
                       <CheckCircle className="w-5 h-5 text-green-600" />
                       <span className="font-medium text-green-800">Compra Aprovada</span>
                     </div>
@@ -369,6 +371,7 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
                         <span className="text-sm font-medium">{formatarCondicao(compra.produto.condicao)}</span>
                       </div>
                     </div>
+                    
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4 text-gray-500" />
@@ -394,25 +397,22 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-between w-full">
-                    <div>
-                      <button
-                        onClick={() => avaliaVendedor(compra.produtoId)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 cursor-pointer"
-                      >
-                        <Star className="w-4 h-4" />
-                        <span>Avaliar Vendedor</span>
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        onClick={() => onContatarVendedor(compra.produtoId)}
-                        className="px-4 py-2 border border-green-700 text-green-500 hover:bg-green-50 rounded-md transition-colors flex items-center space-x-2 cursor-pointer"
-                      >
-                        <MessageCircle className="w-4 h-4" />
-                        <span>Contatar Vendedor</span>
-                      </button>
-                    </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      onClick={() => avaliaVendedor(compra.produtoId)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                    >
+                      <Star className="w-4 h-4" />
+                      <span>Avaliar Vendedor</span>
+                    </button>
+                    <button
+                      onClick={() => onContatarVendedor(compra.produtoId)}
+                      className="px-4 py-2 border border-green-700 text-green-500 hover:bg-green-50 rounded-md transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Contatar Vendedor</span>
+                    </button>
                   </div>
                 </div>
               ))
@@ -458,7 +458,7 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+            <div className="p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setModalAberto(false)}
@@ -470,7 +470,7 @@ const MinhasCompras: React.FC<ComprasProps> = ({comprasProp}) => {
                 type="button"
                 onClick={enviarAvaliacao}
                 disabled={enviandoAvaliacao}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex items-center space-x-2"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-center space-x-2"
               >
                 {enviandoAvaliacao ? (
                   <>
