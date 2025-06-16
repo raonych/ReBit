@@ -128,6 +128,7 @@ export default function Cadastro() {
               type="text"
               value={formData.nome}
               onChange={handleChange}
+              minLength={3}
               required
               className="w-full px-4 py-2.5 text-gray-900 bg-zinc-50 border border-zinc-200 rounded-lg focus:ring-2 focus:ring-zinc-800 focus:border-transparent transition-all"
               placeholder="Seu nome"

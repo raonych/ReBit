@@ -20,6 +20,7 @@ import { conversaService } from "@/lib/request/conversas"
 import Link from "next/link"
 
 const MinhasComprasWrapper: React.FC = () => {
+  const router = useRouter();
   const [compras, setCompras] = useState<any[]>([])
   const [error, setError] = useState<{ status: number; message: string } | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -31,11 +32,15 @@ const MinhasComprasWrapper: React.FC = () => {
         const minhasCompras = await usuarioService.exibirMinhasCompras()
         setCompras(minhasCompras)
         setError(null)
+        setIsLoading(false)
       } catch (err: any) {
+        if(err.status == 401){
+          router.push("/login");
+          return;
+        }
         setError({ status: err.status || 500, message: err.message || "Erro ao carregar compras" })
         setCompras([])
-      } finally {
-        setIsLoading(false)
+        err.status == 401 ? null : setIsLoading(false);
       }
     }
 

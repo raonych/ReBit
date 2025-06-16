@@ -58,9 +58,11 @@ const PaginaProduto: React.FC = () => {
 
   const handleChat = async () => {
     try{
-      const usuario = await usuarioService.exibirPerfil(); 
-    }catch(error){
+      await usuarioService.exibirPerfil(); 
+    }catch(error: any){
+      if(error.status == 401)
       router.push("/login");
+      console.error(error);
     }
     
     const chat = await conversaService.iniciarConversa(id)

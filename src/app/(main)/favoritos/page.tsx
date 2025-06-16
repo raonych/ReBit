@@ -8,6 +8,7 @@ import { produtoService } from "@/lib/request/produto"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Heart, Loader, Search, Filter } from "lucide-react"
 import { categoriaService } from "@/lib/request/categorias"
+import { usuarioService } from "@/lib/request/usuarios"
 
 export default function ProdutosFavoritos() {
   const router = useRouter()
@@ -24,6 +25,12 @@ export default function ProdutosFavoritos() {
 
   useEffect(() => {
     const fetchData = async () => {
+      try{
+        await usuarioService.exibirPerfil();
+      }catch(error: any ){
+        if(error.status == 401)
+        router.push("/login")
+      }
       const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao)
 
       // Filtrando apenas produtos favoritados

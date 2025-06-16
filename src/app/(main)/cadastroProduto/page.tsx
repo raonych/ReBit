@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { categoriaService } from '@/lib/request/categorias';
 import {produtoService} from '@/lib/request/produto';
 import { usuarioService } from '@/lib/request/usuarios';
+import { Loader } from 'lucide-react';
 
 export default function CadastroProduto() {
   const router = useRouter();
@@ -18,13 +19,21 @@ export default function CadastroProduto() {
   const [imagemFile, setImagemFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [vendedorId, setVendedorId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(()=>{
    const fetchData = async ()=>{
-    const data = await categoriaService.categorias(); 
-    const userId = await usuarioService.exibirPerfil();
-    setVendedorId(userId.id);
-    setCategorias(data.categorias);
-    
+    try{
+      const userId = await usuarioService.exibirPerfil();
+      const data = await categoriaService.categorias(); 
+      setVendedorId(userId.id);
+      setCategorias(data.categorias);
+      setIsLoading(false);
+    }catch(error: any){
+      if(error.status == 401){
+        router.push("/login")
+      }      
+    }   
    }
    
    fetchData();
@@ -89,7 +98,15 @@ export default function CadastroProduto() {
   }
 };
 
-
+if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader className="animate-spin mx-auto mb-4 h-8 w-8 text-gray-600" />
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">

@@ -74,8 +74,10 @@ export const usuarioService = {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao retornar dados do usuario");
-      }
+        const error: any = new Error(errorData.error || "Erro ao retornar dados do usuário");
+        error.status = response.status;
+        throw error;
+     }
   
       return response.json();
 
