@@ -38,25 +38,19 @@ export default function ProdutoDiv({
   const toggleFavorito = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setLoading(true);
-
-    const sucesso = await produtoService.favoritarProduto(id, favoritado);
+    try{
+      const sucesso = await produtoService.favoritarProduto(id, favoritado);
     if (sucesso) {
       setFavoritado(!favoritado);
     }
+    }catch(error: any){
+      if(error.status == 401){
+        router.push("/login");
+      }
+    }
+    
 
     setLoading(false);
-  };
-
-  const favoritarProduto = async (id: string, favorito: boolean) => {
-    try {
-      const response = await fetch(`/api/favoritos/${id}`, {
-        method: favorito ? 'DELETE' : 'POST',
-      });
-      return response.ok;
-    } catch (error) {
-      console.error("Erro ao favoritar:", error);
-      return false;
-    }
   };
 
   return (

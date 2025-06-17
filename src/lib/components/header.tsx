@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import DropDownCategorias from "./categorias";
 import { useEffect, useState } from "react";
 import { MessageCircleMore, Menu, X } from "lucide-react";
+import { usuarioService } from "../request/usuarios";
 
 export function Header() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -12,6 +13,17 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    const verifyUser = async ()=>{
+      try{
+      await usuarioService.exibirPerfil();
+      }catch(error: any){
+        if(error.status == 401){
+          localStorage.removeItem("token");
+        }
+      }
+    }
+
+    verifyUser();
     const token = localStorage.getItem("token");
 
     if (token) {

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Star, MapPin, User, Phone } from 'lucide-react';
+import { Star, MapPin, User, Phone, Loader } from 'lucide-react';
 import Image from 'next/image';
 import { usuarioService } from '@/lib/request/usuarios';
 import ProdutoDiv from '@/lib/components/produtoDiv';
@@ -53,7 +53,7 @@ export default function PerfilVendedor() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+          <Loader className="animate-spin mx-auto mb-4 h-8 w-8 text-gray-600" />
       </div>
     );
   }

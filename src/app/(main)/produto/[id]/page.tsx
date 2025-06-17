@@ -143,6 +143,7 @@ const PaginaProduto: React.FC = () => {
                   src={fotos[fotoAtual]?.url || "/placeholder.svg"}
                   alt={produto.nome}
                   fill
+                  sizes="100%"
                   className="object-cover"
                 />
                 <button

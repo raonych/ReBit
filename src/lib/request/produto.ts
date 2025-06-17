@@ -87,19 +87,21 @@ export const produtoService = {
       },
       favoritarProduto: async (id: string, favorito: boolean) => {
         const token = localStorage.getItem("token");
-        try {
-          const response = await fetch(`/api/favoritos/${id}`, {
-            method: favorito ? 'DELETE' : 'POST',
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            }
-          });
-          return response.ok;
-        } catch (error) {
-          console.error("Erro ao favoritar:", error);
-          return false;
-        }
+        const response = await fetch(`/api/favoritos/${id}`, {
+          method: favorito ? 'DELETE' : 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          }
+        });
+
+        if (!response.ok) {
+        const errorData = await response.json();
+        const error: any = new Error(errorData.error || "Erro ao retornar dados do usuário");
+        error.status = response.status;
+        throw error;     
+      }
+        return response.json();
       },
       
       listarFavoritos: async () => {

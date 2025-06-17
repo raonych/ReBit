@@ -34,7 +34,6 @@ export default function ProdutosRecentes() {
       try {
         const produtos = await produtoService.produtosRecentes();
         setProdutos(produtos);
-        console.log(produtos);
       } catch (err) {
         console.error("Erro ao carregar produtos:", err);
       } finally {
@@ -56,8 +55,6 @@ export default function ProdutosRecentes() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  console.log(produtos);
 
   const totalPaginas = Math.ceil(produtos.length / produtosPorPagina);
 

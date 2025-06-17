@@ -34,7 +34,7 @@ model Usuario {
   nome                String
   email               String      @unique
   senha               String
-  telefone            String?     @db.VarChar(14)
+  telefone            String?     @db.VarChar(15)
   criadoEm            DateTime    @default(now())
   fotoPerfil          String?
   enderecos           Endereco[]
