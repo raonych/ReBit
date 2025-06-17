@@ -14,7 +14,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useParams } from "next/navigation";
 import { produtoService } from "@/lib/request/produto";
 
 // Interface para os pedaços de confete

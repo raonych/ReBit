@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { MapPin, User, Package, ChevronRight, Edit2, Check, ArrowLeft, Loader } from "lucide-react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { produtoService } from "@/lib/request/produto"
 import { usuarioService } from "@/lib/request/usuarios"
 
@@ -30,10 +30,16 @@ const ConfirmarPedido = ({id, handleConfirm, handleForm} : PedidoProps) => {
   const [documentoRecebedor, setDocumentoRecebedor] = useState("")
   const [editandoRecebedor, setEditandoRecebedor] = useState(false)
   const [foto, setFoto] = useState();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       const produtoData = await produtoService.produtoUnico(id);
+      const user = await usuarioService.exibirPerfil();
+      if(user?.id == produtoData.vendedorId){
+        router.push("/portal");
+        return;
+      }
       const enderecosData = await usuarioService.exibirEnderecos();
 
       if (enderecosData.length > 0) {

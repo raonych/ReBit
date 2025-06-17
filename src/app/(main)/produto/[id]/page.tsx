@@ -37,11 +37,15 @@ const PaginaProduto: React.FC = () => {
   const [favoritado, setFavoritado] = useState(false)
   const [loadingFavorito, setLoadingFavorito] = useState(false)
   const [fotoAtual, setFotoAtual] = useState(0)
-
+  const [meuProduto, setMeuProduto] = useState(false);
   useEffect(() => {
     const buscarProduto = async () => {
-      try {
-        const dados = await produtoService.produtoUnico(id)
+      const user = await usuarioService.exibirPerfil();
+      try {       
+        const dados = await produtoService.produtoUnico(id)     
+        if(dados.vendedorId == user?.id){
+          setMeuProduto(true);
+        }
         setProduto(dados)
         setFotos(dados.fotos)
         if (dados.favoritos.length > 0) {
@@ -192,14 +196,31 @@ const PaginaProduto: React.FC = () => {
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">{produto.nome}</h1>
                 <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                   R$ {produto.preco.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                </div>
-
-                <div className="space-y-3">
-                  <Link
+                </div>              
+                  {meuProduto ? 
+                    (
+                    <div className="space-y-3">
+                      <Link
+                    href={`/portal`}
+                    onClick={() => setHeadingTo(true)}
+                    className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-md transition-colors"
+                  >                   
+                    {headingTo ? (
+                      <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                      <>
+                        Visualizar no portal
+                      </>
+                    )}
+                  </Link>
+                  </div>) : 
+                  (
+                    <div className="space-y-3">
+                    <Link
                     href={`/confirmarCompra/${id}`}
                     onClick={() => setHeadingTo(true)}
                     className="w-full flex items-center justify-center gap-2 bg-green-700 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-md transition-colors"
-                  >
+                  >                   
                     {headingTo ? (
                       <Loader2 size={20} className="animate-spin" />
                     ) : (
@@ -209,7 +230,6 @@ const PaginaProduto: React.FC = () => {
                       </>
                     )}
                   </Link>
-
                   <button
                     onClick={handleChat}
                     className="w-full flex items-center justify-center gap-2 border border-green-700 text-green-700 hover:bg-green-50 font-semibold py-3 px-4 rounded-md transition-colors"
@@ -218,6 +238,8 @@ const PaginaProduto: React.FC = () => {
                     Conversar com vendedor
                   </button>
                 </div>
+                  )
+                  }
               </div>
             </div>
 

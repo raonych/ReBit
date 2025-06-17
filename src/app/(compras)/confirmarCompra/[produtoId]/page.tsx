@@ -21,7 +21,7 @@ const ConfirmarCompra: React.FC = () => {
   useEffect(()=>{
     const verifyUser = async ()=>{
       try{
-        await usuarioService.exibirPerfil();
+       await usuarioService.exibirPerfil();
         setVerified(true);
       }catch(error: any){
         if(error.status == 401)
