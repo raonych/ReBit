@@ -67,7 +67,7 @@ export default function ProdutosFavoritos() {
     router.push("/favoritos")
   }
 
-  const estadoProduto = ["Todos", "Danificado", "Novo", "Usado"]
+  const estadoProduto = ["Todos", "Danificado", "Seminovo", "Usado"]
 
   if (isLoading) {
     return (

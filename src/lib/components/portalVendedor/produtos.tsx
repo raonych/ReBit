@@ -92,11 +92,14 @@ const Produtos: React.FC<ProdutosProps> = ({ isLoading, error, produtos, handleA
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-medium text-gray-900 truncate">{produto.nome}</h3>
+                    <Link href={`/produto/${produto?.id}`}>
+                    <h3 className="text-lg font-medium text-gray-900 truncate hover:text-blue-600">{produto.nome}</h3> 
+                    </Link>
+                                    
                     <p className="text-xl font-bold text-green-600 mt-1">
                       R$ {parseFloat(produto.preco).toFixed(2).replace(".", ",")}
                     </p>
-                    <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                    <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500"> 
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span>{produto.vendedor?.enderecos?.[0]?.cidade || "Desconhecida"}</span>
@@ -125,6 +128,7 @@ const Produtos: React.FC<ProdutosProps> = ({ isLoading, error, produtos, handleA
                   </button>
                 </div>
               </div>
+              
             ))}
           </div>
         )}

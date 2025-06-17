@@ -189,7 +189,7 @@ if (isLoading) {
               <option value="">Condição</option>
               <option value="Usado">Usado</option>
               <option value="Danificado">Danificado</option>
-              <option value="Novo">Novo</option>
+              <option value="Seminovo">Seminovo</option>
             </select>
 
             <textarea

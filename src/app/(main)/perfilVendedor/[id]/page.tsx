@@ -33,6 +33,7 @@ export default function PerfilVendedor() {
   const [vendedor, setVendedor] = useState<any>(null);
   const [produtos, setProdutos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
     const buscarDados = async () => {
@@ -41,6 +42,7 @@ export default function PerfilVendedor() {
         const produtosVendedor = await usuarioService.exibirProdutosVendedor(id);
         setVendedor(dadosVendedor);
         setProdutos(produtosVendedor.produtos || []);
+        setProfileImage(dadosVendedor.fotoPerfil);
       } catch (erro) {
         console.error("Erro ao carregar dados do vendedor", erro);
       } finally {
@@ -69,10 +71,19 @@ export default function PerfilVendedor() {
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Foto e Info Básica */}
           <div className="w-full md:w-1/3 flex flex-col items-center">
-            <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-zinc-200 mb-4">
-              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                <User size={64} className="text-gray-400" />
-              </div>
+              <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-zinc-200 mb-4">
+              {profileImage ? (
+                <Image  
+                  src={profileImage}
+                  alt="Foto de perfil"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <User size={64} className="text-gray-400" />
+                </div>
+              )}
             </div>
             <h1 className="text-2xl font-bold text-center">{vendedor.nome}</h1>
             <div className="mt-2">

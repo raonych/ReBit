@@ -5,7 +5,7 @@ export const produtoCreateSchema = z.object({
   descricao: z.string(),
   categoriaId: z.preprocess((val) => Number(val), z.number().int()),
   preco: z.preprocess((val) => Number(val), z.number().positive()),
-  condicao: z.enum(["novo", "usado", "danificado"]),
+  condicao: z.enum(["seminovo", "usado", "danificado"]),
   vendedorId: z.preprocess((val) => Number(val), z.number().int()),
   imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string())
 });
@@ -15,12 +15,12 @@ export const produtoUpdateSchema = z.object({
   descricao: z.string().optional(),
   categoriaId: z.preprocess((val) => Number(val), z.number().int()).optional(),
   preco: z.preprocess((val) => Number(val), z.number().positive()).optional(),
-  condicao: z.enum(["novo", "usado", "danificado"]).optional(),
+  condicao: z.enum(["seminovo", "usado", "danificado"]).optional(),
   imagemUrl: z.preprocess((val) => (val === null ? "" : val), z.string().optional())
 });
 
 export const querySchema = z.object({
   categoria: z.string().optional(),
-  condicao: z.enum(["novo","usado","danificado"]).optional(),
+  condicao: z.enum(["seminovo","usado","danificado"]).optional(),
   busca: z.string().optional(),
 });

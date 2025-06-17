@@ -129,7 +129,7 @@ export default function EditarPerfil() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader className="animate-spin h-32 w-32"/>
+        <Loader className="animate-spin mx-auto mb-4 h-8 w-8 text-gray-600" />
       </div>
     );
   }

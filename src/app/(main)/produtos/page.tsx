@@ -58,7 +58,7 @@ export default function Produtos() {
     router.push("/produtos")
   }
 
-  const estadoProduto = ["Todos", "Danificado", "Novo", "Usado"]
+  const estadoProduto = ["Todos", "Danificado", "Seminovo", "Usado"]
 
   if (isLoading) {
     return (

@@ -9,7 +9,7 @@ datasource db {
 
 // Enum para o estado das peças de hardware
 enum CondicaoProduto {
-  novo
+  seminovo
   usado
   danificado
 }

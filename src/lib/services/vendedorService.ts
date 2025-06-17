@@ -8,6 +8,7 @@ export async function ExibeVendedor(vendedorId: number){
                 nome:true,
                 criadoEm: true,
                 telefone:true,
+                fotoPerfil: true,
             enderecos:{
                 take:1,
                 select:{
