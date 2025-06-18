@@ -14,7 +14,7 @@ async function main() {
         'Memórias RAM',
         'Placas de rede',
         'Gabinetes',
-        'Notebooks quebrados'
+        'Notebooks'
     ];
 
     const imagens = {
@@ -27,7 +27,33 @@ async function main() {
         'Memórias RAM': '/ram.jpg',
         'Placas de rede': '/placaRede.jpg',
         'Gabinetes': '/gabinete.jpg',
-        'Notebooks quebrados': '/notebook.jpg'
+        'Notebooks': '/notebook.jpg'
+    };
+
+    const descricoes = {
+        'Placas-mãe': 'Essa placa-mãe usada está em ótimo estado de funcionamento, com todos os capacitores íntegros e sem sinais de oxidação. Compatível com processadores da linha Intel 9ª geração e memória DDR4.',
+        'Fontes': 'Fonte de alimentação semi-nova com potência de 500W. O produto foi testado e está funcionando perfeitamente, com poucos sinais de uso.',
+        'SSDs': 'SSD danificado, vendido para recuperação de dados ou reaproveitamento de carcaça. O dispositivo apresenta falhas na leitura e não é reconhecido em sistemas operacionais.',
+        'Placas de vídeo': 'Placa de vídeo usada modelo GTX 1060 de 6GB, testada e funcionando. Ela apresenta apenas leves sinais de uso na carcaça e nos conectores.',
+        'Coolers': 'Cooler para CPU semi-novo, retirado de uma máquina de demonstração. As aletas estão limpas e a ventoinha gira suavemente.',
+        'Processadores': 'Processador usado Intel i5 9400F em perfeito estado. O produto apresenta apenas marcas de encaixe no socket, mas sem danos físicos ou aquecimento excessivo.',
+        'Memórias RAM': 'Módulo de memória RAM DDR4 8GB danificado — apresenta falhas intermitentes e não é reconhecido em todos os slots.',
+        'Placas de rede': 'Placa de rede PCIe semi-nova com suporte a velocidades de até 1Gbps. Com poucos dias de uso, está em perfeito funcionamento.',
+        'Gabinetes': 'Gabinete usado com marcas visíveis de uso, incluindo arranhões e um pequeno amassado na lateral.',
+        'Notebooks': 'Notebook danificado — não liga e apresenta possível falha na placa-mãe. A carcaça está em estado razoável e a tela aparentemente intacta. Produto vendido no estado, sem garantia de funcionamento.'
+    };
+
+    const condicoes = {
+        'Placas-mãe': 'usado',
+        'Fontes': 'semi-novo',
+        'SSDs': 'danificado',
+        'Placas de vídeo': 'usado',
+        'Coolers': 'semi-novo',
+        'Processadores': 'usado',
+        'Memórias RAM': 'danificado',
+        'Placas de rede': 'semi-novo',
+        'Gabinetes': 'usado',
+        'Notebooks': 'danificado'
     };
 
     // 1. Criar categorias
@@ -67,7 +93,7 @@ async function main() {
             prisma.produto.create({
                 data: {
                     nome: `${categoria.nome} danificado`,
-                    descricao: `Produto da categoria ${categoria.nome} em estado danificado ou usado.`,
+                    descricao: descricoes[categoria.nome],
                     preco: Math.floor(Math.random() * (800 - 50 + 1)) + 50,
                     condicao: Math.random() > 0.5 ? 'usado' : 'danificado',
                     vendedorId: vendedor.id,
