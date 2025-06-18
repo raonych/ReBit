@@ -25,12 +25,21 @@ export default function Produtos() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao)
-      setProdutos(response.produtos)
-      const categorias = await categoriaService.categorias()
-      const nomesCategorias = categorias.categorias.map((categoria: { nome: any }) => categoria.nome)
-      setCategoriaProduto(["Todos", ...nomesCategorias])
-      setIsLoading(false)
+       try {
+        const response = await produtoService.todosProdutosComFiltro(busca, categoria, condicao)
+        setProdutos(response.produtos)
+
+        const categorias = await categoriaService.categorias()
+        const nomesCategorias = categorias.categorias.map((categoria: { nome: any }) => categoria.nome)
+        setCategoriaProduto(["Todos", ...nomesCategorias])
+      } catch (err: any) {
+        if (err.status === 404) {
+          return
+        }
+        console.error("Erro ao buscar dados:", err)
+      } finally {
+        setIsLoading(false)
+      }
     }
     fetchData()
   }, [busca, categoria, condicao])

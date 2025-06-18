@@ -53,7 +53,10 @@ export async function ExibeVendedor(vendedorId: number){
 export async function ExibeProdutosVendedor(vendedorId: number){
     try{
         const produtos = await prisma.produto.findMany({
-            where:{vendedorId},
+            where:{AND: [
+                { vendedorId: vendedorId },
+                { compra: null }
+            ]},
             select:{
                 id: true,
                 preco: true,

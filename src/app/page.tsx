@@ -103,20 +103,7 @@ export default function Home() {
         {/* Seção condicional baseada no login */}
         <section className="py-16 px-4 bg-white">
           <div className="w-full max-w-7xl mx-auto text-center">
-            {isLoggedIn ? (
-              <>
-                <h2 className="text-3xl font-bold mb-8">Descarte Responsável</h2>
-                <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-                  Quer se desfazer de um eletrônico antigo, mas sem vender? Descubra como descartá-lo de forma segura e
-                  responsável.
-                </p>
-                <Link href="/descarteCorreto">
-                  <button className="px-6 py-3 bg-green-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors cursor-pointer">
-                    Saiba como descartar
-                  </button>
-                </Link>
-              </>
-            ) : (
+            {isLoggedIn ? null : (
               <>
                 <h2 className="text-3xl font-bold mb-8">Crie uma Conta</h2>
                 <p className="text-gray-600 max-w-2xl mx-auto mb-8">
