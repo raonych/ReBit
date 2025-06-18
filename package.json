@@ -1,25 +1,44 @@
 {
-  "name": "retech",
+  "name": "rebit",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "prisma db seed"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.2",
     "@prisma/client": "^6.5.0",
+    "bcrypt": "^5.1.1",
+    "framer-motion": "^12.9.7",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.484.0",
+    "multer": "^2.0.0",
     "next": "15.2.4",
-    "prisma": "^6.5.0",
+    "npm": "^11.3.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-loading-skeleton": "^3.5.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/multer": "^1.4.12",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "prisma": "^6.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
