@@ -40,10 +40,19 @@ const PaginaProduto: React.FC = () => {
   const [meuProduto, setMeuProduto] = useState(false);
   useEffect(() => {
     const buscarProduto = async () => {
-      const user = await usuarioService.exibirPerfil();
-      try {       
+      const token = localStorage.getItem('token');    
+      let user = null;
+
+      if (token) {
+        try {
+          user = await usuarioService.exibirPerfil();
+        } catch (err) {
+          console.error("Erro ao verificar tipo do usuário:", err);
+        }
+      }     
+      try {             
         const dados = await produtoService.produtoUnico(id)     
-        if(dados.vendedorId == user?.id){
+        if(user && dados.vendedorId == user.id){
           setMeuProduto(true);
         }
         setProduto(dados)
