@@ -174,7 +174,7 @@ function Seller() {
 
   const handleAtualizar = (produtoId: string) => {
     console.log("Atualizar produto:", produtoId);
-    // Implementar lógica de atualização
+    router.push(`produto/${produtoId}/atualizar`);
   };
 
   const handleExcluir = async (produtoId: string) => {

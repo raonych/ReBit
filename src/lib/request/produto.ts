@@ -150,6 +150,33 @@ export const produtoService = {
           console.error("Erro ao excluir produto:", error);
           return { produtos: [] }; 
         }
-      }
+      },
+      atualizarProduto: async (dados: any, id: string) => {
+        const token = localStorage.getItem("token");
+        
+        const response = await fetch(`/api/produtos/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(dados),
+        });
+      
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
+      
+        if (!response.ok) {
+          throw new Error(data?.error || "Erro no produto");
+        }
+      
+        return data;
+      },
+
+
       
 }
